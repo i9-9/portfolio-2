@@ -8,7 +8,7 @@ const page = () => {
         <div className='px-4'>
             <Navbar />
             <div className='grid md:grid-cols-2 py-3'>
-                <div className='flex flex-col gap-2'>
+                <div className='order-2 md:order-1'>
                     <Image alt="image showing work for fashionwear brand Kostume" src="/projects-landing/kostume/kostume1.png" height={650} width={650} />
                     <Image alt="image showing work for fashionwear brand Kostume" src="/projects-landing/kostume/kostume2.png" height={650} width={650} />
                     <Image alt="image showing work for fashionwear brand Kostume" src="/projects-landing/kostume/kostume3.png" height={650} width={650} />
