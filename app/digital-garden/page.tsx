@@ -23,7 +23,7 @@ export default async function Page() {
   return (
     <section className="h-auto pb-10 bg-repeat min-h-screen px-4">
       <Navbar />
-      <h1 className="text-6xl text-verde font-bold mt-6 mx-1 leading-8	">
+      <h1 className="text-6xl text-verde font-bold mt-6 mx-1 md:leading-8	">
         DIGITAL GARDEN
       </h1>
       <h3 className="mt-1 text-xl md:text-4xl text-verde font-medium mx-1 uppercase leading-8">
