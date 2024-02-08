@@ -29,12 +29,12 @@ const InfoPage = () => {
               <span className="">
                 -&gt;
               </span>
-              Front-End Development</li>
+              UX/UI</li>
             <li>
               <span className="">
                 -&gt;
               </span>
-              UX/UI</li>
+              Front-End Development</li>
           </ul>
           <h3 className="mx-1 text-sm font-bold text-verde ">
             Buenos Aires, Arg
@@ -75,26 +75,17 @@ const InfoPage = () => {
                     My background is one of a more creative approach, but recently I have
                     been combining my skills in design with functional thinking to build
                     high-end digital products.
-                    <br /> <br />
-                    My favorite front-end tools are
-                    JavaScript, Tailwind CSS, React.js, Next.js, and Figma; though I am
-                    always trying to learn new technologies and broaden my knowledge
-                    with what&apos;s best for my working process. -<br /><br />
-                    <br />
+
                   </p>
                 )
                 :
                 (
-                  <p className="text-verde text-base mx-1">
+                  <p className="text-verde text-sm mx-1">
                     <br />
                     Estoy en mi mejor
                     momento cuando estoy aprendiendo, construyendo y contribuyendo a una
                     comunidad! Me gusta montar aplicaciones UI que se ven bien y se
                     ejecutan lo más rápido y óptimo posible.
-                    <br /> <br />  Mis herramientas de
-                    front-end favoritas son JavaScript, Tailwind CSS, React.js, Next.js,
-                    y Figma; aunque siempre trato de aprender nuevas tecnologías y
-                    ampliar mi conocimiento para poder mejorar mi proceso de trabajo.
                   </p>
                 )
             }

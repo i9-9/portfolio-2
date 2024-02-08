@@ -4,12 +4,30 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const Work = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [showText1, setShowText1] = useState(false);
+  const [showText2, setShowText2] = useState(false);
+  const [showText3, setShowText3] = useState(false);
+
+  const handleMouseMove = (event) => {
+    setMousePosition({ x: event.clientX, y: event.clientY });
+  };
 
   return (
-    <div id='work' className='mx-1 h-auto pt-1'>
+    <div id='work' className='mx-1 h-auto pt-1' onMouseMove={handleMouseMove}>
 
       <div className='py-6'>
-        <Link href="/work/kostume">
+        <Link 
+        onMouseEnter={() => setShowText1(true)}
+        onMouseLeave={() => setShowText1(false)} 
+        href="/work/kostume">
+          {showText1 && (
+          <div 
+          style={{ position: 'fixed', top: mousePosition.y, left: mousePosition.x }}
+          className=' border border-verde z-[1000] text-on-hover text-verde p-8 rounded-md bg-black'>
+            <h3 className='bold text-center'>Kostume<br/>Web Design</h3> 
+          </div>
+        )}
           <Marquee
             speed={25}
             play={true}
@@ -36,7 +54,18 @@ const Work = () => {
             <Image className='mx-2' src='/projects-landing/kostume/kostume3.png' alt='kostume project' width={450} height={354} />
           </Marquee>
         </Link>
-        <Link href="/work/c7">
+
+        <Link
+                  onMouseEnter={() => setShowText2(true)}
+                  onMouseLeave={() => setShowText2(false)}
+        href="/work/c7">
+          {showText2 && (
+          <div 
+          style={{ position: 'fixed', top: mousePosition.y, left: mousePosition.x }}
+          className=' border border-verde z-[1000] text-on-hover text-verde p-8 rounded-md bg-black'>
+            <h3 className='bold text-center'>C7 Studio<br/>Web Design & Development</h3> 
+          </div>
+        )}
           <Marquee play={true} pauseOnHover={false} gradient={false} className='flex justify-center my-6 border border-t-verde border-b-verde py-1'>
             <Image className='mx-2' src='/projects-c7/c7-1.png' alt='c7 studio project' width={450} height={354} />
             <Image className='mx-2' src='/projects-c7/c7-2.png' alt='c7 studio project' width={450} height={354} />
@@ -60,7 +89,17 @@ const Work = () => {
             <Image className='mx-2' src='/projects-c7/c7-4.png' alt='c7 studio project' width={450} height={354} />
           </Marquee>
         </Link>
-        <Link href="/work/sofar">
+        <Link
+                onMouseEnter={() => setShowText3(true)}
+                onMouseLeave={() => setShowText3(false)} 
+                href="/work/sofar">
+                        {showText3 && (
+          <div 
+          style={{ position: 'fixed', top: mousePosition.y, left: mousePosition.x }}
+          className=' border border-verde z-[1000] text-on-hover text-verde p-8 rounded-md bg-black'>
+            <h3 className='bold text-center'>So Far, So Near<br/>Web Design</h3> 
+          </div>
+        )}    
           <Marquee play={true} pauseOnHover={false} gradient={false} className='flex justify-center my-6 border border-t-verde border-b-verde py-1'>
             <Image className='mx-2' src='/projects-sofar/sofar-1.png' alt='So Far, So Near project' width={450} height={354} />
             <Image className='mx-2' src='/projects-sofar/sofar-2.png' alt='So Far, So Near project' width={450} height={354} />
