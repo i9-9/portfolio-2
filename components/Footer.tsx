@@ -7,7 +7,7 @@ const Footer = () => {
       <div className='mx-auto text-center flex items-center justify-between border-t-[1px] border-b-[1px] border-solid border-verde '>
         <h5 className='text-verde font-light text-sm'>COPYRIGHT {new Date().getFullYear() }</h5>
         <Link href='/'>
-          <h6 className='font-bold text-verde text-xl'>I / N</h6>
+          <h6 className='font-bold text-verde text-md'>I / N</h6>
         </Link>
       </div>
     </footer>

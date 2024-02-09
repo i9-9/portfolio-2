@@ -2,7 +2,6 @@
 
 import Work from '../components/Work'
 import NavbarHome from '../components/NavbarHome'
-import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from "framer-motion"
 
@@ -14,25 +13,32 @@ export default function Home() {
 
   return (
     <div className='mx-auto px-4 '>
-      <div>
-        <Link href='/'>
-          <motion.h1
-            className='title text-xl pt-4 md:p-3 text-verde uppercase pl-1 md:pl-0 '
-            initial={{ opacity: 0,}}
-            animate={{ opacity: 1}}
-            transition={{ delay: 0.2 }}>
-            {text.split("").map((letter, index) => (
-              <motion.span
-                key={index}
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * index }}
-              >
-                {letter}
-              </motion.span>
-            ))}
-          </motion.h1>
-        </Link>
+      <div className='items-center justify-between flex'>
+        <div>
+          <Link href='/'>
+            <motion.h1
+              className='title pt-4 md:p-1 text-verde uppercase pl-1 md:pl-0 '
+              initial={{ opacity: 0, }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}>
+              {text.split("").map((letter, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, y: -50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                >
+                  {letter}
+                </motion.span>
+              ))}
+            </motion.h1>
+          </Link>
+        </div>
+        <div className='hidden md:flex'>
+          <Link href='/info'>
+            <h2 className='text-verde'>DIGITAL DESIGNER</h2>
+          </Link>
+        </div>
       </div>
       <NavbarHome />
       {/* <div className='grid md:grid-cols-2 mb-48 md:mb-0 md:mt-[25rem] '>
