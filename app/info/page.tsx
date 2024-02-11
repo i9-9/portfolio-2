@@ -15,39 +15,35 @@ const InfoPage = () => {
   return (
     <div className="pb-28 px-4">
       <Navbar />
-      {/* <h1 className="text-6xl md:text-9xl text-verde font-bold py-2 mx-1">
-        INFO
-      </h1> */}
       <div className="grid md:grid-cols-2">
-        <div className="mt-10">
-          <h3 className="mx-1 text-2xl font-bold text-verde ">Ivan Nevares</h3>
-          <h4 className=" mx-1 text-xl text-verde font-offBitBold">
+        <div className="">
+          <div className="flex justify-around items-center mt-2 "> 
+          <h3 className="text-md font-bold text-verde ">Ivan Nevares</h3>
+          <h4 className="text-md text-verde ">
             DIGITAL DESIGN
           </h4>
-          <ul className="text-verde mx-1 text-md italic my-3">
+          </div>
+          <ul className="text-verde text-sm  my-1">
             <li>
               <span className="">
-                -&gt;
+           
               </span>
               UX/UI</li>
             <li>
               <span className="">
-                -&gt;
+           
               </span>
               Front-End Development</li>
           </ul>
-          <h3 className="mx-1 text-sm font-bold text-verde ">
-            Buenos Aires, Arg
-          </h3>
           <br />
           <div className="transition-all duration-700">
             {
               language ?
                 (<div className="flex transition-all duration-700">
-                  <button className="mx-1 text-sm font-bold text-verde border border-verde p-1 hover:bg-violeta transition-all duration-700">
+                  <button className=" text-sm font-bold text-verde border border-verde p-1 hover:bg-violeta transition-all duration-700">
                     EN
                   </button>
-                  <button onClick={handleLanguage} className="mx-1 text-sm font-bold text-verde/25 border border-verde p-1 hover:bg-violeta transition-all duration-700">
+                  <button onClick={handleLanguage} className=" text-sm font-bold text-verde/25 border border-verde p-1 hover:bg-violeta transition-all duration-700">
                     ES
                   </button>
                 </div>
@@ -55,7 +51,7 @@ const InfoPage = () => {
                 :
                 (
                   <div className="flex transition-all duration-700">
-                    <button onClick={handleLanguage} className="mx-1 text-sm font-bold text-verde/25 border border-verde p-1 hover:bg-violeta transition-all duration-700">
+                    <button onClick={handleLanguage} className="text-sm font-bold text-verde/25 border border-verde p-1 hover:bg-violeta transition-all duration-700">
                       EN
                     </button>
                     <button className="mx-1 text-sm font-bold text-verde border border-verde p-1 hover:bg-violeta transition-all duration-700">
@@ -68,7 +64,7 @@ const InfoPage = () => {
             {
               language ?
                 (
-                  <p className="text-verde text-sm mx-1">
+                  <p className="text-verde text-xs ">
                     <br />
                     At my best when learning, building and contributing to a
                     community! I like assembling UIs that look good and perform fast.
