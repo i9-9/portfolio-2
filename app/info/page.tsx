@@ -17,25 +17,18 @@ const InfoPage = () => {
       <Navbar />
       <div className="grid md:grid-cols-2">
         <div className="">
-          <div className="flex justify-around items-center mt-2 "> 
-          <h3 className="text-md font-bold text-verde ">Ivan Nevares</h3>
+          <div className="flex justify-between items-center mt-24 md:mt-2 "> 
+          <h3 className="text-md text-verde ">Ivan Nevares</h3>
           <h4 className="text-md text-verde ">
-            DIGITAL DESIGN
+            Digital Design
           </h4>
           </div>
-          <ul className="text-verde text-sm  my-1">
+          <ul className="text-verde text-sm mb-2">
             <li>
-              <span className="">
-           
-              </span>
               UX/UI</li>
             <li>
-              <span className="">
-           
-              </span>
               Front-End Development</li>
           </ul>
-          <br />
           <div className="transition-all duration-700">
             {
               language ?
@@ -76,7 +69,7 @@ const InfoPage = () => {
                 )
                 :
                 (
-                  <p className="text-verde text-sm mx-1">
+                  <p className="text-verde text-xs">
                     <br />
                     Estoy en mi mejor
                     momento cuando estoy aprendiendo, construyendo y contribuyendo a una
@@ -88,7 +81,7 @@ const InfoPage = () => {
 
           </div>
         </div>
-        <div className="flex justify-center mt-10">
+        <div className="flex justify-center mt-2">
           <Image className="mx-1 p-2 my-2 border border-verde shadow justify-self-end" src='/sangre.jpg' alt="picture of programmer into the unknown" height={500} width={500} />
         </div>
       </div>
