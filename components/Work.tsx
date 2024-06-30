@@ -7,7 +7,7 @@ const Work = () => {
 
 
   return (
-    <div id='work' className='h-auto pt-2' >
+    <div id='work' className='h-auto pt-2 px-4' >
       <div className=''>
         <Link 
         href="/work/kostume">
@@ -102,7 +102,7 @@ const Work = () => {
             <Image className='mx-2' src='/projects-sofar/sofar-4.png' alt='So Far, So Near project' width={450} height={354} />
           </Marquee>
         </Link>
-        <h3 className='text-verde text-sm'>See more projects:<br /></h3>
+        <h3 className='text-verde text-sm mt-6'>See more projects:<br /></h3>
         <div className='text-verde grid grid-cols-1 md:grid-cols-2'>
           <button className='border border-verde px-1 py-2 hover:bg-verde hover:text-violeta transition-all duration-700 text-sm'>
             <Link href="https://github.com/i9-9" >

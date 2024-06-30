@@ -2,13 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+
 * {
     margin:0;
     padding:0;
 }
 
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'SupplySans', sans-serif;
+}
+
+footer{
+  margin-top: auto;
+}
+
 html {
-    font-family: 'Base Neue';
+    font-family: 'Supply Sans';
     --scroll-behavior: smooth!important;
     scroll-behavior: smooth!important;
 }
@@ -70,6 +82,20 @@ html {
         font-weight: 700;
         font-style: normal;
     }
+    @font-face {
+      font-family: 'SupplySans';
+      src: url(../public/fonts/PPSupplySans-Regular.woff2) format('woff2');
+      font-display: swap; 
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'SupplySans';
+      src: url(../public/fonts/PPSupplySans-Ultralight.woff2) format('woff2');
+      font-display: swap; 
+      font-weight: lighter;
+      font-style: normal;
+    }
 }
 
 
@@ -96,11 +122,7 @@ html {
   }
 
 
-  .title {
-    font-family: 'Base Neue';
-    font-style: expanded black oblique;
-    font-weight: 400;
-  }
+
 
   .custom {
     background-color: #010101;
@@ -137,3 +159,20 @@ html {
   .animation-delay-600 {
     animation-delay: 0.6s;
   }
+
+.cursor {
+    display: inline-block;
+    width: 0.5em; /* Adjust width as needed */
+    height: 1em; /* Adjust height to match text size */
+    background-color: currentColor; /* Match the color of the text */
+    animation: blink 1s step-start infinite;
+    margin-left: 0.1em; /* Optional: small margin to avoid touching the letter */
+    transform: translateY(0.15em); /* Adjust this value to move the cursor lower */
+  }
+  
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  

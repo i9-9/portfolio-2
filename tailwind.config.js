@@ -19,13 +19,15 @@ module.exports = {
         'diamond': "url('/diamond.png')"
       },
       fontFamily: {
-        baseBlack: 'Base Neue, black',
-        baseBold: 'Base Neue, bold',
-        baseSemiBold: 'Base Neue, semibold',
-        baseMedium: 'Base Neue, medium',
-        baseRegular: 'Base Neue, regular',
-        baseLight: 'Base Neue, light',
-        offBitBold: 'OffBit, bold'
+        baseBlack: ['Base Neue', 'black'],
+        baseBold: ['Base Neue', 'bold'],
+        baseSemiBold: ['Base Neue', 'semibold'],
+        baseMedium: ['Base Neue', 'medium'],
+        baseRegular: ['Base Neue', 'regular'],
+        baseLight: ['Base Neue', 'light'],
+        offBitBold: ['OffBit', 'bold'],
+        supplySans: ['SupplySans', 'regular'],
+        supplySansLight: ['SupplySans', 'lighter']
       },
       colors: {
         'violeta': '#5226AA',

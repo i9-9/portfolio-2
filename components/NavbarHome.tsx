@@ -38,7 +38,7 @@ const NavbarHome = () => {
   }, []);
 
   return (
-    <div>
+    <div className="px-4">
       <AiOutlineMenu size={20} onClick={handleNav} className="absolute top-4 right-5  z-[1000] md:hidden text-verde border border-verde rounded" />
       {
         nav ?
@@ -48,10 +48,10 @@ const NavbarHome = () => {
                 <Link className="w-[75%] flex justify-center mx-auto  my-16" href="/">
                   <li className="text-4xl font-bold list-none">INDEX</li>
                 </Link>
-                <Link href='#work' onClick={handleScrollMobile} className="w-[75%] flex justify-center mx-auto my-16" 
+                {/* <Link href='#work' onClick={handleScrollMobile} className="w-[75%] flex justify-center mx-auto my-16" 
                 >
                   <li className="text-4xl font-bold list-none">WORK</li>
-                </Link>
+                </Link> */}
                 <Link className="w-[75%] flex justify-center mx-auto  my-16" href="/info">
                   <li className="text-4xl font-bold list-none">INFO</li>
                 </Link>
@@ -86,9 +86,9 @@ const NavbarHome = () => {
             <Link href="/">
               <button className="hover-underline-animation">INDEX</button>
             </Link>
-            <Link href="#work" onClick={handleScroll}>
+            {/* <Link href="#work" onClick={handleScroll}>
               <button className="hover-underline-animation">WORK</button>
-            </Link>
+            </Link> */}
             <Link href="/info">
               <button className="hover-underline-animation">INFO</button>
             </Link>
@@ -102,7 +102,7 @@ const NavbarHome = () => {
           </div>
           <div className="self-center justify-end bg-transparent">
             <Link href="/contact">
-              <button className="p-2 border-solid border-verde border-[1px] hover:bg-[#0E0E0E]/30 hover:text-violeta hover:bg-verde transition-all duration-700">
+              <button className="p-2 border-solid border-verde border-[0.5px] hover:bg-[#0E0E0E]/30 hover:text-violeta hover:bg-verde transition-all duration-700">
                 CONTACT
               </button>
             </Link>
