@@ -1,11 +1,21 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { AiOutlineMenu } from 'react-icons/ai'
+import { AiOutlineMenu } from 'react-icons/ai';
 
 const NavbarHome = () => {
+  const [color, setColor] = useState("transparent");
+  const [nav, setNav] = useState(false);
 
+  const handleNav = () => {
+    setNav(!nav);
+    if (!nav) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+  };
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
@@ -13,19 +23,13 @@ const NavbarHome = () => {
     const target = document.querySelector(targetId);
     target?.scrollIntoView({ behavior: "smooth" });
   };
+
   const handleScrollMobile = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
     const targetId = e.currentTarget.getAttribute("href") as string;
     const target = document.querySelector(targetId);
     target?.scrollIntoView({ behavior: "smooth" });
     handleNav();
-  };
-
-  const [color, setColor] = useState("transparent");
-  const [nav, setNav] = useState(false);
-
-  const handleNav = () => {
-    setNav(!nav);
   };
 
   useEffect(() => {
@@ -37,46 +41,57 @@ const NavbarHome = () => {
       }
     };
     window.addEventListener("scroll", changeColor);
+    return () => {
+      window.removeEventListener("scroll", changeColor);
+    };
   }, []);
 
   return (
     <div className="">
-      <AiOutlineMenu size={20} onClick={handleNav} className="absolute top-4 right-5  z-[1000] md:hidden text-verde border border-verde rounded" />
-      {
-        nav ?
-          (
-            <div className="">
-              <div className="absolute top-0 left-0 w-full h-screen bg-diamond pt-28 z-20 text-verde font-bold mx-auto ease-in duration-500 transition-all">
-                <Link className="w-[75%] flex justify-center mx-auto  my-16" href="/">
-                  <li className="text-4xl font-bold list-none">INDEX</li>
-                </Link>
-                {/* <Link href='#work' onClick={handleScrollMobile} className="w-[75%] flex justify-center mx-auto my-16" 
-                >
-                  <li className="text-4xl font-bold list-none">WORK</li>
-                </Link> */}
-                <Link className="w-[75%] flex justify-center mx-auto  my-16" href="/info">
-                  <li className="text-4xl font-bold list-none">INFO</li>
-                </Link>
-                <Link className="w-[75%] flex justify-center mx-auto  my-16" href="/digital-garden">
-                  <li className="text-4xl font-bold list-none">DIGITAL GARDEN</li>
-                </Link>
-                <Link className="w-[75%] flex justify-center mx-auto  my-16" href="/contact">
-                  <li className="text-4xl font-bold list-none">CONTACT</li>
-                </Link>
-              </div>
-
-            </div>
-          )
-          :
-          (
-            <div></div>
-          )
-      }
+      <AiOutlineMenu
+        size={20}
+        onClick={handleNav}
+        className="absolute top-4 right-5 z-[1000] md:hidden text-verde border border-verde rounded"
+      />
+      {nav && (
+        <div className="">
+          <div className="absolute top-0 left-0 w-full h-screen bg-diamond pt-28 z-20 text-verde font-bold mx-auto ease-in duration-500 transition-all">
+            <Link
+              className="w-[75%] flex justify-center mx-auto my-16"
+              href="/"
+              onClick={handleNav}
+            >
+              <li className="text-4xl font-bold list-none">INDEX</li>
+            </Link>
+            <Link
+              className="w-[75%] flex justify-center mx-auto my-16"
+              href="/info"
+              onClick={handleNav}
+            >
+              <li className="text-4xl font-bold list-none">INFO</li>
+            </Link>
+            <Link
+              className="w-[75%] flex justify-center mx-auto my-16"
+              href="/digital-garden"
+              onClick={handleNav}
+            >
+              <li className="text-4xl font-bold list-none">DIGITAL GARDEN</li>
+            </Link>
+            <Link
+              className="w-[75%] flex justify-center mx-auto my-16"
+              href="/contact"
+              onClick={handleNav}
+            >
+              <li className="text-4xl font-bold list-none">CONTACT</li>
+            </Link>
+          </div>
+        </div>
+      )}
       <header
         style={{ backgroundColor: `${color}` }}
         className="hidden grid-cols-2 md:grid items-center border-t-verde border-b-verde border-solid border-t-[1px] border-b-[1px] py-1 text-verde text-sm sticky top-0 z-10 transition duration-1000 mt-2"
       >
-        <div className="">
+        <div>
           <Link href="/">
             <h2 className="font-black">
               I<span className="animate-pulse mx-2">/</span>N
@@ -88,9 +103,6 @@ const NavbarHome = () => {
             <Link href="/">
               <button className="hover-underline-animation">INDEX</button>
             </Link>
-            {/* <Link href="#work" onClick={handleScroll}>
-              <button className="hover-underline-animation">WORK</button>
-            </Link> */}
             <Link href="/info">
               <button className="hover-underline-animation">INFO</button>
             </Link>
@@ -111,9 +123,7 @@ const NavbarHome = () => {
           </div>
         </div>
       </header>
-
     </div>
-
   );
 };
 

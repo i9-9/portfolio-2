@@ -11,14 +11,16 @@ const MyMarquee = () => {
   };
 
   return (
-    <div className=''>
+    <div className="marquee-container">
       <Marquee
         speed={10}
         play={true}
         pauseOnHover={false}
         gradient={false}
-        className='flex justify-center border bg-verde text-black border-verde text-sm overflow-hidden uppercase'>
-        <p className='mx-1 font-supplySans'>
+        className="flex justify-center border bg-verde text-black border-verde text-sm overflow-hidden uppercase"
+        style={{ width: "100%" }} // Ensure full width responsiveness
+      >
+        <p className="mx-1 font-supplySans">
           {getMarqueeContent()}
         </p>
       </Marquee>
