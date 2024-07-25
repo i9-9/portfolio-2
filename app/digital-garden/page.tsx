@@ -6,7 +6,7 @@ export default async function Page() {
   const postMetadata = getPostMetadata();
 
   const postPreviews = postMetadata.map((post) => (
-    <div key={post.slug} className="text-verde border border-verde flex flex-col px-2 hover:bg-violeta transition-all duration-700 py-3 shadow-xl">
+    <div key={post.slug} className="text-verde border border-verde flex flex-col px-2 hover:bg-gris_claro transition-all duration-700 py-3 shadow-xl">
       <Link href={`/digital-garden/${post.slug}`}>
         <div className="flex flex-row items-center justify-between py-1">
           <h2 className="font-bold text-md hover-underline-animation">{post.title}</h2>

@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --gris_claro: #b5b5b5;
+  --blanco: #D8D8D8;
+  --gris_oscuro: #262626;
+}
+
+.button {
+  border: 1px solid var(--verde);
+  color: var(--verde);
+  background-color: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.button:hover {
+  background-color: var(--gris_oscuro);
+  color: var(--gris_claro);
+}
 
 * {
     margin:0;
@@ -111,7 +128,7 @@ html {
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #ADE252;
+    background-color: #D8D8D8;
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
   }
@@ -125,7 +142,7 @@ html {
 
 
   .custom {
-    background-color: #010101;
+    background-color: #D8D8D8;
   }
 
 
@@ -179,4 +196,194 @@ html {
 .no-scroll {
   overflow: hidden;
   height: 100%;
+}
+
+.text-content {
+  font-size: 16px; /* Adjust based on your design */
+}
+
+.spacer {
+  display: inline-block;
+  width: 10px; /* Adjust space width as needed */
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px; /* Add padding for better spacing */
+}
+
+.modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.image-container {
+  padding: 20px; /* Adjust the padding as needed */
+  box-sizing: border-box;
+}
+
+.image-container img {
+  max-width: 100%; /* Ensures the image scales down within the container */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.image-scroll-container {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.image-item {
+  margin-bottom: 20px;
+}
+
+.image-item img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Modal Overlay Background */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(var(--gris_claro-rgb), 0.5); /* 50% opacity */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+/* Modal Content Background */
+.modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  background-color: rgba(var(--gris_claro-rgb)); /* 50% opacity */
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+/* Modal Overlay Background */
+.modal-overlay {
+  background-color: var(--gris_claro);
+}
+
+/* Modal Content Background */
+.modal-content {
+  background-color: var(--gris_claro);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(241, 242, 243, 0.5); /* gris_claro with 50% opacity */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+  max-height: 80%;
+  overflow-y: auto;
+  width: 80%;
+}
+
+/* Close Button */  
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: var(--verde); /* Use your verde color variable */
+  border: 1px solid ; /* Match border color with button */
+  padding: 0.5rem 1rem;
+  border-color: #262626;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  z-index: 1001; /* Ensure button is above other content */
+}
+
+.modal-close-btn:hover {
+  background-color: var(--gris_oscuro); /* Dark background on hover */
+  color: var(--gris_claro); /* Light text color on hover */
+}
+
+/* Scrollable Container */
+.image-scroll-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.image-item {
+  margin-bottom: 1rem;
+}
+
+.image-item img {
+  max-width: 100%;
+  height: auto;
 }

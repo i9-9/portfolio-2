@@ -1,6 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { AiOutlineMenu } from 'react-icons/ai'
+import { AiOutlineMenu } from 'react-icons/ai';
 
 const NavbarHome = () => {
   const [color, setColor] = useState("transparent");
@@ -33,7 +35,7 @@ const NavbarHome = () => {
   useEffect(() => {
     const changeColor = () => {
       if (window.scrollY >= 40) {
-        setColor("#5226AA");
+        setColor("#B5B5B5");
       } else {
         setColor("transparent");
       }
@@ -53,51 +55,53 @@ const NavbarHome = () => {
       />
       {nav && (
         <div className="">
-          <div className="absolute top-0 left-0 w-full h-screen bg-diamond pt-28 z-20 text-verde font-bold mx-auto ease-in duration-500 transition-all">
-            <Link
-              className="w-[75%] flex justify-center mx-auto my-16"
-              href="/"
-              onClick={handleNav}
-            >
-              <li className="text-4xl font-bold list-none">INDEX</li>
-            </Link>
-            <Link
-              className="w-[75%] flex justify-center mx-auto my-16"
-              href="/info"
-              onClick={handleNav}
-            >
-              <li className="text-4xl font-bold list-none">INFO</li>
-            </Link>
-            <Link
-              className="w-[75%] flex justify-center mx-auto my-16"
-              href="/digital-garden"
-              onClick={handleNav}
-            >
-              <li className="text-4xl font-bold list-none">DIGITAL GARDEN</li>
-            </Link>
-            <Link
-              className="w-[75%] flex justify-center mx-auto my-16"
-              href="/contact"
-              onClick={handleNav}
-            >
-              <li className="text-4xl font-bold list-none">CONTACT</li>
-            </Link>
+          <div className="fixed inset-0 flex items-center justify-center bg-gris_claro z-20 text-verde font-bold">
+            <div className="flex flex-col items-center text-center space-y-8">
+              <Link
+                className="text-4xl font-bold"
+                href="/"
+                onClick={handleNav}
+              >
+                INDEX
+              </Link>
+              <Link
+                className="text-4xl font-bold"
+                href="/info"
+                onClick={handleNav}
+              >
+                INFO
+              </Link>
+              {/* <Link
+                className="text-4xl font-bold"
+                href="/digital-garden"
+                onClick={handleNav}
+              >
+                DIGITAL GARDEN
+              </Link> */}
+              <Link
+                className="text-4xl font-bold"
+                href="/contact"
+                onClick={handleNav}
+              >
+                CONTACT
+              </Link>
+            </div>
           </div>
         </div>
       )}
       <header
         style={{ backgroundColor: `${color}` }}
-        className="hidden grid-cols-2 md:grid items-center border-t-verde border-b-verde border-solid border-t-[1px] border-b-[1px] py-1 text-verde text-sm sticky top-0 z-10 transition duration-1000"
+        className="hidden md:flex items-center justify-between border-t-verde border-b-verde border-solid border-t-[1px] border-b-[1px] py-1 text-verde text-sm sticky top-0 z-10 transition duration-1000"
       >
-        <div>
+        <div className="flex-1 flex items-center justify-start">
           <Link href="/">
             <h2 className="font-black">
               I<span className="animate-pulse mx-2">/</span>N
             </h2>
           </Link>
         </div>
-        <div className="flex justify-between">
-          <div className="flex flex-col items-start">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-left">
             <Link href="/">
               <button className="hover-underline-animation">INDEX</button>
             </Link>
@@ -105,20 +109,13 @@ const NavbarHome = () => {
               <button className="hover-underline-animation">INFO</button>
             </Link>
           </div>
-          <div className="flex items-center">
-            <Link href="/digital-garden">
-              <h4 className="hover-underline-animation cursor-pointer">
-                DIGITAL GARDEN
-              </h4>
-            </Link>
-          </div>
-          <div className="self-center justify-end bg-transparent">
-            <Link href="/contact">
-              <button className="p-2 border-solid border-verde border-[0.5px] hover:bg-[#0E0E0E]/30 hover:text-violeta hover:bg-verde transition-all duration-700">
-                CONTACT
-              </button>
-            </Link>
-          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-end">
+          <Link href="/contact">
+            <button className="p-2 border-solid border-verde border-[0.5px] hover:bg-[#0E0E0E]/30 hover:text-gris_oscuro hover:bg-gris_claro transition-all duration-700">
+              CONTACT
+            </button>
+          </Link>
         </div>
       </header>
     </div>

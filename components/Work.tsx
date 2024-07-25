@@ -74,14 +74,14 @@ const Work = () => {
           </Marquee>
         </Link>
 
-        <h3 className='text-verde text-sm mt-6'>See more projects:<br /></h3>
-        <div className='text-verde grid grid-cols-1 md:grid-cols-2'>
-          <button className='border border-verde px-1 py-2 hover:bg-verde hover:text-violeta transition-all duration-700 text-sm'>
+        <h3 className='text-verde text-sm mt-6 mb-2'>See more projects:<br /></h3>
+        <div className='text-verde grid grid-cols-1 md:grid-cols-2 gap-x-8	'>
+          <button className='border border-verde px-1 py-2 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-700 text-sm'>
             <Link href="https://github.com/i9-9">
               Github
             </Link>
           </button>
-          <button className='border border-verde px-1 py-2 hover:bg-verde hover:text-violeta transition-all duration-700 text-sm'>
+          <button className='border border-verde px-1 py-2 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-700 text-sm'>
             <Link href="https://www.behance.net/ivan_nevares">
               Behance
             </Link>

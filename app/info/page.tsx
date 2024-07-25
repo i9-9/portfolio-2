@@ -16,60 +16,50 @@ const InfoPage = () => {
       <Navbar />
       <div className="grid md:grid-cols-2">
         <div>
-          <div className="flex justify-between items-center mt-24 md:mt-2 pr-4">
-            <h3 className="text-md text-verde">Ivan Nevares</h3>
-            <h4 className="text-md text-verde">Digital Design</h4>
+          <div className="flex justify-between mt-24 md:mt-2 pr-4 items-baseline">
+            <h3 className="text-3xl text-verde font-bold">Ivan Nevares</h3>
+            <h4 className="text-md text-verde italic">Digital Design</h4>
           </div>
-          <ul className="text-verde text-sm mb-2">
-            <li>UX/UI</li>
-            <li>Front-End Development</li>
-          </ul>
-          <div className="transition-all duration-700">
+          <div className="text-verde text-xs my-4 flex ">
+            <div className="mr-2 bg-gris_oscuro text-gris_claro p-2 py-1">Web Design</div>
+            <div className="mr-2 bg-gris_oscuro text-gris_claro p-2 py-1">UX/UI</div>
+            <div className="bg-gris_oscuro text-gris_claro p-2 py-1">Front-End Development</div>
+          </div>
+          <hr className="border-gris_oscuro" />
+          <div className="transition-all duration-700 mt-4">
+            <div className="flex transition-all duration-700">
+              <button
+                className={`text-sm font-bold border border-verde p-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-700 ${!language ? 'text-verde/25' : 'text-verde'}`}
+                onClick={!language ? handleLanguage : undefined}
+                style={{ minWidth: '40px' }}
+              >
+                EN
+              </button>
+              <button
+                className={`text-sm font-bold border border-verde p-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-700 ${language ? 'text-verde/25' : 'text-verde'}`}
+                onClick={language ? handleLanguage : undefined}
+                style={{ minWidth: '40px', marginLeft: '8px' }}
+              >
+                ES
+              </button>
+            </div>
             {language ? (
-              <div className="flex transition-all duration-700">
-                <button
-                  className="text-sm font-bold text-verde border border-verde p-1 hover:bg-violeta transition-all duration-700"
-                >
-                  EN
-                </button>
-                <button
-                  onClick={handleLanguage}
-                  className="text-sm font-bold text-verde/25 border border-verde p-1 hover:bg-violeta transition-all duration-700"
-                >
-                  ES
-                </button>
-              </div>
-            ) : (
-              <div className="flex transition-all duration-700">
-                <button
-                  onClick={handleLanguage}
-                  className="text-sm font-bold text-verde/25 border border-verde p-1 hover:bg-violeta transition-all duration-700"
-                >
-                  EN
-                </button>
-                <button
-                  className="mx-1 text-sm font-bold text-verde border border-verde p-1 hover:bg-violeta transition-all duration-700"
-                >
-                  ES
-                </button>
-              </div>
-            )}
-            {language ? (
-              <p className="text-verde text-xs">
+              <p className="text-verde text-sm">
                 <br />
-                At my best when learning, building and contributing to a
-                community! I like assembling UIs that look good and perform fast.
-                My background is one of a more creative approach, but recently I have
-                been combining my skills in design with functional thinking to build
-                high-end digital products.
+                Designer with expertise in websites and applications, dedicated to crafting unique, modern, and tailored experiences.<br/><br/>
+Currently studying Graphic Design at the Universidad de Buenos Aires.<br/>
+Sound Technician, trained at TECSON, Buenos Aires.<br/><br/>
+Web Designer at newtro.xyz.<br/>
+Available for freelance web projects.
               </p>
             ) : (
-              <p className="text-verde text-xs">
+              <p className="text-verde text-sm">
                 <br />
-                Estoy en mi mejor
-                momento cuando estoy aprendiendo, construyendo y contribuyendo a una
-                comunidad! Me gusta montar aplicaciones UI que se ven bien y se
-                ejecutan lo más rápido y óptimo posible.
+                Diseñador con experiencia en sitios web y aplicaciones, dedicado a crear experiencias únicas, modernas y personalizadas.<br/><br/>
+Actualmente estudiando Diseño Gráfico en la Universidad de Buenos Aires.<br/>
+Técnico en Sonido, formado en TECSON, Buenos Aires.<br/><br/>
+Diseñador Web en newtro.xyz.<br/>
+Disponible para proyectos web freelance.
               </p>
             )}
           </div>

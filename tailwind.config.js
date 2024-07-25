@@ -31,7 +31,10 @@ module.exports = {
       },
       colors: {
         'violeta': '#5226AA',
-        'verde': '#ADE252',
+        'verde': '#262626',
+        'gris': '#262626',
+        'gris_claro': '#B5B5B5',
+        'gris_oscuro': '#262626',
       },
       animation: {
         'spin-slow': 'spin 5s linear infinite',

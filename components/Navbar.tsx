@@ -35,7 +35,7 @@ const NavbarHome = () => {
   useEffect(() => {
     const changeColor = () => {
       if (window.scrollY >= 40) {
-        setColor("#5226AA");
+        setColor("#B5B5B5");
       } else {
         setColor("transparent");
       }
@@ -54,35 +54,35 @@ const NavbarHome = () => {
         className="absolute top-4 right-5 z-[1000] md:hidden text-verde border border-verde rounded"
       />
       {nav && (
-        <div className="">
-          <div className="absolute top-0 left-0 w-full h-screen bg-diamond pt-28 z-20 text-verde font-bold mx-auto ease-in duration-500 transition-all">
+        <div className="fixed inset-0 flex items-center justify-center bg-diamond z-20 text-verde font-bold">
+          <div className="flex flex-col items-center text-center space-y-8">
             <Link
-              className="w-[75%] flex justify-center mx-auto my-16"
+              className="text-4xl font-bold"
               href="/"
               onClick={handleNav}
             >
-              <li className="text-4xl font-bold list-none">INDEX</li>
+              INDEX
             </Link>
             <Link
-              className="w-[75%] flex justify-center mx-auto my-16"
+              className="text-4xl font-bold"
               href="/info"
               onClick={handleNav}
             >
-              <li className="text-4xl font-bold list-none">INFO</li>
+              INFO
             </Link>
-            <Link
-              className="w-[75%] flex justify-center mx-auto my-16"
+            {/* <Link
+              className="text-4xl font-bold"
               href="/digital-garden"
               onClick={handleNav}
             >
-              <li className="text-4xl font-bold list-none">DIGITAL GARDEN</li>
-            </Link>
+              DIGITAL GARDEN
+            </Link> */}
             <Link
-              className="w-[75%] flex justify-center mx-auto my-16"
+              className="text-4xl font-bold"
               href="/contact"
               onClick={handleNav}
             >
-              <li className="text-4xl font-bold list-none">CONTACT</li>
+              CONTACT
             </Link>
           </div>
         </div>
@@ -108,15 +108,15 @@ const NavbarHome = () => {
             </Link>
           </div>
           <div className="flex items-center">
-            <Link href="/digital-garden">
+            {/* <Link href="/digital-garden">
               <h4 className="hover-underline-animation cursor-pointer">
                 DIGITAL GARDEN
               </h4>
-            </Link>
+            </Link> */}
           </div>
           <div className="self-center justify-end bg-transparent">
             <Link href="/contact">
-              <button className="p-2 border-solid border-verde border-[0.5px] hover:bg-[#0E0E0E]/30 hover:text-violeta hover:bg-verde transition-all duration-700">
+              <button className="p-2 border-solid border-verde border-[0.5px] hover:bg-[#0E0E0E]/30 hover:text-gris_claro hover:bg-verde transition-all duration-700">
                 CONTACT
               </button>
             </Link>

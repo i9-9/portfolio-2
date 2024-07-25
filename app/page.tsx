@@ -7,10 +7,14 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react"; // Import useState and useEffect
 import MyMarquee from "../components/MarqueeLanding";
 
+
+
 const Home = () => {
   const text = "IVAN NEVARES";
   const [animatedText, setAnimatedText] = useState("");
 
+
+  
   useEffect(() => {
     const interval = setInterval(() => {
       // Randomly choose a letter or keep the correct letter if animation is done
@@ -33,6 +37,7 @@ const Home = () => {
   }, []);
 
   return (
+    
     <div className="mx-auto">
       <div className="">
         <MyMarquee />
@@ -75,13 +80,14 @@ const Home = () => {
         </div>
         <div className="hidden md:flex">
           <Link href="/info">
-            <h2 className="text-verde font-supplySans">DIGITAL DESIGNER</h2>
+            <h2 className="text-gris_oscuro font-supplySans">DIGITAL DESIGNER</h2>
           </Link>
         </div>
       </div>
       <NavbarHome />
       <Work />
     </div>
+  
   );
 };
 

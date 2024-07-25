@@ -20,7 +20,10 @@ const page = () => {
                         (Web design)<br /><br />
 
                         For C7 Studio<br />
-                        Web development - Florencia Gomez<br />
+                        Web development - <span className='hover-underline-animation'>
+                            Florencia Gomez
+                            </span>
+                            <br />
                         <br />
                     <Link href="https://www.sofarsonear.online/">
                         <button className='btn text-verde border border-verde px-2 py-1 hover:bg-violeta transition-all duration-1000'>LIVE SITE</button>
