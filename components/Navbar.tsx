@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { AiOutlineMenu } from 'react-icons/ai';
+import Image from "next/image";
+import OpenMenuIcon from "/public/mobile_menu/OPEN_MENU.png"; // Correct path for open menu PNG
+import CloseMenuIcon from "/public/mobile_menu/CLOSE_MENU.png"; // Correct path for close menu PNG
 
 const NavbarHome = () => {
   const [color, setColor] = useState("transparent");
@@ -11,25 +13,10 @@ const NavbarHome = () => {
   const handleNav = () => {
     setNav(!nav);
     if (!nav) {
-      document.body.classList.add('no-scroll');
+      document.body.classList.add("no-scroll");
     } else {
-      document.body.classList.remove('no-scroll');
+      document.body.classList.remove("no-scroll");
     }
-  };
-
-  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault();
-    const targetId = e.currentTarget.getAttribute("href") as string;
-    const target = document.querySelector(targetId);
-    target?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleScrollMobile = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault();
-    const targetId = e.currentTarget.getAttribute("href") as string;
-    const target = document.querySelector(targetId);
-    target?.scrollIntoView({ behavior: "smooth" });
-    handleNav();
   };
 
   useEffect(() => {
@@ -48,45 +35,36 @@ const NavbarHome = () => {
 
   return (
     <div className="">
-      <AiOutlineMenu
-        size={20}
-        onClick={handleNav}
-        className="absolute top-4 right-5 z-[1000] md:hidden text-verde border border-verde rounded"
-      />
+      {/* Mobile menu toggle */}
+      <div className="absolute top-4 right-5 z-[1000] md:hidden cursor-pointer">
+        <Image
+          src={nav ? CloseMenuIcon : OpenMenuIcon}
+          onClick={handleNav}
+          className="p-2"
+          alt={nav ? "Close menu" : "Open menu"}
+          width={40} // Adjust the width if needed
+          height={40} // Adjust the height if needed
+        />
+      </div>
+
+      {/* Mobile menu content */}
       {nav && (
-        <div className="fixed inset-0 flex items-center justify-center bg-diamond z-20 text-verde font-bold">
+        <div className="fixed inset-0 flex items-center justify-center bg-gris_claro z-20 text-verde font-bold">
           <div className="flex flex-col items-center text-center space-y-8">
-            <Link
-              className="text-4xl font-bold"
-              href="/"
-              onClick={handleNav}
-            >
+            <Link className="text-4xl font-bold" href="/" onClick={handleNav}>
               INDEX
             </Link>
-            <Link
-              className="text-4xl font-bold"
-              href="/info"
-              onClick={handleNav}
-            >
+            <Link className="text-4xl font-bold" href="/info" onClick={handleNav}>
               INFO
             </Link>
-            {/* <Link
-              className="text-4xl font-bold"
-              href="/digital-garden"
-              onClick={handleNav}
-            >
-              DIGITAL GARDEN
-            </Link> */}
-            <Link
-              className="text-4xl font-bold"
-              href="/contact"
-              onClick={handleNav}
-            >
+            <Link className="text-4xl font-bold" href="/contact" onClick={handleNav}>
               CONTACT
             </Link>
           </div>
         </div>
       )}
+
+      {/* Desktop menu */}
       <header
         style={{ backgroundColor: `${color}` }}
         className="hidden grid-cols-2 md:grid items-center border-t-verde border-b-verde border-solid border-t-[1px] border-b-[1px] py-1 text-verde text-sm sticky top-0 z-10 transition duration-1000 mt-2"

@@ -128,7 +128,7 @@ html {
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #D8D8D8;
+    background-color: #262626;
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
   }
@@ -147,7 +147,7 @@ html {
 
 
   
-  @keyframes appear {
+  @keyframes appear { 
     0% {
       opacity: 0;
     }
@@ -350,7 +350,7 @@ html {
   width: 80%;
 }
 
-/* Close Button */  
+/* Close Button */ 
 .modal-close-btn {
   position: absolute;
   top: 10px;
@@ -387,3 +387,39 @@ html {
   max-width: 100%;
   height: auto;
 }
+
+/* Define the keyframes for the border animation */
+@keyframes borderAnimation {
+  from {
+    transform: scaleX(0);
+    transform-origin: bottom left;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: bottom right;
+  }
+}
+
+/* Apply the animation to the navbar items */
+.navbar-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.navbar-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #000; /* Change to your desired color */
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.navbar-item.animate::before {
+  animation: borderAnimation 0.5s forwards;
+}
+

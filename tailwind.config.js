@@ -7,6 +7,7 @@ module.exports = {
   ],
   theme: {
     extend: {
+
       backgroundImage: {
         'hero-mesh': "url('/mesh.png')",
         'hero-mesh2': "url('/mesh2.png')",

@@ -34,7 +34,7 @@ const Page = () => {
                 </div>
                 <div>
                     <h1 className='text-verde text-7xl font-bold'>Kostume</h1>
-                    <p className='text-verde mt-4'>
+                    <p className='text-verde my-4'>
                         <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-xs uppercase'>
                             E-shop 
                         </span>
