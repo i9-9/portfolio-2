@@ -1,6 +1,7 @@
-import Navbar from "../../components/Navbar";
+
 import Link from "next/link";
 import getPostMetadata from "../../components/getPostMetadata";
+import NavbarHome from "../../components/NavbarHome";
 
 export default async function Page() {
   const postMetadata = getPostMetadata();
@@ -21,7 +22,7 @@ export default async function Page() {
 
   return (
     <section className="h-auto pb-10 bg-repeat min-h-screen px-4">
-      <Navbar />
+      <NavbarHome />
       <h1 className="text-xl text-verde my-2">
         DIGITAL GARDEN
       </h1>

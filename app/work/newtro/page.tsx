@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Navbar from '../../../components/Navbar';
+import NavbarHome from '../../../components/NavbarHome';
 
 const Page = () => {
     const [selectedImageIndex, setSelectedImageIndex] = useState(null);
@@ -19,7 +19,7 @@ const Page = () => {
 
     return (
         <div className='px-4'>
-            <Navbar />
+            <NavbarHome />
             <div className='grid md:grid-cols-2 py-3'>
                 <div className='order-2 md:order-1'>
                     {images.map((src, index) => (

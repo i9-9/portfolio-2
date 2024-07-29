@@ -1,13 +1,13 @@
 "use client"
 
 import React from 'react'
-import Navbar from '../../components/Navbar'
 import Work from '../../components/Work'
+import NavbarHome from '../../components/NavbarHome'
 
 const page = () => {
   return (
     <div className='px-4 mx-auto'>
-        <Navbar />
+        <NavbarHome />
         <Work />
     </div>
   )

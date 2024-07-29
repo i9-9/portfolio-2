@@ -1,9 +1,10 @@
-import Navbar from "../../../components/Navbar";
+
 import fs from "fs";
 import Markdown from "markdown-to-jsx";
 import matter from "gray-matter";
 import getPostMetadata from "../../../components/getPostMetadata";
 import Link from "next/link";
+import NavbarHome from "../../../components/NavbarHome";
 
 const getPostContent = (slug: string) => {
   const folder = "posts/";
@@ -29,7 +30,7 @@ const PostPage = (props: any) => {
 
   return (
       <section className="h-auto pb-10 bg-repeat px-4">
-        <Navbar />
+        <NavbarHome />
         <Link href='/digital-garden'>
           <h1 className="text-6xl md:text-9xl md:leading-[7rem] text-verde font-bold my-6 mx-1 ">
             DIGITAL<br />GARDEN
