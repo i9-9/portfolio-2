@@ -1,8 +1,8 @@
 "use client";
 
-import Navbar from "../../components/Navbar";
 import Image from "next/image";
 import React, { useState } from "react";
+import NavbarHome from "../../components/NavbarHome";
 
 const InfoPage = () => {
   const [language, setLanguage] = useState(true);
@@ -12,9 +12,9 @@ const InfoPage = () => {
   };
 
   return (
-    <div className="px-4 font-supplySans">
-      <Navbar />
-      <div className="grid md:grid-cols-2">
+    <div className="font-supplySans">
+      <NavbarHome />
+      <div className="grid md:grid-cols-2 px-4">
         <div>
           <div className="flex justify-between mt-24 md:mt-2 pr-4 items-baseline">
             <h3 className="text-3xl text-verde font-bold">Ivan Nevares</h3>
