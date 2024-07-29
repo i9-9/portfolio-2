@@ -1,12 +1,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import Navbar from '../../../components/Navbar'
+import NavbarHome from '../../../components/NavbarHome'
 
 const page = () => {
     return (
         <div className='px-4'>
-            <Navbar />
+            <NavbarHome />
             <div className='grid md:grid-cols-2 py-3'>
                 <div className='order-2 md:order-1'>
                     <Image alt="Web agency C7 Studio" src="/projects-c7/c7-1.png" height={650} width={650} />
