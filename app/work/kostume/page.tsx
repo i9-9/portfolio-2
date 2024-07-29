@@ -33,7 +33,7 @@ const Page = () => {
                     ))}
                 </div>
                 <div>
-                    <h1 className='text-verde text-7xl font-bold'>Kostume</h1>
+                    <h1 className='text-verde text-7xl font-bold'>Kostüme</h1>
                     <p className='text-verde my-4'>
                         <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-xs uppercase'>
                             E-shop 
@@ -62,7 +62,7 @@ const Page = () => {
             {selectedImageIndex !== null && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-container">
-                        <button className="modal-close-btn" onClick={closeModal}>CLOSE</button>
+                        <button className="modal-close-btn bg-gris_claro" onClick={closeModal}>CLOSE</button>
                         <div className="image-scroll-container">
                             {images.map((src, index) => (
                                 <div key={index} className={`image-item ${index === selectedImageIndex ? 'active' : ''}`}>

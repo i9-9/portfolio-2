@@ -6,6 +6,8 @@
   --gris_claro: #b5b5b5;
   --blanco: #D8D8D8;
   --gris_oscuro: #262626;
+  --marquee-height: 500px; /* Adjust based on your marquee height */
+  --navbar-height: 100px; /* Adjust based on your navbar height */
 }
 
 .button {
@@ -355,7 +357,6 @@ html {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: transparent;
   color: var(--verde); /* Use your verde color variable */
   border: 1px solid ; /* Match border color with button */
   padding: 0.5rem 1rem;

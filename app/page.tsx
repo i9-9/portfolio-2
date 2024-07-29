@@ -4,7 +4,6 @@ import NameAnimation from "../components/NameAnimation";
 import Work from "../components/Work";
 import Hero from "../components/Hero2";
 import NavbarHome from "../components/NavbarHome";
-import Link from "next/link";
 import MyMarquee from "../components/MarqueeLanding";
 import Contacto from "../components/Contacto";
 

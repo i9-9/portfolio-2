@@ -36,7 +36,7 @@ const NameAnimation: React.FC<NameAnimationProps> = ({ text }) => {
   return (
     <Link href="/" passHref>
       <motion.h1
-        className="title pt-4 md:py-1 text-verde text-lg flex items-baseline font-supplySans cursor-pointer"
+        className="title md:py-1 text-verde text-lg flex items-baseline font-supplySans cursor-pointer"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}

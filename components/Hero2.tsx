@@ -5,8 +5,8 @@ import { IoChevronDown } from "react-icons/io5";
 
 const Hero: React.FC = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen px-4">
-      <div className="flex items-center justify-center pb-8 md:pb-32">
+    <div className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden h-[calc(100vh - var(--marquee-height) - var(--navbar-height))]">
+      <div className="flex items-center justify-center pb-8 md:pb-32 border-r border-gris_oscuro">
         <div className="text-left">
           <button className="pl-1 mb-2 text-md text-oscuro bg-claro underline flex items-center">
             Web Design
