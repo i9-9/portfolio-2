@@ -5,9 +5,9 @@ import NavbarHome from '../../../components/NavbarHome'
 
 const page = () => {
     return (
-        <div className='px-4'>
+        <div className=''>
             <NavbarHome />
-            <div className='grid md:grid-cols-2 py-3'>
+            <div className='grid md:grid-cols-2 py-3 px-4'>
                 <div className='order-2 md:order-1'>
                     <Image alt="image showing work Wrong Biennale pavilion 'So Far, So Near" src="/projects-sofar/sofar-1.png" height={650} width={650} />
                     <Image alt="image showing work Wrong Biennale pavilion 'So Far, So Near" src="/projects-sofar/sofar-2.png" height={650} width={650} />

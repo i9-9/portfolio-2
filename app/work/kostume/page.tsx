@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import NavbarHome from '../../../components/NavbarHome';
+import NameAnimation from '../../../components/NameAnimation'; // Import the NameAnimation component
 
 const Page = () => {
-    const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
     const images = [
         "/projects-landing/kostume/jul:24/1 - This is K.png",
@@ -18,13 +19,13 @@ const Page = () => {
         "/projects-landing/kostume/jul:24/7 - Desktop p.png",
     ];
 
-    const openModal = (index) => setSelectedImageIndex(index);
+    const openModal = (index: number) => setSelectedImageIndex(index);
     const closeModal = () => setSelectedImageIndex(null);
 
     return (
-        <div className='px-4'>
+        <div className=''>
             <NavbarHome />
-            <div className='grid md:grid-cols-2 py-3'>
+            <div className='grid md:grid-cols-2 py-3 px-4'>
                 <div className='order-2 md:order-1'>
                     {images.map((src, index) => (
                         <div key={index} onClick={() => openModal(index)}>
@@ -62,7 +63,7 @@ const Page = () => {
             {selectedImageIndex !== null && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-container">
-                        <button className="modal-close-btn bg-gris_claro" onClick={closeModal}>CLOSE</button>
+                        <button className="modal-close-btn bg-gris" onClick={closeModal}>CLOSE</button>
                         <div className="image-scroll-container">
                             {images.map((src, index) => (
                                 <div key={index} className={`image-item ${index === selectedImageIndex ? 'active' : ''}`}>
