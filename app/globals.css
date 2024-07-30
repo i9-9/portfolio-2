@@ -202,3 +202,32 @@ html {
   max-height: 80vh;
   object-fit: contain;
 }
+@keyframes slideInFromAbove {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.navbar-item {
+  animation: slideInFromAbove 0.5s ease-out forwards;
+}
+
+@keyframes slideInFromBelow {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.hero-item {
+  animation: slideInFromBelow 0.5s ease-out forwards;
+}

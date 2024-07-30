@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useState, useEffect } from "react";
 import NameAnimation from "./NameAnimation";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
@@ -7,7 +5,6 @@ import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 const NavbarHome = () => {
   const [navOpen, setNavOpen] = useState(false);
 
-  // Toggle navigation menu
   const handleNavToggle = () => {
     setNavOpen(prevState => {
       const newState = !prevState;
@@ -16,7 +13,6 @@ const NavbarHome = () => {
     });
   };
 
-  // Log navigation state for debugging
   useEffect(() => {
     console.log("NavbarHome rendered, navOpen:", navOpen);
   }, [navOpen]);
@@ -54,10 +50,10 @@ const NavbarHome = () => {
           />
         </div>
         <div className="flex flex-col items-center justify-center flex-grow space-y-8 mt-8">
-          <a className="text-4xl font-bold" href="/" onClick={handleNavToggle}>
+          <a className="text-4xl font-bold navbar-item" href="/" onClick={handleNavToggle}>
             INDEX
           </a>
-          <a className="text-4xl font-bold" href="/info" onClick={handleNavToggle}>
+          <a className="text-4xl font-bold navbar-item" href="/info" onClick={handleNavToggle}>
             INFO
           </a>
         </div>
@@ -67,10 +63,10 @@ const NavbarHome = () => {
       <header className="hidden md:flex items-center justify-between py-2 px-4 bg-transparent border-b border-solid border-gray-700">
         <NameAnimation text="IVAN NEVARES" />
         <div className="flex space-x-8">
-          <a className="text-lg hover:underline" href="/">
+          <a className="text-lg hover:underline navbar-item" href="/">
             INDEX
           </a>
-          <a className="text-lg hover:underline" href="/info">
+          <a className="text-lg hover:underline navbar-item" href="/info">
             INFO
           </a>
         </div>

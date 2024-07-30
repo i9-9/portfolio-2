@@ -16,7 +16,7 @@ const InfoPage = () => {
       <NavbarHome />
       <div className="grid md:grid-cols-2 px-4">
         <div>
-          <div className="flex justify-between mt-24 md:mt-2 pr-4 items-baseline">
+          <div className="flex justify-between mt-2 pr-4 items-baseline">
             <h3 className="text-3xl text-verde font-bold">Ivan Nevares</h3>
             <h4 className="text-md text-verde italic">Digital Design</h4>
           </div>
