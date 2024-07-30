@@ -11,7 +11,6 @@ const Page = () => {
     const images = [
         "/projects-landing/kostume/jul:24/1 - This is K.png",
         "/projects-landing/kostume/jul:24/2 - About.png",
-        "/projects-landing/kostume/jul:24/3 - Full Desktop2.png",
         "/projects-landing/kostume/jul:24/4 - Macbook mockup.png",
         "/projects-landing/kostume/jul:24/5 - Tablet.png",
         "/projects-landing/kostume/jul:24/6 - Mobile mockup.png",
