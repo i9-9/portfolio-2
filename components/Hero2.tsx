@@ -9,16 +9,16 @@ const Hero: React.FC = () => {
       <div className="flex items-center justify-center md:border-r border-gris_oscuro hero-item">
         <div className="text-left pt-4 md:pt-0">
           <div className="flex gap-1">
-            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item">
+            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item text-[12px]">
               Web Design
             </button>
-            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item">
+            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item text-[12px]">
               UX/UI
             </button>
-            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item">
+            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item text-[12px]">
               Mobile
             </button>
-            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item">
+            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item text-[12px]">
               Front-End Development
             </button>
           </div>
