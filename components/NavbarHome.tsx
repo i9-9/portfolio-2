@@ -1,6 +1,9 @@
+"use client"
+
 import React, { useState, useEffect } from "react";
 import NameAnimation from "./NameAnimation";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
+
 
 const NavbarHome = () => {
   const [navOpen, setNavOpen] = useState(false);
