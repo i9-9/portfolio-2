@@ -7,7 +7,7 @@ const Hero: React.FC = () => {
   return (
     <div id="hero" className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden h-[calc(100vh - var(--marquee-height) - var(--navbar-height))]">
       <div className="flex items-center justify-center md:border-r border-gris_oscuro">
-        <div className="text-left pt-2  md:pt-0">
+        <div className="text-left pt-4  md:pt-0">
           <div className="flex gap-1">
             <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro">
               Web Design
@@ -22,7 +22,7 @@ const Hero: React.FC = () => {
               Front-End Development
             </button>
           </div>
-          <h1 className="text-6xl md:text-6xl font-bold pb-2">
+          <h1 className="text-6xl md:text-6xl font-bold py-2">
             Creating unique digital identities with clarity and purpose
           </h1>
           <Link className='pointer' to='work' spy={true} smooth={true} offset={0} duration={500}>
