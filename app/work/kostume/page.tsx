@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import NavbarHome from '../../../components/NavbarHome';
-import NameAnimation from '../../../components/NameAnimation'; // Import the NameAnimation component
 
 const Page = () => {
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
@@ -28,8 +27,8 @@ const Page = () => {
             <div className='grid md:grid-cols-2 py-3 px-4'>
                 <div className='order-2 md:order-1'>
                     {images.map((src, index) => (
-                        <div key={index} onClick={() => openModal(index)}>
-                            <Image alt={`image ${index + 1}`} src={src} height={2800} width={1678} />
+                        <div key={index} onClick={() => openModal(index)} className="cursor-pointer">
+                            <Image alt={`image ${index + 1}`} src={src} height={280} width={167} layout="responsive" />
                         </div>
                     ))}
                 </div>
@@ -63,11 +62,18 @@ const Page = () => {
             {selectedImageIndex !== null && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-container">
-                        <button className="modal-close-btn bg-gris" onClick={closeModal}>CLOSE</button>
+                        <button className="modal-close-btn" onClick={closeModal}>CLOSE</button>
                         <div className="image-scroll-container">
                             {images.map((src, index) => (
                                 <div key={index} className={`image-item ${index === selectedImageIndex ? 'active' : ''}`}>
-                                    <Image src={src} alt={`image ${index + 1}`} layout="intrinsic" width={1200} height={800} />
+                                    <Image 
+                                        src={src} 
+                                        alt={`image ${index + 1}`} 
+                                        layout="responsive" 
+                                        width={1200} 
+                                        height={800} 
+                                        className="modal-image" 
+                                    />
                                 </div>
                             ))}
                         </div>
