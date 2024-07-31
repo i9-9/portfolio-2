@@ -5,7 +5,7 @@ import Link from 'next/link'
 const Contacto = () => {
   return (
     <div className=" px-4 pb-8">
-      <h3 className="text-xl text-verde py-4">
+      <h3 className="text-base text-verde py-4">
         We can either talk and discuss your project, or you can follow me up for
         future reference:
       </h3>

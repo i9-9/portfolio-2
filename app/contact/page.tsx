@@ -7,7 +7,7 @@ const page = () => {
   return (
     <div className="h-auto bg-repeat pb-28 min-h-screen px-4 py-20 md:py-0">
       <NavbarHome />
-      <h3 className="text-lg text-verde py-4">
+      <h3 className="text-md text-verde py-4">
         We can either talk and discuss your project, or you can follow me up for
         future reference:
       </h3>
