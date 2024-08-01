@@ -7,28 +7,21 @@ module.exports = {
   ],
   theme: {
     extend: {
-
-      backgroundImage: {
-        'hero-mesh': "url('/mesh.png')",
-        'hero-mesh2': "url('/mesh2.png')",
-        'hero-mesh3': "url('/mesh3.png')",
-        'hero-xl': "url('/mesh4.png')",
-        'mesh-5': "url('/mesh5.png')",
-        'hero-mesh4': "url('/SM-MESH.png')",
-        'hero-mesh5': "url('/MD-MESH.png')",
-        'hero-mesh6': "url('/XL-MESH.png')",
-        'diamond': "url('/diamond.png')"
-      },
       fontFamily: {
-        baseBlack: ['Base Neue', 'black'],
-        baseBold: ['Base Neue', 'bold'],
-        baseSemiBold: ['Base Neue', 'semibold'],
-        baseMedium: ['Base Neue', 'medium'],
-        baseRegular: ['Base Neue', 'regular'],
-        baseLight: ['Base Neue', 'light'],
         offBitBold: ['OffBit', 'bold'],
         supplySans: ['SupplySans', 'regular'],
         supplySansLight: ['SupplySans', 'lighter']
+      },
+      fontSize: {
+        'h1': ['61.04px', { lineHeight: '64px' }],
+        'h2': ['48.83px', { lineHeight: '58px' }],
+        'h3': ['39.06px', { lineHeight: '47px' }],
+        'h4': ['31.25px', { lineHeight: '38px' }],
+        'h5': ['25px', { lineHeight: '30px' }],
+        'h6': ['20px', { lineHeight: '24px' }],
+        'p': ['16px', { lineHeight: '24px' }],
+        'small': ['12.8px', { lineHeight: '18px' }],
+        'tiny': ['10.24px', { lineHeight: '14px' }],
       },
       colors: {
         'violeta': '#5226AA',

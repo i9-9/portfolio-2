@@ -17,10 +17,10 @@ const InfoPage = () => {
       <div className="grid md:grid-cols-2 px-4">
         <div>
           <div className="flex justify-between mt-2 pr-4 items-baseline">
-            <h3 className="text-3xl text-verde font-bold">Ivan Nevares</h3>
-            <h4 className="text-md text-verde italic">Digital Design</h4>
+            <h3 className="text-h3 text-verde font-bold">Ivan Nevares</h3>
+            <h4 className="text-p text-verde italic">Digital Design</h4>
           </div>
-          <div className="text-verde text-xs my-4 flex ">
+          <div className="text-verde text-small my-4 flex ">
             <div className="mr-2 bg-gris_oscuro text-gris_claro p-2 py-1">Web Design</div>
             <div className="mr-2 bg-gris_oscuro text-gris_claro p-2 py-1">UX/UI</div>
             <div className="bg-gris_oscuro text-gris_claro p-2 py-1">Front-End Development</div>
@@ -44,7 +44,7 @@ const InfoPage = () => {
               </button>
             </div>
             {language ? (
-              <p className="text-verde text-sm">
+              <p className="text-verde text-p tracking-wide ">
                 <br />
                 Designer with expertise in websites and applications, dedicated to crafting unique, modern, and tailored experiences.<br/><br/>
 Currently studying Graphic Design at the Universidad de Buenos Aires.<br/>
@@ -53,7 +53,7 @@ Web Designer at newtro.xyz.<br/>
 Available for freelance web projects.
               </p>
             ) : (
-              <p className="text-verde text-sm">
+              <p className="text-verde text-p tracking-wide">
                 <br />
                 Diseñador con experiencia en sitios web y aplicaciones, dedicado a crear experiencias únicas, modernas y personalizadas.<br/><br/>
 Actualmente estudiando Diseño Gráfico en la Universidad de Buenos Aires.<br/>

@@ -17,7 +17,7 @@ const MyMarquee = () => {
         play={true}
         pauseOnHover={false}
         gradient={false}
-        className="flex justify-center items-center border bg-gris_claro text-black border-verde text-sm overflow-hidden uppercase"
+        className="flex justify-center items-center border bg-gris_claro text-black border-verde text-p overflow-hidden uppercase"
         style={{ width: "100%" }} // Ensure full width responsiveness
       >
         <div className="flex justify-center items-center w-full">

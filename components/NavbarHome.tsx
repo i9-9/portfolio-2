@@ -63,13 +63,13 @@ const NavbarHome = () => {
       </div>
 
       {/* Desktop Navbar */}
-      <header className="hidden md:flex items-center justify-between py-2 px-4 bg-transparent border-b border-solid border-gray-700">
+      <header className="hidden md:flex items-baseline justify-between py-2 px-4 bg-transparent border-b border-solid border-gray-700">
         <NameAnimation text="IVAN NEVARES" />
         <div className="flex space-x-8">
-          <a className="text-lg hover:underline navbar-item" href="/">
+          <a className="text-h6 hover-underline-animation navbar-item" href="/">
             INDEX
           </a>
-          <a className="text-lg hover:underline navbar-item" href="/info">
+          <a className="text-h6 hover-underline-animation navbar-item" href="/info">
             INFO
           </a>
         </div>

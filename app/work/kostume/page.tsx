@@ -32,19 +32,19 @@ const Page = () => {
                     ))}
                 </div>
                 <div>
-                    <h1 className='text-verde text-7xl font-bold'>Kostüme</h1>
-                    <p className='text-verde my-4'>
-                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-xs uppercase'>
+                    <h1 className='text-verde text-h2 font-bold'>Kostüme</h1>
+                    <p className='text-verde my-4 text-p'>
+                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-small uppercase'>
                             E-shop 
                         </span>
                         <span className='spacer'></span>
-                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-xs uppercase'>
+                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-small uppercase'>
                             Web design
                         </span>
                         <br /><br />
                         For C7 Studio<br />
                         Web development: 
-                        <Link className='underline' href='https://www.1tbflor.com/'>
+                        <Link className=' underline' href='https://www.1tbflor.com/'>
                            <br/> Florencia Gomez
                         </Link>
                         <br /><br />

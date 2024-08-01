@@ -7,9 +7,9 @@ const Work = () => {
     <div id='work' className='h-auto pt-2 px-4'>
       <div className=''>
         <Link href="/work/kostume">
-          <div className='flex justify-between items-center text-verde text-sm'>
-            <h2 className=''>Kostume</h2>
-            <h5>Web Design</h5>
+          <div className='flex justify-between items-baseline text-verde text-sm'>
+            <h2 className='text-p'>Kostüme</h2>
+            <h5 className=' text-gris_oscuro text-small'>Web Design</h5>
           </div>
           <Marquee
             speed={25}
@@ -29,9 +29,9 @@ const Work = () => {
         </Link>
 
         <Link href="/work/c7">
-          <div className='flex justify-between items-center text-verde text-sm'>
-            <h2 className=''>C7 Studio</h2>
-            <h5>Web Design & Development</h5>
+          <div className='flex justify-between items-baseline text-verde text-sm'>
+            <h2 className='text-p'>C7 Studio</h2>
+            <h5 className='text-small'>Web Design & Development</h5>
           </div>
           <Marquee
             speed={25}
@@ -52,9 +52,9 @@ const Work = () => {
         </Link>
 
         <Link href="/work/sofar">
-          <div className='flex justify-between items-center text-verde text-sm'>
-            <h2 className=''>So Far, So Near</h2>
-            <h5>Web Design</h5>
+          <div className='flex justify-between items-baseline text-verde text-sm'>
+            <h2 className='text-p'>So Far, So Near</h2>
+            <h5 className='text-small'>Web Design</h5>
           </div>
           <Marquee
             speed={25}
