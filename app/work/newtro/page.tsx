@@ -1,30 +1,34 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import NavbarHome from '../../../components/NavbarHome';
 
 const Page = () => {
-    const [selectedImageIndex, setSelectedImageIndex] = useState(null);
-
     const images = [
-        "/newtro/0_START.png",
-        "/newtro/1_MACBOOK.png",
-        "/newtro/2_FULL.png",
+        "/newtro/1.png",
+        "/newtro/2.png",
+        "/newtro/3.png",
+        "/newtro/4.png",
+        "/newtro/5.png",
+        "/newtro/6.png",
+        "/newtro/7.png",
     ];
 
-    const openModal = (index) => setSelectedImageIndex(index);
-    const closeModal = () => setSelectedImageIndex(null);
-
     return (
-        <div className='px-4'>
+        <div className=''>
             <NavbarHome />
-            <div className='grid md:grid-cols-2 py-3'>
+            <div className='grid md:grid-cols-2 py-3 px-4'>
                 <div className='order-2 md:order-1'>
                     {images.map((src, index) => (
-                        <div key={index} onClick={() => openModal(index)}>
-                            <Image alt={`image ${index + 1}`} src={src} height={2800} width={1678} />
+                        <div key={index}>
+                            <Image 
+                                alt={`image ${index + 1}`} 
+                                src={src} 
+                                height={2800} 
+                                width={1678} 
+                            />
                         </div>
                     ))}
                 </div>
@@ -50,9 +54,7 @@ const Page = () => {
                         </Link>
                         <br/>
                         <span>
-
-                        <br/>Newtro Arts aims to promote, educate and introduce latin american artists and cultural agents to blockchain technology.
-
+                        <br/>Newtro Arts aims to promote, educate, and introduce Latin American artists and cultural agents to blockchain technology.
                         </span>
                         <br /><br />
                         <Link href="https://www.newtro.xyz/">
@@ -64,21 +66,6 @@ const Page = () => {
                     </p>
                 </div>
             </div>
-
-            {selectedImageIndex !== null && (
-                <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-container">
-                        <button className="modal-close-btn" onClick={closeModal}>CLOSE</button>
-                        <div className="image-scroll-container">
-                            {images.map((src, index) => (
-                                <div key={index} className={`image-item ${index === selectedImageIndex ? 'active' : ''}`}>
-                                    <Image src={src} alt={`image ${index + 1}`} layout="intrinsic" width={1200} height={800} />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

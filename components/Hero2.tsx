@@ -5,7 +5,7 @@ import { IoChevronDown } from "react-icons/io5";
 
 const Hero: React.FC = () => {
   return (
-    <div id="hero" className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden ]">
+    <div id="hero" className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden">
       <div className="flex items-center justify-center md:border-r border-gris_oscuro hero-item">
         <div className="text-left pt-4 md:pt-0">
           <div className="flex gap-1">
@@ -22,7 +22,7 @@ const Hero: React.FC = () => {
               Front-End Development
             </button>
           </div>
-          <h1 className="text-h1 font-bold py-2 hero-item tracking-tight">
+          <h1 className="text-h1 font-bold py-2 hero-item tracking-tight ">
             Creating unique digital identities with clarity and purpose
           </h1>
           <Link className='pointer hero-item' to='work' spy={true} smooth={true} offset={0} duration={500}>
@@ -33,17 +33,17 @@ const Hero: React.FC = () => {
           </Link>
         </div>
       </div>
-      <div className="flex items-center justify-center pb-8 md:pb-32 hero-item">
+      <div className="flex items-center justify-center pb-8 md:pb-32 hero-item	">
         <Link href='https://eldesenfreno.vercel.app'>
-          <Image
-            src="/projects-eldesenfreno/el_desenfreno_macbook_mockup.png"
-            alt="Hero Image"
-            width={1000}
-            height={1000}
-            className="object-contain"
-          />
-        </Link>
+        <Image
+  src="/projects-eldesenfreno/el_desenfreno_macbook_mockup.png"
+  alt="Hero Image"
+  width={1000}
+  height={1000}
+  className="object-contain w-3/4 md:w-auto custom-shadow"
+/>
 
+        </Link>
       </div>
     </div>
   );

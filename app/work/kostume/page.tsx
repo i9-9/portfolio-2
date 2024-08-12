@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import NavbarHome from '../../../components/NavbarHome';
 
 const Page = () => {
-    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-
     const images = [
         "/projects-landing/kostume/jul:24/1 - This is K.png",
         "/projects-landing/kostume/jul:24/2 - About.png",
@@ -17,17 +15,20 @@ const Page = () => {
         "/projects-landing/kostume/jul:24/7 - Desktop p.png",
     ];
 
-    const openModal = (index: number) => setSelectedImageIndex(index);
-    const closeModal = () => setSelectedImageIndex(null);
-
     return (
         <div className=''>
             <NavbarHome />
             <div className='grid md:grid-cols-2 py-3 px-4'>
                 <div className='order-2 md:order-1'>
                     {images.map((src, index) => (
-                        <div key={index} onClick={() => openModal(index)} className="cursor-pointer">
-                            <Image alt={`image ${index + 1}`} src={src} height={280} width={167} layout="responsive" />
+                        <div key={index} className="cursor-pointer">
+                            <Image 
+                                alt={`image ${index + 1}`} 
+                                src={src} 
+                                height={280} 
+                                width={167} 
+                                layout="responsive" 
+                            />
                         </div>
                     ))}
                 </div>
@@ -57,28 +58,6 @@ const Page = () => {
                     </p>
                 </div>
             </div>
-
-            {selectedImageIndex !== null && (
-                <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-container">
-                        <button className="modal-close-btn" onClick={closeModal}>CLOSE</button>
-                        <div className="image-scroll-container">
-                            {images.map((src, index) => (
-                                <div key={index} className={`image-item ${index === selectedImageIndex ? 'active' : ''}`}>
-                                    <Image 
-                                        src={src} 
-                                        alt={`image ${index + 1}`} 
-                                        layout="responsive" 
-                                        width={1200} 
-                                        height={800} 
-                                        className="modal-image" 
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
