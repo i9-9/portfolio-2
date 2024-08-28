@@ -21,22 +21,22 @@ const InfoPage = () => {
             <h4 className="text-p text-verde italic">Digital Design</h4>
           </div>
           <div className="text-verde text-small my-4 flex ">
-            <div className="mr-2 bg-gris_oscuro text-gris_claro p-2 py-1">Web Design</div>
-            <div className="mr-2 bg-gris_oscuro text-gris_claro p-2 py-1">UX/UI</div>
-            <div className="bg-gris_oscuro text-gris_claro p-2 py-1">Front-End Development</div>
+            <div className="mr-2 bg-gris_oscuro text-gris_claro p-2 py-1 rounded-sm">Web Design</div>
+            <div className="mr-2 bg-gris_oscuro text-gris_claro p-2 py-1 rounded-sm">UX/UI</div>
+            <div className="bg-gris_oscuro text-gris_claro p-2 py-1 rounded-sm">Front-End Development</div>
           </div>
           <hr className="border-gris_oscuro" />
           <div className="transition-all duration-700 mt-4">
             <div className="flex transition-all duration-700">
               <button
-                className={`text-sm font-bold border border-verde p-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-700 ${!language ? 'text-verde/25' : 'text-verde'}`}
+                className={`rounded-md text-sm font-bold shadow-sm border-verde p-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-700 ${!language ? 'text-verde/25' : 'text-verde'}`}
                 onClick={!language ? handleLanguage : undefined}
                 style={{ minWidth: '40px' }}
               >
                 EN
               </button>
               <button
-                className={`text-sm font-bold border border-verde p-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-700 ${language ? 'text-verde/25' : 'text-verde'}`}
+                className={`rounded-md text-sm font-bold shadow-sm border-verde p-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-700 ${language ? 'text-verde/25' : 'text-verde'}`}
                 onClick={language ? handleLanguage : undefined}
                 style={{ minWidth: '40px', marginLeft: '8px' }}
               >

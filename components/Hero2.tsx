@@ -5,20 +5,20 @@ import { IoChevronDown } from "react-icons/io5";
 
 const Hero: React.FC = () => {
   return (
-    <div id="hero" className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden">
+    <div id="hero" style={{ height: 'calc(100vh - 4rem - 2.5rem)' }}  className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden">
       <div className="flex items-center justify-center md:border-r border-gris_oscuro hero-item">
         <div className="text-left pt-4 md:pt-0">
           <div className="flex gap-1">
-            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item text-small">
+            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro  flex items-center text-gris_oscuro hero-item text-small rounded-sm">
               Web Design
             </button>
-            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item text-small">
+            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro  flex items-center text-gris_oscuro hero-item text-small rounded-sm">
               UX/UI
             </button>
-            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item text-small">
+            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro  flex items-center text-gris_oscuro hero-item text-small rounded-sm">
               Mobile
             </button>
-            <button className="px-1 mb-2 text-md text-oscuro bg-gris_claro underline flex items-center text-gris_oscuro hero-item text-small">
+            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro  flex items-center text-gris_oscuro hero-item text-small rounded-sm">
               Front-End Development
             </button>
           </div>
@@ -26,7 +26,7 @@ const Hero: React.FC = () => {
             Creating unique digital identities with clarity and purpose
           </h1>
           <Link className='pointer hero-item' to='work' spy={true} smooth={true} offset={0} duration={500}>
-            <button className="p-2 mt-4 border-b border-verde border-0 border-b-[0.5px] hover:bg-[#0E0E0E]/30 hover:text-gris_claro hover:bg-verde transition-all duration-700 flex items-center animate-pulse text-p">
+            <button className="rounded-md p-2 mt-4 border-b border-verde border-0 border-b-[0.5px] hover:bg-[#0E0E0E]/30 hover:text-gris_claro hover:bg-verde transition-all duration-700 flex items-center animate-pulse text-p">
               Selected Work
               <IoChevronDown className="ml-2 text-#262626" />
             </button>
