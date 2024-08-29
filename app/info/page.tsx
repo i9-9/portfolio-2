@@ -50,7 +50,8 @@ const InfoPage = () => {
 Currently studying Graphic Design at the Universidad de Buenos Aires.<br/>
 Sound Technician, trained at TECSON, Buenos Aires.<br/><br/>
 Web Designer at newtro.xyz.<br/>
-Available for freelance web projects.
+Available for freelance web projects.<br/><br/>  If you have any questions, feel free to <a href="mailto:ivannevares9@gmail.com" className="text-blue-500 underline">send me an email</a>.
+
               </p>
             ) : (
               <p className="text-verde text-p tracking-wide">
@@ -60,7 +61,11 @@ Actualmente estudiando Diseño Gráfico en la Universidad de Buenos Aires.<br/>
 Técnico en Sonido, formado en TECSON, Buenos Aires.<br/><br/>
 Diseñador Web en newtro.xyz.<br/>
 Disponible para proyectos web freelance.
+<br/>
+<br/>  Si tienes alguna pregunta, no dudes en <a href="mailto:ivannevares9@gmail.com" className="text-blue-500 underline">enviarme un correo</a>.
+
               </p>
+
             )}
           </div>
         </div>

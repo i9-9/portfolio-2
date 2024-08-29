@@ -9,11 +9,10 @@ const Page = () => {
     const images = [
         "/newtro/1.png",
         "/newtro/2.png",
-        "/newtro/3.png",
-        "/newtro/4.png",
-        "/newtro/5.png",
-        "/newtro/6.png",
-        "/newtro/7.png",
+        "/newtro/three.png",
+        "/newtro/four.png",
+        "/newtro/one.png",
+        "/newtro/two.png",
     ];
 
     return (
@@ -35,12 +34,12 @@ const Page = () => {
                 <div>
                     <h1 className='text-verde text-7xl font-bold'>Newtro</h1>
                     <p className='text-verde my-4'>
-                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-xs uppercase'>
+                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-xs uppercase rounded-sm shadow-sm'>
                             W3B
                         </span>
                         <span className='spacer'></span>
-                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-xs uppercase'>
-                            Web design
+                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-xs uppercase rounded-sm shadow-sm'>
+                            UX/UI
                         </span>
                         <br /><br />
                         
@@ -49,8 +48,11 @@ const Page = () => {
                            <br/> Florencia Gomez
                         </Link>
                         <br/><br/>Back-End Development
-                        <Link className='underline' href='https://www.1tbflor.com/'>
+                        <Link className='underline' href=''>
                            <br/> Charlie Finos
+                        </Link>
+                        <Link className='underline' href='https://github.com/SweetmanTech'>
+                           <br/> Sweetman
                         </Link>
                         <br/>
                         <span>
@@ -58,10 +60,10 @@ const Page = () => {
                         </span>
                         <br /><br />
                         <Link href="https://www.newtro.xyz/">
-                            <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000 mr-2'>LIVE SITE</button>
+                            <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000 mr-2 rounded-sm '>LIVE SITE</button>
                         </Link>
                         <Link href="https://www.behance.net/gallery/203848481/Kostueme">
-                            <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000'>BEHANCE</button>
+                            <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000 rounded-sm '>BEHANCE</button>
                         </Link>
                     </p>
                 </div>

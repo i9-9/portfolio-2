@@ -35,11 +35,11 @@ const Page = () => {
                 <div>
                     <h1 className='text-verde text-h2 font-bold'>Kostüme</h1>
                     <p className='text-verde my-4 text-p'>
-                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-small uppercase'>
+                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-small uppercase rounded-sm shadow-sm'>
                             E-shop 
                         </span>
                         <span className='spacer'></span>
-                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-small uppercase'>
+                        <span className='text-gris_claro bg-gris_oscuro p-1 px-2 text-small uppercase rounded-sm shadow-sm'>
                             Web design
                         </span>
                         <br /><br />
@@ -50,10 +50,10 @@ const Page = () => {
                         </Link>
                         <br /><br />
                         <Link href="https://www.kostumeweb.net/">
-                            <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000 mr-2'>LIVE SITE</button>
+                            <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000 mr-2 rounded-sm'>LIVE SITE</button>
                         </Link>
                         <Link href="https://www.behance.net/gallery/203848481/Kostueme">
-                            <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000'>BEHANCE</button>
+                            <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000 rounded-sm'>BEHANCE</button>
                         </Link>
                     </p>
                 </div>
