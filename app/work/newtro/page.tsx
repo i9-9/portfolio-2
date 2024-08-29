@@ -13,6 +13,7 @@ const Page = () => {
         "/newtro/four.png",
         "/newtro/one.png",
         "/newtro/two.png",
+        
     ];
 
     return (
@@ -27,6 +28,7 @@ const Page = () => {
                                 src={src} 
                                 height={2800} 
                                 width={1678} 
+                                className='rounded-md'
                             />
                         </div>
                     ))}
@@ -62,9 +64,7 @@ const Page = () => {
                         <Link href="https://www.newtro.xyz/">
                             <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000 mr-2 rounded-sm '>LIVE SITE</button>
                         </Link>
-                        <Link href="https://www.behance.net/gallery/203848481/Kostueme">
-                            <button className='btn border border-verde px-2 py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-1000 rounded-sm '>BEHANCE</button>
-                        </Link>
+
                     </p>
                 </div>
             </div>

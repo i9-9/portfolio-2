@@ -44,14 +44,14 @@ const Hero: React.FC = () => {
           </Link>
         </div>
       </div>
-      <div className="flex items-center justify-center pb-8 md:pb-32 hero-item	">
+      <div className="flex items-center justify-center hero-item ">
         <a target="_blank" href="https://eldesenfreno-one.vercel.app">
           <Image
-            src="/projects-eldesenfreno/el_desenfreno_macbook_mockup.png"
+            src="/projects-eldesenfreno/eight.png"
             alt="Hero Image"
             width={1000}
             height={1000}
-            className="object-contain w-3/4 md:w-auto custom-shadow"
+            className="object-contain custom-shadow rounded-md "
           />
         </a>
       </div>

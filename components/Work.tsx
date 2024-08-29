@@ -51,10 +51,10 @@ const Work = () => {
           </Marquee>
         </Link>
 
-        <Link href="/work/sofar">
+        <Link href="/work/eldesenfreno">
           <div className='flex justify-between items-baseline text-verde text-sm'>
             <h2 className='text-p'>El Desenfreno</h2>
-            <h5 className='text-small'>Web Design</h5>
+            <h5 className='text-small'>Web Design & Development</h5>
           </div>
           <Marquee
             speed={25}
