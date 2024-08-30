@@ -29,7 +29,7 @@ const Page = () => {
                                 height={280} 
                                 width={167} 
                                 layout="responsive" 
-                                className='rounded-md'
+                                className='rounded-md mb-1'
                             />
                         </div>
                     ))}

@@ -27,7 +27,8 @@ const Page = () => {
                                 src={src} 
                                 height={280} 
                                 width={167} 
-                                layout="responsive" 
+                                layout="responsive"
+                                className='mb-1 rounded-md' 
                             />
                         </div>
                     ))}
