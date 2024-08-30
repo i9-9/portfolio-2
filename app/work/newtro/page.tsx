@@ -28,7 +28,7 @@ const Page = () => {
                                 src={src} 
                                 height={2800} 
                                 width={1678} 
-                                className='rounded-md'
+                                className='rounded-md mb-1'
                             />
                         </div>
                     ))}

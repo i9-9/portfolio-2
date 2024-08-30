@@ -9,7 +9,7 @@ import Contacto from "../components/Contacto";
 const Home: React.FC = () => {
   return (
     <div className="mx-auto">
-      <div className="">
+      <div>
         <MyMarquee />
       </div>
       <NavbarHome />

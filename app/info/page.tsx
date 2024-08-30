@@ -46,7 +46,7 @@ const InfoPage = () => {
             {language ? (
               <p className="text-verde text-p tracking-wide ">
                 <br />
-                Designer with expertise in websites and applications, dedicated to crafting unique, modern, and tailored experiences.<br/><br/>
+                Designer with experience in websites and applications, dedicated to crafting unique, modern, and tailored experiences.<br/><br/>
 Currently studying Graphic Design at the Universidad de Buenos Aires.<br/>
 Sound Technician, trained at TECSON, Buenos Aires.<br/><br/>
 Web Designer at newtro.xyz.<br/>

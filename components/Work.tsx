@@ -16,7 +16,7 @@ const Work = () => {
             play={true}
             pauseOnHover={false}
             gradient={false}
-            className='marquee border border-t-verde border-b-verde py-1 mb-2 bg-black'
+            className='marquee border border-t-verde border-b-verde py-1 mb-2 bg-[#070707]'
           >
             {Array.from({ length: 6 }).map((_, i) => (
               <>

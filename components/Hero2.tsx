@@ -44,7 +44,7 @@ const Hero: React.FC = () => {
           </Link>
         </div>
       </div>
-      <div className="flex items-center justify-center hero-item ">
+      <div className="flex items-center justify-center hero-item pb-10">
         <a target="_blank" href="https://eldesenfreno-one.vercel.app">
           <Image
             src="/projects-eldesenfreno/eight.png"
