@@ -1,4 +1,3 @@
-
 import React from "react";
 import Link from 'next/link'
 import NavbarHome from "../../components/NavbarHome";
@@ -17,9 +16,9 @@ const page = () => {
             <h4 className="text-3xl md:text-xl font-bold">EMAIL</h4>
           </div>
         </Link>
-        <Link href='https://www.behance.net/ivan_nevares'>
+        <Link href='https://dribbble.com/i9i9'>
           <div className=" text-verde h-fit py-1 hover:bg-gris_oscuro hover:text-gris_claro transition-all duration-700 border border-gris_oscuro">
-            <h4 className="text-3xl md:text-xl font-bold">BEHANCE</h4>
+            <h4 className="text-3xl md:text-xl font-bold">DRIBBBLE</h4>
           </div>
         </Link>
         <Link href='https://github.com/i9-9'>

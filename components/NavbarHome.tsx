@@ -69,19 +69,19 @@ const NavbarHome = () => {
       </div>
 
       {/* Desktop Navbar */}
-      <header className="hidden md:flex items-baseline justify-between py-2 px-4 bg-transparent border-b border-solid border-gray-700">
+      <header className="hidden md:flex items-center justify-between py-2 px-4 bg-transparent border-b border-solid border-gray-700">
         <div className="flex items-center">
           <Image src="/logo.png" alt="Logo" width={30} height={30} className="mr-2" />
           <NameAnimation text="IVAN NEVARES" />
         </div>
-        <div className="flex space-x-8">
+        <nav className="flex items-center space-x-8">
           <a className="text-h6 hover-underline-animation navbar-item" href="/">
             INDEX
           </a>
           <a className="text-h6 hover-underline-animation navbar-item" href="/info">
             INFO
           </a>
-        </div>
+        </nav>
       </header>
     </div>
   );
