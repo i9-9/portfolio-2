@@ -7,8 +7,7 @@ const Hero: React.FC = () => {
   return (
     <div
       id="hero"
-      style={{ minHeight: "calc(100vh - 4rem - 2.5rem)" }}
-      className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden"
+      className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden min-h-screen"
     >
       <div className="flex items-center justify-center md:border-r border-gris_oscuro hero-item">
         <div className="text-left pt-4 md:pt-0">
@@ -44,7 +43,7 @@ const Hero: React.FC = () => {
           </Link>
         </div>
       </div>
-      <div className="flex items-center justify-center hero-item pb-10 md:pb-0">
+      <div className="flex items-center justify-center hero-item py-10 md:py-0">
         <a target="_blank" href="https://eldesenfreno-one.vercel.app" className="w-full md:w-auto">
           <Image
             src="/projects-eldesenfreno/eight.png"
