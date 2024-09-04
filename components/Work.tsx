@@ -1,3 +1,4 @@
+import React from 'react';
 import Image from 'next/image';
 import Marquee from "react-fast-marquee";
 import Link from 'next/link';
@@ -19,11 +20,11 @@ const Work = () => {
             className='marquee border border-t-verde border-b-verde py-1 mb-2 bg-[#070707]'
           >
             {Array.from({ length: 6 }).map((_, i) => (
-              <>
-                <Image key={i * 3 + 1} className='marquee-image' src='/projects-landing/kostume/jul:24/1 - This is K.png' alt='kostume project' width={450} height={354} />
-                <Image key={i * 3 + 2} className='marquee-image' src='/projects-landing/kostume/jul:24/4 - Macbook mockup.png' alt='kostume project' width={450} height={354} />
-                <Image key={i * 3 + 3} className='marquee-image' src='/projects-landing/kostume/jul:24/6 - Mobile mockup.png' alt='kostume project' width={450} height={354} />
-              </>
+              <React.Fragment key={`kostume-${i}`}>
+                <Image className='marquee-image' src='/projects-landing/kostume/jul:24/1 - This is K.png' alt='kostume project' width={450} height={354} />
+                <Image className='marquee-image' src='/projects-landing/kostume/jul:24/4 - Macbook mockup.png' alt='kostume project' width={450} height={354} />
+                <Image className='marquee-image' src='/projects-landing/kostume/jul:24/6 - Mobile mockup.png' alt='kostume project' width={450} height={354} />
+              </React.Fragment>
             ))}
           </Marquee>
         </Link>
@@ -41,12 +42,12 @@ const Work = () => {
             className='marquee border border-t-verde border-b-verde py-1 mb-2'
           >
             {Array.from({ length: 6 }).map((_, i) => (
-              <>
-                <Image key={i * 4 + 1} className='marquee-image' src='/newtro/one.png' alt='c7 studio project' width={450} height={354} />
-                <Image key={i * 4 + 2} className='marquee-image' src='/newtro/two.png' alt='c7 studio project' width={450} height={354} />
-                <Image key={i * 4 + 3} className='marquee-image' src='/newtro/three.png' alt='c7 studio project' width={450} height={354} />
-                <Image key={i * 4 + 4} className='marquee-image' src='/newtro/four.png' alt='c7 studio project' width={450} height={354} />
-              </>
+              <React.Fragment key={`newtro-${i}`}>
+                <Image className='marquee-image' src='/newtro/one.png' alt='c7 studio project' width={450} height={354} />
+                <Image className='marquee-image' src='/newtro/two.png' alt='c7 studio project' width={450} height={354} />
+                <Image className='marquee-image' src='/newtro/three.png' alt='c7 studio project' width={450} height={354} />
+                <Image className='marquee-image' src='/newtro/four.png' alt='c7 studio project' width={450} height={354} />
+              </React.Fragment>
             ))}
           </Marquee>
         </Link>
@@ -64,14 +65,14 @@ const Work = () => {
             className='marquee border border-t-verde border-b-verde py-1 mb-2'
           >
             {Array.from({ length: 6 }).map((_, i) => (
-              <>
-                <Image key={i * 4 + 1} className='marquee-image' src='/projects-eldesenfreno/one.png' alt='So Far, So Near project' width={450} height={354} />
-                <Image key={i * 4 + 2} className='marquee-image' src='/projects-eldesenfreno/two.png' alt='So Far, So Near project' width={450} height={354} />
-                <Image key={i * 4 + 3} className='marquee-image' src='/projects-eldesenfreno/three.png' alt='So Far, So Near project' width={450} height={354} />
-                <Image key={i * 4 + 4} className='marquee-image' src='/projects-eldesenfreno/four.png' alt='So Far, So Near project' width={450} height={354} />
-                <Image key={i * 4 + 4} className='marquee-image' src='/projects-eldesenfreno/five.png' alt='So Far, So Near project' width={450} height={354} />
-                <Image key={i * 4 + 4} className='marquee-image' src='/projects-eldesenfreno/six.png' alt='So Far, So Near project' width={450} height={354} />
-              </>
+              <React.Fragment key={`eldesenfreno-${i}`}>
+                <Image className='marquee-image' src='/projects-eldesenfreno/one.png' alt='So Far, So Near project' width={450} height={354} />
+                <Image className='marquee-image' src='/projects-eldesenfreno/two.png' alt='So Far, So Near project' width={450} height={354} />
+                <Image className='marquee-image' src='/projects-eldesenfreno/three.png' alt='So Far, So Near project' width={450} height={354} />
+                <Image className='marquee-image' src='/projects-eldesenfreno/four.png' alt='So Far, So Near project' width={450} height={354} />
+                <Image className='marquee-image' src='/projects-eldesenfreno/five.png' alt='So Far, So Near project' width={450} height={354} />
+                <Image className='marquee-image' src='/projects-eldesenfreno/six.png' alt='So Far, So Near project' width={450} height={354} />
+              </React.Fragment>
             ))}
           </Marquee>
         </Link>
