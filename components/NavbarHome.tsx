@@ -1,9 +1,9 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import NameAnimation from "./NameAnimation";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-
 
 const NavbarHome = () => {
   const [navOpen, setNavOpen] = useState(false);
@@ -24,7 +24,10 @@ const NavbarHome = () => {
     <div>
       {/* Mobile Navbar */}
       <div className="md:hidden flex items-center justify-between border-b border-solid border-gray-700 px-4 py-2 bg-transparent">
-        <NameAnimation text="IVAN NEVARES" />
+        <div className="flex items-center">
+          <Image src="/logo.png" alt="Logo" width={30} height={30} className="mr-2" />
+          <NameAnimation text="IVAN NEVARES" />
+        </div>
         <div className="relative z-[1000]">
           {!navOpen && (
             <AiOutlineMenu
@@ -43,7 +46,10 @@ const NavbarHome = () => {
         className={`fixed inset-0 bg-gris_claro z-20 flex flex-col transition-transform duration-300 ${navOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="w-full px-4 py-2 flex justify-between items-center border-b border-gray-700">
-          <NameAnimation text="IVAN NEVARES" />
+          <div className="flex items-center">
+            <Image src="/logo.png" alt="Logo" width={30} height={30} className="mr-2" />
+            <NameAnimation text="IVAN NEVARES" />
+          </div>
           <AiOutlineClose
             size={20}
             onClick={handleNavToggle}
@@ -64,7 +70,10 @@ const NavbarHome = () => {
 
       {/* Desktop Navbar */}
       <header className="hidden md:flex items-baseline justify-between py-2 px-4 bg-transparent border-b border-solid border-gray-700">
-        <NameAnimation text="IVAN NEVARES" />
+        <div className="flex items-center">
+          <Image src="/logo.png" alt="Logo" width={30} height={30} className="mr-2" />
+          <NameAnimation text="IVAN NEVARES" />
+        </div>
         <div className="flex space-x-8">
           <a className="text-h6 hover-underline-animation navbar-item" href="/">
             INDEX

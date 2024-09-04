@@ -7,26 +7,25 @@ const Hero: React.FC = () => {
   return (
     <div
       id="hero"
-      style={{ height: "calc(100vh - 4rem - 2.5rem)" }}
-      className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden"
+      className="grid grid-cols-1 md:grid-cols-2 px-4 border-b border-gris_oscuro overflow-hidden min-h-screen"
     >
       <div className="flex items-center justify-center md:border-r border-gris_oscuro hero-item">
         <div className="text-left pt-4 md:pt-0">
-          <div className="flex gap-1">
-            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro  flex items-center text-gris_oscuro hero-item text-small rounded-sm">
+          <div className="flex gap-1 flex-wrap">
+            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
               Web Design
             </button>
-            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro  flex items-center text-gris_oscuro hero-item text-small rounded-sm">
+            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
               UX/UI
             </button>
-            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro  flex items-center text-gris_oscuro hero-item text-small rounded-sm">
+            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
               Mobile
             </button>
-            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro  flex items-center text-gris_oscuro hero-item text-small rounded-sm">
+            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
               Front-End Development
             </button>
           </div>
-          <h1 className="text-h1 font-bold py-2 hero-item tracking-tight ">
+          <h1 className="text-h1 font-bold py-2 hero-item tracking-tight">
             Creating unique digital identities with clarity and purpose
           </h1>
           <Link
@@ -44,14 +43,14 @@ const Hero: React.FC = () => {
           </Link>
         </div>
       </div>
-      <div className="flex items-center justify-center hero-item pb-10">
-        <a target="_blank" href="https://eldesenfreno-one.vercel.app">
+      <div className="flex items-center justify-center hero-item py-10 md:py-0">
+        <a target="_blank" href="https://eldesenfreno-one.vercel.app" className="w-full md:w-auto">
           <Image
             src="/projects-eldesenfreno/eight.png"
             alt="Hero Image"
             width={1000}
             height={1000}
-            className="object-contain custom-shadow rounded-md "
+            className="object-contain custom-shadow rounded-md w-full md:w-auto"
           />
         </a>
       </div>
