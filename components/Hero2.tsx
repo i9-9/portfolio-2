@@ -36,7 +36,7 @@ const Hero: React.FC = () => {
             offset={0}
             duration={500}
           >
-            <button className="rounded-md p-2 mt-4 border-verde border-0 border-b-[0.5px] hover:bg-[#0E0E0E]/30 hover:text-gris_claro hover:bg-verde transition-all duration-700 flex items-center animate-pulse text-p">
+            <button className="rounded-md p-2 mt-4 border-verde border-1 border-black hover:bg-[#0E0E0E]/30 hover:text-gris_claro hover:bg-verde transition-all duration-700 flex items-center animate-pulse text-p">
               Selected Work
               <IoChevronDown className="ml-2 text-#262626" />
             </button>
