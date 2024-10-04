@@ -51,23 +51,31 @@ Currently studying Graphic Design at the Universidad de Buenos Aires.<br/>
 Sound Technician, trained at TECSON, Buenos Aires.<br/><br/>
 Web Designer at newtro.xyz.<br/>
 Available for freelance web projects.<br/><br/>  If you have any questions, feel free to <a href="mailto:ivannevares9@gmail.com" className="text-blue-500 underline">send me an email</a>.
-
               </p>
             ) : (
               <p className="text-verde text-p tracking-wide">
                 <br />
                 Diseñador con experiencia en sitios web y aplicaciones, dedicado a crear experiencias únicas, modernas y personalizadas.<br/><br/>
-Actualmente estudiando Diseño Gráfico en la Universidad de Buenos Aires.<br/>
-Técnico en Sonido, formado en TECSON, Buenos Aires.<br/><br/>
-Diseñador Web en newtro.xyz.<br/>
-Disponible para proyectos web freelance.
-<br/>
-<br/>  Si tienes alguna pregunta, no dudes en <a href="mailto:ivannevares9@gmail.com" className="text-blue-500 underline">enviarme un correo</a>.
-
+  Actualmente estudiando Diseño Gráfico en la Universidad de Buenos Aires.<br/>
+  Técnico en Sonido, formado en TECSON, Buenos Aires.<br/><br/>
+  Diseñador Web en newtro.xyz.<br/>
+  Disponible para proyectos web freelance.<br/><br/>
+  Si tienes alguna pregunta, no dudes en <a href="mailto:ivannevares9@gmail.com" className="text-blue-500 underline">enviarme un correo</a>.
               </p>
-
             )}
           </div>
+
+          {/* Colocamos la imagen aquí para que se muestre en ambos idiomas */}
+          <div className="mt-8">
+            <Image
+              src="/info/1682109304516.jpeg" // Path relativo a la carpeta public
+              alt="Iván Nevares"
+              width={250}
+              height={150}
+              className="rounded-lg" // Clase opcional para ajustar el estilo
+            />
+          </div>
+
         </div>
         <div className="relative h-[800px] w-full">
           <Image

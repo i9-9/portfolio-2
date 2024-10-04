@@ -12,18 +12,27 @@ const Hero: React.FC = () => {
       <div className="flex items-center justify-center md:border-r border-gris_oscuro hero-item">
         <div className="text-left pt-4 md:pt-0">
           <div className="flex gap-1 flex-wrap">
-            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
-              Web Design
-            </button>
-            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
-              UX/UI
-            </button>
-            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
-              Mobile
-            </button>
-            <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
-              Front-End Development
-            </button>
+            {/* Envolver cada botón con Link */}
+            <Link to="work" spy={true} smooth={true} offset={0} duration={500}>
+              <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
+                Web Design
+              </button>
+            </Link>
+            <Link to="work" spy={true} smooth={true} offset={0} duration={500}>
+              <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
+                UX/UI
+              </button>
+            </Link>
+            <Link to="work" spy={true} smooth={true} offset={0} duration={500}>
+              <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
+                Mobile
+              </button>
+            </Link>
+            <Link to="work" spy={true} smooth={true} offset={0} duration={500}>
+              <button className="py-1 px-2 shadow-sm mb-2 text-md text-oscuro bg-gris_claro flex items-center text-gris_oscuro hero-item text-small rounded-sm">
+                Front-End Development
+              </button>
+            </Link>
           </div>
           <h1 className="text-h1 font-bold py-2 hero-item tracking-tight">
             Creating unique digital identities with clarity and purpose
