@@ -65,14 +65,14 @@ Available for freelance web projects.<br/><br/>  If you have any questions, feel
             )}
           </div>
 
-          {/* Colocamos la imagen aquí para que se muestre en ambos idiomas */}
-          <div className="mt-8">
+          
+          <div className="mt-8 pb-4 lg:pb-0">
             <Image
-              src="/info/1682109304516.jpeg" // Path relativo a la carpeta public
+              src="/info/1682109304516.jpeg"
               alt="Iván Nevares"
               width={250}
               height={150}
-              className="rounded-lg" // Clase opcional para ajustar el estilo
+              className="rounded-lg" 
             />
           </div>
 
