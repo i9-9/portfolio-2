@@ -53,7 +53,7 @@ const Hero: React.FC = () => {
         </div>
       </div>
       <div className="flex items-center justify-center hero-item py-10 md:py-0">
-        <a target="_blank" href="https://eldesenfreno-one.vercel.app" className="w-full md:w-auto">
+        <a target="_blank" href="https://eldesenfreno.com" className="w-full md:w-auto">
           <Image
             src="/projects-eldesenfreno/eight.png"
             alt="Hero Image"
