@@ -1,5 +1,7 @@
-"use client"
+// app/page.tsx
+"use client";
 
+import ScreenSeparator from "../components/ScreenSeparator";
 import Work from "../components/Work";
 import Hero from "../components/Hero2";
 import NavbarHome from "../components/NavbarHome";
@@ -8,7 +10,8 @@ import Contacto from "../components/Contacto";
 
 const Home: React.FC = () => {
   return (
-    <div className="mx-auto">
+    <div className="mx-auto relative">
+      <ScreenSeparator />
       <div>
         <MyMarquee />
       </div>
