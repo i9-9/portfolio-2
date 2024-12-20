@@ -37,7 +37,6 @@ export default function RootLayout({ children }) {
       <body className="custom">
         {children}
         <Analytics />
-        <Footer />
       </body>
     </html>
   );

@@ -1,4 +1,3 @@
-// components/ScreenSeparator.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -44,7 +43,7 @@ const ScreenSeparator = () => {
               }}
               transition={{
                 repeat: Infinity,
-                duration: 3, // Adjust the speed of the spin
+                duration: 3 , // Adjust the speed of the spin
                 ease: [0.2, 0.8, 0.2, 1],  // Custom cubic bezier curve for smooth acceleration
                 repeatType: "loop", // Ensures continuous loop
                 repeatDelay: 0, // No delay between repeat cycles
