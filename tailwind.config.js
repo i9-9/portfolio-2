@@ -29,6 +29,11 @@ module.exports = {
         'gris': '#262626',
         'gris_claro': '#B5B5B5',
         'gris_oscuro': '#262626',
+        'dark-gray': '#2C2C2C',
+        'light-gray': '#D7D7D7',
+        'sidebar-gray': '#373737',
+        'button-gray': '#4D4D4D',
+        'accent-green': '#A2BF38',
       },
       animation: {
         'spin-slow': 'spin 5s linear infinite',
