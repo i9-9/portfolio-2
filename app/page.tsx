@@ -1,10 +1,13 @@
 "use client";
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import ScreenSeparator from "../components/ScreenSeparator";
+
 
 const ProfileLayout = () => {
   return (
     <div className="min-h-screen bg-[#0B1014] text-light-gray flex flex-col relative">
+      <ScreenSeparator/>
       {/* Container */}
       <div className="flex-grow flex flex-col md:flex-row border border-gray-200 bg-[#3D3D3E] rounded-xl m-4">
         {/* Left Section */}
