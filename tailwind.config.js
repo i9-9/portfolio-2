@@ -8,9 +8,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        offBitBold: ['OffBit', 'bold'],
-        supplySans: ['SupplySans', 'regular'],
-        supplySansLight: ['SupplySans', 'lighter']
+        helveticaNowDisplayBlack: ['HelveticaNowDisplay-Black', 'sans-serif'],
+        helveticaNowTextRegular: ['HelveticaNowText-Regular', 'sans-serif'],
+        helveticaNowDisplayBold: ['HelveticaNowDisplay-Bold', 'sans-serif'],
+        helveticaNowDisplayItalic: ['HelveticaNowDisplay-Italic', 'sans-serif'],
       },
       fontSize: {
         'h1': ['61.04px', { lineHeight: '64px' }],
@@ -24,23 +25,15 @@ module.exports = {
         'tiny': ['10.24px', { lineHeight: '14px' }],
       },
       colors: {
-        'violeta': '#5226AA',
-        'verde': '#262626',
-        'gris': '#262626',
-        'gris_claro': '#B5B5B5',
-        'gris_oscuro': '#262626',
-        'dark-gray': '#2C2C2C',
-        'light-gray': '#D7D7D7',
-        'sidebar-gray': '#373737',
-        'button-gray': '#4D4D4D',
-        'accent-green': '#A2BF38',
+        'lima': '#B2CF53',
+        'blue': '#535A9B',
+        'black': '#0C0F14',
+        'mid-gray': '#B5B5B6',
+        'light-gray': '#D8D8D8',
       },
-      animation: {
-        'spin-slow': 'spin 5s linear infinite',
-      }
     },
   },
   plugins: [
     require('@tailwindcss/typography'),
   ],
-}
+};
