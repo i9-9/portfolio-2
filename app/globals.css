@@ -11,6 +11,13 @@
   --navbar-height: 100px;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* Optional: prevent overflow scrolling */
+}
+
+
 /* Importing the HelveticaNow fonts */
 @font-face {
   font-family: 'HelveticaNowDisplay-Black';
@@ -80,6 +87,8 @@ body {
   display: flex;
   flex-direction: column;
   font-family: 'SupplySans', sans-serif;
+  cursor: none; /* Hides the default cursor */
+
 }
 
 footer {
@@ -266,4 +275,55 @@ html {
 
 .hero-item {
   animation: slideInFromBelow 0.5s ease-out forwards;
+}
+
+
+.rotate-x-180 {
+  transform: rotateX(180deg);
+  transition: transform 0.5s ease;
+}
+
+.rotate-x-90 {
+  transform: rotateX(90deg);
+  transition: transform 0.5s ease;
+}
+
+.rotate-x-45 {
+  transform: rotateX(45deg);
+  transition: transform 0.5s ease;
+}
+
+.rotate-x-hover:hover {
+  transform: rotateX(90deg);
+}
+
+.cursor {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: left 0.1s ease, top 0.1s ease; /* Ensure smooth transition */
+}
+
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+@layer utilities {
+  .animate-slow-spin {
+    animation: spin 4s linear infinite; /* Adjust the duration to your liking */
+  }
 }

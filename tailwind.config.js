@@ -26,7 +26,7 @@ module.exports = {
       },
       colors: {
         'lima': '#B2CF53',
-        'blue': '#535A9B',
+        'bluer': '#535A9B',
         'black': '#0C0F14',
         'mid-gray': '#B5B5B6',
         'light-gray': '#D8D8D8',
