@@ -163,24 +163,34 @@ const ProfileLayout = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
-              {projects[currentProjectIndex].videoId && (
+              {/* Verifica si el proyecto tiene un videoId */}
+              {projects[currentProjectIndex].videoId ? (
                 <div className="relative w-full flex justify-center items-center">
-                  {/* Wrapper for browser window and video container */}
+                  {/* Contenedor del video */}
                   <div className="relative w-full h-auto pb-[56.25%] bg-[#070707] rounded-lg overflow-hidden">
-                    {/* Browser top part */}
                     <div className="h-8 bg-gray-500 rounded-t-lg flex items-center justify-start px-2 space-x-2">
-                      <div className="w-3 h-3 bg-gray-700 rounded-full"></div>
-                      <div className="w-3 h-3 bg-gray-700 rounded-full"></div>
-                      <div className="w-3 h-3 bg-gray-700 rounded-full"></div>
+                      <div className="w-3 h-3 bg-light-gray rounded-full"></div>
+                      <div className="w-3 h-3 bg-light-gray rounded-full"></div>
+                      <div className="w-3 h-3 bg-light-gray rounded-full"></div>
                     </div>
 
-                    {/* Video container */}
+                    {/* Contenedor del video */}
                     <div className="absolute top-8 left-0 w-full h-full">
-                      <EmbeddedVideo
-                        videoId={projects[currentProjectIndex].videoId}
-                      />
+                      <EmbeddedVideo videoId={projects[currentProjectIndex].videoId} />
                     </div>
                   </div>
+                </div>
+              ) : (
+                <div className="w-full h-auto bg-[#070707] rounded-lg">
+                  <Image
+                    src={projects[currentProjectIndex].image}
+                    alt={projects[currentProjectIndex].title}
+                    layout="responsive"
+                    width={700} // ajusta según lo que necesites
+                    height={400} // ajusta según lo que necesites
+                    objectFit="cover"
+                    className="rounded-lg"
+                  />
                 </div>
               )}
             </motion.div>
