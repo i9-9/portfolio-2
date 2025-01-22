@@ -49,10 +49,13 @@ const ProfileLayout = () => {
     <div className="min-h-screen flex flex-col bg-[#0C1014] text-light-gray overflow-hidden">
       <ScreenSeparator />
       <div className="flex-grow flex flex-col md:flex-row bg-[#3D3D3E] rounded-xl m-4 border border-mid-gray">
-        <div className="w-full md:w-1/4 p-6 flex flex-col justify-between border-r border-mid-gray">
+        <div className="w-full md:w-1/4 p-6 flex flex-col justify-between md:border-r border-mid-gray">
           <div>
             <Link href="/">
-              <h1 className="text-2xl font-helveticaNowDisplayBold mb-6 text-mid-gray cursor-pointer">
+              <h1
+                onClick={() => setIsSlideshowActive(false)}
+                className="text-2xl font-helveticaNowDisplayBold mb-6 text-mid-gray cursor-pointer"
+              >
                 Iván Nevares
               </h1>
             </Link>
@@ -84,26 +87,26 @@ const ProfileLayout = () => {
               Available for freelance web projects.
               <br /> If you have any questions, feel free to send me an email.
             </p>
-          </div>
-          <div className="flex mt-4 text-black">
-            <button
-              onClick={() => {
-                prevProject();
-                setIsSlideshowActive(true);
-              }}
-              className="bg-light-gray rounded-md px-4 py-1 border-black border rounded-tr-none rounded-br-none hover:bg-mid-gray"
-            >
-              <FaChevronLeft />
-            </button>
-            <button
-              onClick={() => {
-                nextProject();
-                setIsSlideshowActive(true);
-              }}
-              className="bg-light-gray rounded-md px-4 py-1 border-black border rounded-tl-none rounded-bl-none hover:bg-mid-gray"
-            >
-              <FaChevronRight />
-            </button>
+            <div className="flex mt-4 text-black">
+              <button
+                onClick={() => {
+                  prevProject();
+                  setIsSlideshowActive(true);
+                }}
+                className="bg-light-gray rounded-md px-4 py-1 border-black border rounded-tr-none rounded-br-none hover:bg-mid-gray"
+              >
+                <FaChevronLeft />
+              </button>
+              <button
+                onClick={() => {
+                  nextProject();
+                  setIsSlideshowActive(true);
+                }}
+                className="bg-light-gray rounded-md px-4 py-1 border-black border rounded-tl-none rounded-bl-none hover:bg-mid-gray"
+              >
+                <FaChevronRight />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -138,7 +141,6 @@ const ProfileLayout = () => {
             alt="Ivan's Icon 1"
             width={42}
             height={41}
-            layout="fixed"
           />
         )}
       </div>
