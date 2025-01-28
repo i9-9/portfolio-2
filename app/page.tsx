@@ -8,26 +8,37 @@ import Link from "next/link";
 
 const currentYear = new Date().getFullYear();
 
-const EmbeddedVideo = ({ videoId, className }) => {
+const EmbeddedVideo = ({ videoId, className }: { videoId: string; className?: string }) => {
   if (!videoId) return null;
 
   const videoUrl = `https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&controls=0`;
 
   return (
-    <div className={`relative ${className}`} style={{ paddingBottom: "56.25%", height: 0 }}>
+    <div
+      className={`relative w-full max-w-full h-0 ${className || ""}`}
+      style={{ paddingBottom: "56.25%" }} // 16:9 aspect ratio
+    >
       <iframe
         src={videoUrl}
         frameBorder="0"
         allow="autoplay; fullscreen; picture-in-picture"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
+        className="absolute top-0 left-0 w-full h-full"
         title="Project Video"
       ></iframe>
+    </div>
+  );
+};
+
+const BrowserFrame = ({ children, title }: { children: React.ReactNode; title: string }) => {
+  return (
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="bg-gray-200 px-4 py-2 flex items-center space-x-2">
+        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        <div className="flex-grow text-center text-sm font-medium text-gray-700">{title}</div>
+      </div>
+      <div className="p-4">{children}</div>
     </div>
   );
 };
@@ -59,20 +70,8 @@ const ProfileLayout = () => {
     },
   ];
 
-  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [currentProjectIndex] = useState(1); // Set to the "Kostüme" project
   const [isSlideshowActive, setIsSlideshowActive] = useState(false);
-
-  const nextProject = () => {
-    setCurrentProjectIndex((prevIndex) =>
-      prevIndex === projects.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const prevProject = () => {
-    setCurrentProjectIndex((prevIndex) =>
-      prevIndex === 0 ? projects.length - 1 : prevIndex - 1
-    );
-  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0C1014] text-light-gray overflow-hidden">
@@ -126,26 +125,6 @@ const ProfileLayout = () => {
               Available for freelance web projects.
               <br /> If you have any questions, feel free to send me an email.
             </p>
-            <div className="flex mt-4 text-black">
-              <button
-                onClick={() => {
-                  prevProject();
-                  setIsSlideshowActive(true);
-                }}
-                className="bg-light-gray rounded-md px-4 py-1 border-black border rounded-tr-none rounded-br-none hover:bg-mid-gray"
-              >
-                <FaChevronLeft />
-              </button>
-              <button
-                onClick={() => {
-                  nextProject();
-                  setIsSlideshowActive(true);
-                }}
-                className="bg-light-gray rounded-md px-4 py-1 border-black border rounded-tl-none rounded-bl-none hover:bg-mid-gray"
-              >
-                <FaChevronRight />
-              </button>
-            </div>
           </div>
         </div>
 
@@ -163,50 +142,29 @@ const ProfileLayout = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
-              {/* Verifica si el proyecto tiene un videoId */}
-              {projects[currentProjectIndex].videoId ? (
-                <div className="relative w-full flex justify-center items-center">
-                  {/* Contenedor del video */}
-                  <div className="relative w-full h-auto pb-[56.25%] bg-[#070707] rounded-lg overflow-hidden">
-                    <div className="h-8 bg-gray-500 rounded-t-lg flex items-center justify-start px-2 space-x-2">
-                      <div className="w-3 h-3 bg-light-gray rounded-full"></div>
-                      <div className="w-3 h-3 bg-light-gray rounded-full"></div>
-                      <div className="w-3 h-3 bg-light-gray rounded-full"></div>
-                    </div>
-
-                    {/* Contenedor del video */}
-                    <div className="absolute top-8 left-0 w-full h-full">
-                      <EmbeddedVideo videoId={projects[currentProjectIndex].videoId} />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="w-full h-auto bg-[#070707] rounded-lg">
-                  <Image
-                    src={projects[currentProjectIndex].image}
-                    alt={projects[currentProjectIndex].title}
-                    layout="responsive"
-                    width={700} // ajusta según lo que necesites
-                    height={400} // ajusta según lo que necesites
-                    objectFit="cover"
-                    className="rounded-lg"
+              <BrowserFrame title={projects[currentProjectIndex].title}>
+                {projects[currentProjectIndex].videoId ? (
+                  <EmbeddedVideo
+                    videoId={projects[currentProjectIndex].videoId}
+                    className="rounded-md shadow-lg"
                   />
-                </div>
-              )}
+                ) : (
+                  <div className="w-full h-auto bg-[#070707] rounded-lg">
+                    <Image
+                      src={projects[currentProjectIndex].image}
+                      alt={projects[currentProjectIndex].title}
+                      layout="responsive"
+                      width={700}
+                      height={400}
+                      objectFit="cover"
+                      className="rounded-lg"
+                    />
+                  </div>  
+                )}
+              </BrowserFrame>
             </motion.div>
           )}
         </div>
-      </div>
-
-      <div className="absolute top-4 right-4 p-4 animate-slow-spin duration-1000 transition-all rotate-x-180">
-        {!isSlideshowActive && (
-          <Image
-            src="/anim/logo1.png"
-            alt="Ivan's Icon 1"
-            width={42}
-            height={41}
-          />
-        )}
       </div>
 
       <footer className="p-4 border-t border-gray-700 text-xs text-gray-500 flex justify-between">
