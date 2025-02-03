@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
   --gris_claro: #b5b5b5;
@@ -14,11 +13,9 @@
 html, body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* Optional: prevent overflow scrolling */
+  overflow-x: hidden;
 }
 
-
-/* Importing the HelveticaNow fonts */
 @font-face {
   font-family: 'HelveticaNowDisplay-Black';
   src: url('/fonts/HelveticaNowDisplay-Black.ttf') format('truetype');
@@ -47,7 +44,6 @@ html, body {
   font-style: italic;
 }
 
-/* Applying custom font classes */
 .font-helveticaNowDisplayBlack {
   font-family: 'HelveticaNowDisplay-Black', sans-serif;
 }
@@ -87,7 +83,7 @@ body {
   display: flex;
   flex-direction: column;
   font-family: 'SupplySans', sans-serif;
-  cursor: none; /* Hides the default cursor */
+  cursor: default !important;
 
 }
 
@@ -297,19 +293,6 @@ html {
   transform: rotateX(90deg);
 }
 
-.cursor {
-  position: fixed;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: left 0.1s ease, top 0.1s ease; /* Ensure smooth transition */
-}
 
 
 @keyframes spin {

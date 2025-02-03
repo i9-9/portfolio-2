@@ -1,8 +1,7 @@
-// components/ProfileIntro.tsx
 import React from "react";
 
 const ProfileIntro = () => (
-  <div className="flex flex-col mt-6 text-sm">
+  <div className="flex flex-col w-full text-sm pb-4">
     <p className="text-lima">ivannevares9@gmail.com</p>
     <div className="text-sm text-lima mb-2">
       <a href="https://dribbble.com/i9i9" target="_blank" className="hover:text-bluer">
