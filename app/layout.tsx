@@ -1,7 +1,6 @@
 import Footer from '../components/Footer';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/react';
-import CustomCursor from '../components/CustomCursor'; // Asegúrate de que el componente de Cursor está importado correctamente
 
 export const metadata = {
   title: 'Ivan Nevares',
@@ -9,7 +8,7 @@ export const metadata = {
   icons: {
     icon: { url: '/favicon_v2.ico' },
   },
-  metadataBase: new URL('https://inevares.com'), // Aquí configuramos la URL base
+  metadataBase: new URL('https://inevares.com'),
   openGraph: {
     title: 'Ivan Nevares',
     description: 'Web developer and UI designer interested in generating creative and performant digital experiences',
@@ -37,7 +36,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head />
       <body className="custom">
-        <CustomCursor />
         {children}
         <Analytics />
       </body>
