@@ -8,6 +8,7 @@ import ProjectCard from "../components/ProjectCard";
 import ProfileIntro from "../components/ProfileIntro";
 import { projects } from "./data/projects";
 import Image from "next/image";
+import { IoChevronDownOutline } from "react-icons/io5";
 
 const currentYear = new Date().getFullYear();
 
@@ -68,7 +69,18 @@ const ProfileLayout = () => {
 
           {/* Info Section for Mobile */}
           <div className="md:hidden border-b border-t border-mid-gray -mx-6 px-6 py-4">
-            <button onClick={toggleInfo} className="text-lima w-full text-left py-2">{isInfoVisible ? "Hide" : "Info"}</button>
+            <button 
+              onClick={toggleInfo} 
+              className="text-lima w-full text-left py-2 px-4 flex items-center justify-between border border-mid-gray/50 rounded-md"
+            >
+              Info
+              <motion.span
+                animate={{ rotate: isInfoVisible ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <IoChevronDownOutline size={20} />
+              </motion.span>
+            </button>
             <motion.div
               className={`overflow-hidden ${isInfoVisible ? "max-h-[500px]" : "max-h-0"} transition-all duration-300`}
             >
