@@ -33,9 +33,9 @@ const ProfileLayout = () => {
   return (
     <div className="min-h-screen w-full max-w-full flex flex-col bg-[#0C1014] text-light-gray overflow-x-hidden">
       <ScreenSeparator />
-      <div className="flex-grow flex flex-col md:flex-row bg-[#3D3D3E] rounded-xl m-4 border border-mid-gray relative overflow-hidden">
+      <div className="flex-grow flex flex-col md:flex-row bg-[#3D3D3E] rounded-xl m-4 border border-mid-gray/50 relative overflow-hidden">
         {/* Sidebar */}
-        <div className="w-full md:w-1/4 px-6 md:px-6 py-6 flex flex-col justify-between md:border-r border-mid-gray h-auto md:h-full relative">
+        <div className="w-full md:w-1/4 px-6 md:px-6 py-6 flex flex-col justify-between md:border-r border-mid-gray/50 h-auto md:h-full relative">
           <div>
             <Link href="/">
               <h1
@@ -68,7 +68,7 @@ const ProfileLayout = () => {
           )}
 
           {/* Info Section for Mobile */}
-          <div className="md:hidden border-b border-t border-mid-gray -mx-6 px-6 py-4">
+          <div className="md:hidden border-b border-t border-mid-gray/50 -mx-6 px-6 py-4">
             <button 
               onClick={toggleInfo} 
               className="text-lima w-full text-left py-2 px-4 flex items-center justify-between border border-mid-gray/50 rounded-md"
@@ -125,7 +125,7 @@ const ProfileLayout = () => {
           {/* Toggle Button */}
           <motion.button
             onClick={handleToggleView} 
-            className="bg-lima text-black py-2 px-6 rounded-md z-10 mt-4 hover:bg-lima/80 self-end "
+            className="bg-gray border-mid-gray/50 border text-lima drop-shadow-sm py-2 px-6 rounded-md z-10 mt-4 hover:bg-bluer/80 self-end "
             transition={{ duration: 0.3 }}
           >
             {isProjectsVisible ? "Back to Intro" : "Show Projects"}
