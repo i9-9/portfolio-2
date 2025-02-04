@@ -13,6 +13,7 @@
 html, body {
   height: 100%;
   margin: 0;
+  padding: 0;
   overflow-x: hidden;
 }
 
@@ -108,7 +109,7 @@ html {
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: #262626;
+  background-color: #B3CF54;
   transform-origin: bottom right;
   transition: transform 0.25s ease-out;
 }
