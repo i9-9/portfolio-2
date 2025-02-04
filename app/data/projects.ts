@@ -20,5 +20,11 @@ export const projects = [
       image: "",
       anchor: "https://newtro.xyz",
     },
+    {
+      title: "Sisterhood",
+      description: "Website for Austrian enterprise that curates handicraft and design pieces.",
+      image: "",
+      anchor: "https://hello09386.wixstudio.io/my-site-3",
+    },
   ];
   
