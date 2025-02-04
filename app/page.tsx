@@ -15,6 +15,7 @@ const ProfileLayout = () => {
   const [isProjectsVisible, setIsProjectsVisible] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isInfoVisible, setIsInfoVisible] = useState(false);
 
   const handleToggleView = () => {
     setIsProjectsVisible((prev) => !prev);
@@ -22,6 +23,10 @@ const ProfileLayout = () => {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setPosition({ x: e.clientX, y: e.clientY });
+  };
+
+  const toggleInfo = () => {
+    setIsInfoVisible((prev) => !prev);
   };
 
   return (
@@ -61,42 +66,54 @@ const ProfileLayout = () => {
             </motion.div>
           )}
 
-          <div className="border-b border-t border-mid-gray md:border-none -mx-6 px-6 pt-4">
+          {/* Info Section for Mobile */}
+          <div className="md:hidden border-b border-t border-mid-gray -mx-6 px-6 py-4">
+            <button onClick={toggleInfo} className="text-lima w-full text-left py-2">{isInfoVisible ? "Hide" : "Info"}</button>
+            <motion.div
+              className={`overflow-hidden ${isInfoVisible ? "max-h-[500px]" : "max-h-0"} transition-all duration-300`}
+            >
+              <ProfileIntro />
+            </motion.div>
+          </div>
+          {/* Info remains the same for desktop */}
+          <div className="hidden md:block border-b border-t border-mid-gray md:border-none -mx-6 px-6 pt-4">
             <ProfileIntro />
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="w-full md:w-3/4 p-6 flex flex-col justify-start items-start text-left rounded-xl relative overflow-y-auto flex-grow">
-          {/* Presentation Text */}
-          {!isProjectsVisible ? (
-            <motion.h2
-              className="text-4xl md:text-7xl font-helveticaNowDisplayBlack mb-6 text-mid-gray"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <span className="text-lima">Designer</span> and{" "}
-              <span className="text-lima">Front-End Developer</span>{" "}
-              specializing in visual identity and digital experiences.
-            </motion.h2>
-          ) : (
-            <motion.div
-              className="flex flex-wrap gap-4 overflow-y-auto min-h-[60vh]" // Enable vertical scrolling and set minimum height
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              {projects.map((project, index) => (
-                <ProjectCard key={index} project={project} />
-              ))}
-            </motion.div>
-          )}
+        <div className="w-full md:w-3/4 p-6 flex flex-col justify-between items-start text-left rounded-xl relative overflow-y-auto flex-grow">
+          <div className="flex-grow">
+            {/* Presentation Text */}
+            {!isProjectsVisible ? (
+              <motion.h2
+                className="text-4xl md:text-7xl font-helveticaNowDisplayBlack mb-6 text-mid-gray"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <span className="text-lima">Designer</span> and{" "}
+                <span className="text-lima">Front-End Developer</span>{" "}
+                specializing in visual identity and digital experiences.
+              </motion.h2>
+            ) : (
+              <motion.div
+                className="flex flex-wrap gap-4 overflow-y-auto min-h-[60vh]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                {projects.map((project, index) => (
+                  <ProjectCard key={index} project={project} />
+                ))}
+              </motion.div>
+            )}
+          </div>
 
           {/* Toggle Button */}
           <motion.button
-            onClick={handleToggleView}
-            className="bg-lima text-black py-2 px-6 rounded-md z-10 mt-6 hover:bg-lima/80"
+            onClick={handleToggleView} 
+            className="bg-lima text-black py-2 px-6 rounded-md z-10 mt-4 hover:bg-lima/80 self-end "
             transition={{ duration: 0.3 }}
           >
             {isProjectsVisible ? "Back to Intro" : "Show Projects"}
