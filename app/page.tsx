@@ -50,27 +50,29 @@ const ProfileLayout = () => {
           </div>
 
           {/* Floating Image */}
-          {hovered && (
-            <motion.div
-              className="fixed w-48 h-48 overflow-hidden rounded-md shadow-lg"
-              style={{ top: position.y - 24, left: position.x - 24 }}
-              animate={{ x: -10, y: -10 }}
-              transition={{ type: "spring", stiffness: 120, damping: 10 }}
-            >
-              <Image
-                src="/profile.jpeg" // Ensure this path is correct
-                alt="Iván Nevares"
-                width={300} // Optional: Adjust to your preferred size
-                height={300} // Optional: Adjust to your preferred size
-                className="w-full h-auto max-w-xs object-cover shadow-lg" // Add styles for responsiveness, rounded corners, and shadow
-              />
-            </motion.div>
-          )}
+          <motion.div
+            className="fixed w-48 h-48 overflow-hidden rounded-md shadow-lg pointer-events-none"
+            style={{ top: position.y - 24, left: position.x - 24 }}
+            animate={{
+              opacity: hovered ? 1 : 0,
+              scale: hovered ? 1 : 0.9,
+              rotateX: hovered ? 0 : -30, // 3D tilt when disappearing
+            }}
+            transition={{ type: "spring", stiffness: 120, damping: 10 }}
+          >
+            <Image
+              src="/profile.jpeg"
+              alt="Iván Nevares"
+              width={200}
+              height={200}
+              className="w-full h-auto max-w-xs object-cover shadow-lg"
+            />
+          </motion.div>
 
           {/* Info Section for Mobile */}
           <div className="md:hidden border-b border-t border-mid-gray/50 -mx-6 px-6 py-4">
-            <button 
-              onClick={toggleInfo} 
+            <button
+              onClick={toggleInfo}
               className="text-lima w-full text-left py-2 px-4 flex items-center justify-between border border-mid-gray/50 rounded-md"
             >
               Info
@@ -82,7 +84,9 @@ const ProfileLayout = () => {
               </motion.span>
             </button>
             <motion.div
-              className={`overflow-hidden ${isInfoVisible ? "max-h-[500px]" : "max-h-0"} transition-all duration-300`}
+              className={`overflow-hidden ${
+                isInfoVisible ? "max-h-[500px]" : "max-h-0"
+              } transition-all duration-300`}
             >
               <ProfileIntro />
             </motion.div>
@@ -116,7 +120,7 @@ const ProfileLayout = () => {
                 transition={{ duration: 0.5 }}
               >
                 {projects.map((project, index) => (
-                  <ProjectCard key={index} project={project} />
+                  <ProjectCard key={index} project={project} index={index} />
                 ))}
               </motion.div>
             )}
@@ -124,7 +128,7 @@ const ProfileLayout = () => {
 
           {/* Toggle Button */}
           <motion.button
-            onClick={handleToggleView} 
+            onClick={handleToggleView}
             className="bg-gray border-mid-gray/50 border text-lima drop-shadow-sm py-2 px-6 rounded-md z-10 mt-4 hover:bg-bluer/80 self-end "
             transition={{ duration: 0.3 }}
           >
