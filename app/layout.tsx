@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head />
-      <body className="custom">
+      <body className="custom no-scrollbar">
         {children}
         <Analytics />
       </body>
