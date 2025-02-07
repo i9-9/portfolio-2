@@ -129,7 +129,7 @@ const ProfileLayout = () => {
           {/* Toggle Button */}
           <motion.button
             onClick={handleToggleView}
-            className="bg-gray border-mid-gray/50 border text-lima drop-shadow-sm py-2 px-6 rounded-md z-10 mt-4 hover:bg-bluer/80 self-end "
+            className="bg-gray border-mid-gray/50 border text-lima drop-shadow-sm py-2 px-6 rounded-md z-10 mt-4 hover:bg-bluer/80 self-end transition-all duration-500"
             transition={{ duration: 0.3 }}
           >
             {isProjectsVisible ? "Back to Intro" : "Show Projects"}
