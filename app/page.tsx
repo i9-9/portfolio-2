@@ -6,8 +6,8 @@ import Link from "next/link";
 import ScreenSeparator from "../components/ScreenSeparator";
 import ProjectCard from "../components/ProjectCard";
 import ProfileIntro from "../components/ProfileIntro";
+import FloatingImage from "../components/FloatingImage";
 import { projects } from "./data/projects";
-import Image from "next/image";
 import { IoChevronDownOutline } from "react-icons/io5";
 
 const currentYear = new Date().getFullYear();
@@ -50,24 +50,7 @@ const ProfileLayout = () => {
           </div>
 
           {/* Floating Image */}
-          <motion.div
-            className="fixed w-48 h-48 overflow-hidden rounded-md shadow-lg pointer-events-none"
-            style={{ top: position.y - 24, left: position.x - 24 }}
-            animate={{
-              opacity: hovered ? 1 : 0,
-              scale: hovered ? 1 : 0.9,
-              rotateX: hovered ? 0 : -30, // 3D tilt when disappearing
-            }}
-            transition={{ type: "spring", stiffness: 120, damping: 10 }}
-          >
-            <Image
-              src="/profile.jpeg"
-              alt="Iván Nevares"
-              width={200}
-              height={200}
-              className="w-full h-auto max-w-xs object-cover shadow-lg"
-            />
-          </motion.div>
+          <FloatingImage hovered={hovered} position={position} imageSrc="/profile.jpeg" />
 
           {/* Info Section for Mobile */}
           <div className="md:hidden border-b border-t border-mid-gray/50 -mx-6 px-6 py-4">
@@ -100,7 +83,6 @@ const ProfileLayout = () => {
         {/* Main Content */}
         <div className="w-full md:w-3/4 p-6 flex flex-col justify-between items-start text-left rounded-xl relative overflow-y-auto flex-grow">
           <div className="flex-grow">
-            {/* Presentation Text */}
             {!isProjectsVisible ? (
               <motion.h2
                 className="text-4xl md:text-7xl font-helveticaNowDisplayBlack mb-6 text-mid-gray"
