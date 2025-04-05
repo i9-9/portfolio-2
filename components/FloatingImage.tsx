@@ -73,7 +73,7 @@ const FloatingImage: React.FC<FloatingImageProps> = ({ hovered, position, imageS
         >
           <Image
             src={imageSrc}
-            alt="Floating Image"
+            alt="Ivan Nevares - UX/UI Designer & Front-End Developer Profile Photo"
             width={200}
             height={200}
             className="w-full h-auto max-w-xs object-cover shadow-lg rounded-md"

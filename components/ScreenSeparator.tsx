@@ -36,7 +36,7 @@ const ScreenSeparator = () => {
             {/* Spinning Image */}
             <motion.img
               src={image}  // Single image path
-              alt="Spinning Image"
+              alt="Ivan Nevares Portfolio - Loading Logo Animation"
               className="w-32 h-32"  // Adjust the size as necessary
               animate={{
                 rotate: 360,

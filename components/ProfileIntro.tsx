@@ -22,9 +22,6 @@ const ProfileIntro = () => (
       Sound Technician, trained at TECSON, Buenos Aires.
     </h1>
     <p className="text-sm mb-2 font-helveticaNowTextRegular text-mid-gray">
-      Web Designer at newtro.xyz.
-    </p>
-    <p className="text-sm mb-2 font-helveticaNowTextRegular text-mid-gray">
       Available for freelance web projects.
       <br /> If you have any questions, feel free to send me an email.
     </p>

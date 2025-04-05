@@ -10,7 +10,7 @@ const ProjectDisplay = () => {
       <div className="border border-gray-600 rounded-md overflow-hidden">
         <Image
           src="/new/1x/asset_11.png"
-          alt="Project Screenshot"
+          alt="El Desenfreno Ediciones Website Design Project by Ivan Nevares"
           width={800}      // Adjust the width based on your image
           height={600}     // Adjust the height based on your image
           layout="responsive"  // Ensures the image is responsive within its container
