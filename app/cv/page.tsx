@@ -92,26 +92,23 @@ export default function CVPage() {
           {/* Info remains the same for desktop */}
           <div className="hidden md:block border-b border-t border-mid-gray md:border-none -mx-6 px-6 pt-4">
             <ProfileIntro />
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="w-full md:w-3/4 p-6 flex flex-col justify-between items-start text-left rounded-xl relative overflow-y-auto flex-grow">
-          {/* Language Toggle Button */}
-          <div className="flex justify-end mb-4">
+            {/* Language Toggle Button */}
             <motion.button
               onClick={handleLanguageSwitch}
-              className="bg-gray border-mid-gray/50 border text-lima drop-shadow-sm py-2 px-6 rounded-md z-10 mt-4 hover:bg-bluer/80 self-end transition-all duration-500"
+              className="bg-gray border-mid-gray/50 border text-lima drop-shadow-sm py-2 px-6 rounded-md z-10 mt-4 hover:bg-bluer/80 w-full transition-all duration-500"
               transition={{ duration: 0.3 }}
             >
               {isEnglishCV ? "Ver en Español" : "View in English"}
             </motion.button>
           </div>
+        </div>
 
+        {/* Main Content */}
+        <div className="w-full md:w-3/4 p-6 flex flex-col justify-between items-start text-left rounded-xl relative overflow-y-auto flex-grow">
           {/* CV iframe */}
           <div className="w-full h-screen flex justify-center items-center">
             <iframe
-              src={isEnglishCV ? "/CV_Ivan_Nevares_EN.pdf" : "/CV_Ivan_Nevares.pdf"}
+              src={isEnglishCV ? "/CV_IVAN_NEVARES.pdf" : "/CV_IVAN_ NEVARES_EN.pdf"}
               className="w-full h-full"
               style={{ border: "none" }}
             />
