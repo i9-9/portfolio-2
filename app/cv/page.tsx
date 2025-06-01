@@ -108,7 +108,7 @@ export default function CVPage() {
           {/* CV iframe */}
           <div className="w-full h-screen flex justify-center items-center">
             <iframe
-              src={isEnglishCV ? "/CV_IVAN_NEVARES.pdf" : "/CV_IVAN_ NEVARES_EN.pdf"}
+              src={isEnglishCV ? "/CV_Ivan_ Nevares_EN.pdf" : "/CV_Ivan_Nevares.pdf"}
               className="w-full h-full"
               style={{ border: "none" }}
             />

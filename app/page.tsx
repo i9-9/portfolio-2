@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ScreenSeparator from "../components/ScreenSeparator";
@@ -9,6 +9,9 @@ import ProfileIntro from "../components/ProfileIntro";
 import FloatingImage from "../components/FloatingImage";
 import { projects } from "./data/projects";
 import { IoChevronDownOutline } from "react-icons/io5";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 
 const currentYear = new Date().getFullYear();
 
@@ -17,6 +20,7 @@ const ProfileLayout = () => {
   const [hovered, setHovered] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isInfoVisible, setIsInfoVisible] = useState(false);
+  const headlineRef = useRef(null);
 
   const handleToggleView = () => {
     setIsProjectsVisible((prev) => !prev);
@@ -29,6 +33,30 @@ const ProfileLayout = () => {
   const toggleInfo = () => {
     setIsInfoVisible((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (!headlineRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        headlineRef.current,
+        { opacity: 0, filter: "blur(8px)" },
+        {
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 2,
+          delay: 2.2, // splash duration + buffer
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: headlineRef.current,
+            start: "top top",
+            end: "+=200",
+            toggleActions: "play reverse play reverse",
+          },
+        }
+      );
+    }, headlineRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <div className="min-h-screen w-full max-w-full flex flex-col bg-[#0C1014] text-light-gray overflow-x-hidden">
@@ -84,16 +112,14 @@ const ProfileLayout = () => {
         <div className="w-full md:w-3/4 p-6 flex flex-col justify-between items-start text-left rounded-xl relative overflow-y-auto flex-grow">
           <div className="flex-grow">
             {!isProjectsVisible ? (
-              <motion.h2
+              <h2
+                ref={headlineRef}
                 className="text-4xl md:text-7xl font-helveticaNowDisplayBlack mb-6 text-mid-gray"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
               >
                 <span className="text-lima">Designer</span> and{" "}
                 <span className="text-lima">Front-End Developer</span>{" "}
                 specializing in visual identity and digital experiences.
-              </motion.h2>
+              </h2>
             ) : (
               <motion.div
                 className="flex flex-wrap gap-4 overflow-y-auto min-h-[60vh]"

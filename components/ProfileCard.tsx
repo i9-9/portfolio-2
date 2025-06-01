@@ -7,7 +7,6 @@ const ProfileCard = () => {
       <p>Designer with experience in websites and applications, dedicated to crafting unique, modern, and tailored experiences.</p>
       <p>Currently studying Graphic Design at the Universidad de Buenos Aires.<br/>
       Sound Technician, trained at TECSON, Buenos Aires.</p>
-      <p >Web Designer at <span className="font-semibold">newtro.xyz</span>.</p>
       <p>Available for freelance web projects.</p>
       <p className="mt-2">If you have any questions, feel free to send me an email.</p>
       <div className="mt-6">
