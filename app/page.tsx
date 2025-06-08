@@ -67,7 +67,7 @@ const ProfileLayout = () => {
           <div>
             <Link href="/">
               <h1
-                className="text-2xl font-helveticaNowDisplayBold mb-6 text-mid-gray cursor-pointer relative"
+                className="text-2xl font-helveticaNowDisplayBold mb-6 text-light-gray cursor-pointer relative"
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
                 onMouseMove={handleMouseMove}
@@ -114,7 +114,7 @@ const ProfileLayout = () => {
             {!isProjectsVisible ? (
               <h2
                 ref={headlineRef}
-                className="text-4xl md:text-7xl font-helveticaNowDisplayBlack mb-6 text-mid-gray"
+                className="text-4xl md:text-7xl font-helveticaNowDisplayBlack mb-6 text-light-gray"
               >
                 <span className="text-lima">Designer</span> and{" "}
                 <span className="text-lima">Front-End Developer</span>{" "}

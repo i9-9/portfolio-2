@@ -22,6 +22,7 @@ html, body {
   src: url('/fonts/HelveticaNowDisplay-Black.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -29,6 +30,7 @@ html, body {
   src: url('/fonts/HelveticaNowText-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -36,6 +38,7 @@ html, body {
   src: url('/fonts/HelveticaNowDisplay-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -43,22 +46,23 @@ html, body {
   src: url('/fonts/HelveticaNowDisplay-Italic.ttf') format('truetype');
   font-weight: 400;
   font-style: italic;
+  font-display: swap;
 }
 
 .font-helveticaNowDisplayBlack {
-  font-family: 'HelveticaNowDisplay-Black', sans-serif;
+  font-family: 'HelveticaNowDisplay-Black', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .font-helveticaNowTextRegular {
-  font-family: 'HelveticaNowText-Regular', sans-serif;
+  font-family: 'HelveticaNowText-Regular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .font-helveticaNowDisplayBold {
-  font-family: 'HelveticaNowDisplay-Bold', sans-serif;
+  font-family: 'HelveticaNowDisplay-Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .font-helveticaNowDisplayItalic {
-  font-family: 'HelveticaNowDisplay-Italic', sans-serif;
+  font-family: 'HelveticaNowDisplay-Italic', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 
@@ -309,6 +313,53 @@ html {
 @layer utilities {
   .animate-slow-spin {
     animation: spin 4s linear infinite; /* Adjust the duration to your liking */
+  }
+}
+
+/* Utility classes for better text visibility */
+.text-visible {
+  color: #E0E0E0 !important;
+  text-shadow: 0 0 1px rgba(224, 224, 224, 0.3);
+}
+
+.text-lima-visible {
+  color: #B2CF53 !important;
+  text-shadow: 0 0 1px rgba(178, 207, 83, 0.3);
+}
+
+/* Force font fallbacks */
+.force-font-fallback {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+/* Ensure text is always visible */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Emergency fallback styles for text visibility */
+.text-lima, .text-lima-visible {
+  color: #B2CF53 !important;
+  font-weight: 500 !important;
+}
+
+.text-light-gray {
+  color: #F5F5F5 !important;
+  font-weight: 400 !important;
+}
+
+.text-mid-gray {
+  color: #E0E0E0 !important;
+  font-weight: 400 !important;
+}
+
+/* Fallback font loading */
+@media (max-width: 768px) {
+  .font-helveticaNowDisplayBlack,
+  .font-helveticaNowTextRegular,
+  .font-helveticaNowDisplayBold {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
   }
 }
 
