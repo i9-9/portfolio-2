@@ -8,10 +8,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        helveticaNowDisplayBlack: ['HelveticaNowDisplay-Black', 'sans-serif'],
-        helveticaNowTextRegular: ['HelveticaNowText-Regular', 'sans-serif'],
-        helveticaNowDisplayBold: ['HelveticaNowDisplay-Bold', 'sans-serif'],
-        helveticaNowDisplayItalic: ['HelveticaNowDisplay-Italic', 'sans-serif'],
+        helveticaNowDisplayBlack: ['HelveticaNowDisplay-Black', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        helveticaNowTextRegular: ['HelveticaNowText-Regular', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        helveticaNowDisplayBold: ['HelveticaNowDisplay-Bold', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        helveticaNowDisplayItalic: ['HelveticaNowDisplay-Italic', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
       },
       fontSize: {
         'h1': ['61.04px', { lineHeight: '64px' }],
@@ -28,8 +28,9 @@ module.exports = {
         'lima': '#B2CF53',
         'bluer': '#535A9B',
         'black': '#0C0F14',
-        'mid-gray': '#B5B5B6',
-        'light-gray': '#D8D8D8',
+        'mid-gray': '#E0E0E0',
+        'light-gray': '#F5F5F5',
+        'gray': '#4A4A4A',
       },
     },
   },
