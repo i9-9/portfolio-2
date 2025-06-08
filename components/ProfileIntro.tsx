@@ -12,16 +12,16 @@ const ProfileIntro = () => (
         Github
       </a>
     </div>
-    <p className="text-sm mb-4 font-helveticaNowTextRegular text-light-gray">
+    <p className="text-sm mb-4 font-helveticaNowTextRegular text-mid-gray">
       Designer with experience in websites and applications, dedicated to crafting unique, modern, and tailored experiences.
     </p>
-    <p className="text-sm mb-2 font-helveticaNowTextRegular text-light-gray">
+    <p className="text-sm mb-2 font-helveticaNowTextRegular text-mid-gray">
       Currently studying Graphic Design at the Universidad de Buenos Aires.
     </p>
-    <h1 className="text-sm mb-2 font-helveticaNowTextRegular text-light-gray">
+    <h1 className="text-sm mb-2 font-helveticaNowTextRegular text-mid-gray">
       Sound Technician, trained at TECSON, Buenos Aires.
     </h1>
-    <p className="text-sm mb-2 font-helveticaNowTextRegular text-light-gray">
+    <p className="text-sm mb-2 font-helveticaNowTextRegular text-mid-gray">
       Available for freelance web projects.
       <br /> If you have any questions, feel free to send me an email.
     </p>

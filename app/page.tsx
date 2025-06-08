@@ -36,6 +36,10 @@ const ProfileLayout = () => {
 
   useEffect(() => {
     if (!headlineRef.current) return;
+    
+    // Ensure text is visible immediately
+    gsap.set(headlineRef.current, { opacity: 1, filter: "blur(0px)" });
+    
     const ctx = gsap.context(() => {
       gsap.fromTo(
         headlineRef.current,
@@ -43,18 +47,14 @@ const ProfileLayout = () => {
         {
           opacity: 1,
           filter: "blur(0px)",
-          duration: 2,
-          delay: 2.2, // splash duration + buffer
+          duration: 1.5,
+          delay: 0.5, // Reduced delay
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: headlineRef.current,
-            start: "top top",
-            end: "+=200",
-            toggleActions: "play reverse play reverse",
-          },
+          // Removed ScrollTrigger to prevent issues
         }
       );
     }, headlineRef);
+    
     return () => ctx.revert();
   }, []);
 
@@ -67,7 +67,7 @@ const ProfileLayout = () => {
           <div>
             <Link href="/">
               <h1
-                className="text-2xl font-helveticaNowDisplayBold mb-6 text-light-gray cursor-pointer relative"
+                className="text-2xl font-helveticaNowDisplayBold mb-6 text-mid-gray cursor-pointer relative"
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
                 onMouseMove={handleMouseMove}
@@ -114,7 +114,7 @@ const ProfileLayout = () => {
             {!isProjectsVisible ? (
               <h2
                 ref={headlineRef}
-                className="text-4xl md:text-7xl font-helveticaNowDisplayBlack mb-6 text-light-gray"
+                className="text-4xl md:text-7xl font-helveticaNowDisplayBlack mb-6 text-mid-gray"
               >
                 <span className="text-lima">Designer</span> and{" "}
                 <span className="text-lima">Front-End Developer</span>{" "}
