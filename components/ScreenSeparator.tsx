@@ -5,14 +5,23 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const ScreenSeparator = () => {
   const [isVisible, setIsVisible] = useState(true);
+  const [iconVisible, setIconVisible] = useState(true);
   const image = "/anim/logo1.png";  // Path to the single image
 
   useEffect(() => {
+    // Start icon fade out animation 500ms before the separator disappears
+    const iconTimer = setTimeout(() => {
+      setIconVisible(false);
+    }, 2500);
+
     const timer = setTimeout(() => {
       setIsVisible(false);
     }, 3000); // Duration of the separator (3 seconds)
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(iconTimer);
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
@@ -33,22 +42,42 @@ const ScreenSeparator = () => {
             exit={{ opacity: 0 }}  // Fade out to opacity 0
             transition={{ opacity: { duration: 0.3, ease: "easeInOut" } }}  // Fade transition with smoother ease
           >
-            {/* Spinning Image */}
-            <motion.img
-              src={image}  // Single image path
-              alt="Ivan Nevares Portfolio - Loading Logo Animation"
-              className="w-32 h-32"  // Adjust the size as necessary
-              animate={{
-                rotate: 360,
-              }}
-              transition={{
-                repeat: Infinity,
-                duration: 3 , // Adjust the speed of the spin
-                ease: [0.2, 0.8, 0.2, 1],  // Custom cubic bezier curve for smooth acceleration
-                repeatType: "loop", // Ensures continuous loop
-                repeatDelay: 0, // No delay between repeat cycles
-              }}
-            />
+            <AnimatePresence>
+              {iconVisible && (
+                <motion.img
+                  src={image}  // Single image path
+                  alt="Ivan Nevares Portfolio - Loading Logo Animation"
+                  className="w-32 h-32"  // Adjust the size as necessary
+                  initial={{
+                    filter: "blur(8px)",
+                    rotate: 0,
+                    y: 0,
+                    opacity: 1
+                  }}
+                  animate={{
+                    filter: "blur(0px)",
+                    rotate: 360,
+                    y: 0,
+                    opacity: 1
+                  }}
+                  exit={{
+                    y: 20,
+                    opacity: 0
+                  }}
+                  transition={{
+                    filter: { duration: 1.2, ease: "easeOut" }, // Blur animation
+                    rotate: {
+                      repeat: Infinity,
+                      duration: 3, // Adjust the speed of the spin
+                      ease: [0.2, 0.8, 0.2, 1],  // Custom cubic bezier curve for smooth acceleration
+                      repeatType: "loop", // Ensures continuous loop
+                      repeatDelay: 0, // No delay between repeat cycles
+                    },
+                    exit: { duration: 0.5, ease: "easeOut" }
+                  }}
+                />
+              )}
+            </AnimatePresence>
           </motion.div>
         </motion.div>
       )}

@@ -145,7 +145,7 @@ const ProfileLayout = () => {
         </div>
       </div>
 
-      <footer className="p-4 border-t border-gray-700 text-xs text-gray-500 flex justify-between w-full">
+      <footer className="p-4 border-t border-mid-gray/50 text-xs text-gray-500 flex justify-between w-full">
         <div>{currentYear}</div>
         <div>UX/UI - Web Design - Front-End Development - Graphic Design</div>
       </footer>
