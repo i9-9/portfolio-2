@@ -24,14 +24,21 @@ const GeometricFlowCard = () => {
   }, []);
 
   // Configuración para halftone grid (basado en tu original)
-  const config = useMemo(() => ({
-    GRID_SIZE: 32,
-    CELL_SIZE: 10,
-    get CONTAINER_SIZE() { return this.GRID_SIZE * this.CELL_SIZE; },
-    get PARTICLE_COUNT() { return this.GRID_SIZE * this.GRID_SIZE; },
-    MIN_SIZE: 0.006,
-    MAX_SIZE: 0.016,
-  }), []);
+  const config = useMemo(() => {
+    const GRID_SIZE = 32;
+    const CELL_SIZE = 10;
+    const CONTAINER_SIZE = GRID_SIZE * CELL_SIZE;
+    const PARTICLE_COUNT = GRID_SIZE * GRID_SIZE;
+    
+    return {
+      GRID_SIZE,
+      CELL_SIZE,
+      CONTAINER_SIZE,
+      PARTICLE_COUNT,
+      MIN_SIZE: 0.006,
+      MAX_SIZE: 0.016,
+    };
+  }, []);
 
   // Inicializar Three.js para halftone dots
   const initThreeJS = () => {
@@ -254,7 +261,7 @@ const GeometricFlowCard = () => {
     
     const startAnimation = () => {
       const animateLoop = (currentTime: number) => {
-        if (!sceneRef.current || !rendererRef.current || !isVisible) return;
+        if (!sceneRef.current || !rendererRef.current || !cameraRef.current || !isVisible) return;
 
         if (!startTimeRef.current) startTimeRef.current = currentTime;
         const deltaTime = (currentTime - startTimeRef.current) / 1000;
@@ -303,15 +310,20 @@ const GeometricFlowCard = () => {
       // Cleanup Three.js
       if (rendererRef.current) {
         try {
+          const currentContainer = containerRef.current;
           if (sceneRef.current) sceneRef.current.clear();
           if (particlesRef.current) {
             particlesRef.current.geometry.dispose();
-            particlesRef.current.material.dispose();
+            if (particlesRef.current.material instanceof THREE.Material) {
+              particlesRef.current.material.dispose();
+            } else if (Array.isArray(particlesRef.current.material)) {
+              particlesRef.current.material.forEach(mat => mat.dispose());
+            }
           }
           
           const canvas = rendererRef.current.domElement;
-          if (canvas && containerRef.current && containerRef.current.contains(canvas)) {
-            containerRef.current.removeChild(canvas);
+          if (canvas && currentContainer && currentContainer.contains(canvas)) {
+            currentContainer.removeChild(canvas);
           }
           
           rendererRef.current.dispose();
@@ -325,7 +337,7 @@ const GeometricFlowCard = () => {
         materialRef.current = undefined;
       }
     };
-  }, [isMounted, isVisible]);
+  }, [isMounted, isVisible, initThreeJS, updateHalftonePattern]);
 
   if (!isMounted) return null;
 
