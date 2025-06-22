@@ -44,38 +44,38 @@ const ScreenSeparator = () => {
           >
             <AnimatePresence>
               {iconVisible && (
-                <motion.img
-                  src={image}  // Single image path
-                  alt="Ivan Nevares Portfolio - Loading Logo Animation"
-                  className="w-32 h-32"  // Adjust the size as necessary
+            <motion.img
+              src={image}  // Single image path
+              alt="Ivan Nevares Portfolio - Loading Logo Animation"
+              className="w-32 h-32"  // Adjust the size as necessary
                   initial={{
                     filter: "blur(8px)",
                     rotate: 0,
                     y: 0,
                     opacity: 1
                   }}
-                  animate={{
+              animate={{
                     filter: "blur(0px)",
-                    rotate: 360,
+                rotate: 360,
                     y: 0,
                     opacity: 1
                   }}
                   exit={{
                     y: 20,
                     opacity: 0
-                  }}
-                  transition={{
+              }}
+              transition={{
                     filter: { duration: 1.2, ease: "easeOut" }, // Blur animation
                     rotate: {
-                      repeat: Infinity,
+                repeat: Infinity,
                       duration: 3, // Adjust the speed of the spin
-                      ease: [0.2, 0.8, 0.2, 1],  // Custom cubic bezier curve for smooth acceleration
-                      repeatType: "loop", // Ensures continuous loop
-                      repeatDelay: 0, // No delay between repeat cycles
+                ease: [0.2, 0.8, 0.2, 1],  // Custom cubic bezier curve for smooth acceleration
+                repeatType: "loop", // Ensures continuous loop
+                repeatDelay: 0, // No delay between repeat cycles
                     },
                     exit: { duration: 0.5, ease: "easeOut" }
-                  }}
-                />
+              }}
+            />
               )}
             </AnimatePresence>
           </motion.div>

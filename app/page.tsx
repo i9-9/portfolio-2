@@ -11,6 +11,14 @@ import { projects } from "./data/projects";
 import { IoChevronDownOutline } from "react-icons/io5";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ProfileCard from "@/components/ProfileCard";
+import Work from "@/components/Work";
+import Footer from "@/components/Footer";
+import { Separator } from "@/components/ui/separator";
+import ProjectGrid from "@/components/ProjectGrid";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 gsap.registerPlugin(ScrollTrigger);
 
 const currentYear = new Date().getFullYear();
@@ -59,96 +67,144 @@ const ProfileLayout = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full max-w-full flex flex-col bg-[#0C1014] text-light-gray overflow-x-hidden">
-      <ScreenSeparator />
-      <div className="flex-grow flex flex-col md:flex-row bg-[#3D3D3E] rounded-xl m-4 border border-mid-gray/50 relative overflow-hidden">
-        {/* Sidebar */}
-        <div className="w-full md:w-1/4 px-6 md:px-6 py-6 flex flex-col justify-between md:border-r border-mid-gray/50 h-auto md:h-full relative">
-          <div>
-            <Link href="/">
-              <h1
-                className="text-2xl font-helveticaNowDisplayBold mb-6 text-mid-gray cursor-pointer relative"
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
-                onMouseMove={handleMouseMove}
-              >
-                Iván Nevares
-              </h1>
-            </Link>
-          </div>
-
-          {/* Floating Image */}
-          <FloatingImage hovered={hovered} position={position} imageSrc="/profile.jpeg" />
-
-          {/* Info Section for Mobile */}
-          <div className="md:hidden border-b border-t border-mid-gray/50 -mx-6 px-6 py-4">
-            <button
-              onClick={toggleInfo}
-              className="text-lima w-full text-left py-2 px-4 flex items-center justify-between border border-mid-gray/50 rounded-md"
-            >
-              Info
-              <motion.span
-                animate={{ rotate: isInfoVisible ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <IoChevronDownOutline size={20} />
-              </motion.span>
-            </button>
-            <motion.div
-              className={`overflow-hidden ${
-                isInfoVisible ? "max-h-[500px]" : "max-h-0"
-              } transition-all duration-300`}
-            >
-              <ProfileIntro />
-            </motion.div>
-          </div>
-          {/* Info remains the same for desktop */}
-          <div className="hidden md:block border-b border-t border-mid-gray md:border-none -mx-6 px-6 pt-4">
-            <ProfileIntro />
-          </div>
-        </div>
-
+    <div className="min-h-screen bg-background">
+      <div className="grid-container pt-[120px] pb-[96px]">
         {/* Main Content */}
-        <div className="w-full md:w-3/4 p-6 flex flex-col justify-between items-start text-left rounded-xl relative overflow-y-auto flex-grow">
-          <div className="flex-grow">
-            {!isProjectsVisible ? (
-              <h2
-                ref={headlineRef}
-                className="text-4xl md:text-7xl font-helveticaNowDisplayBlack mb-6 text-mid-gray"
-              >
-                <span className="text-lima">Designer</span> and{" "}
-                <span className="text-lima">Front-End Developer</span>{" "}
-                specializing in visual identity and digital experiences.
-              </h2>
-            ) : (
-              <motion.div
-                className="flex flex-wrap gap-4 overflow-y-auto min-h-[60vh]"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                {projects.map((project, index) => (
-                  <ProjectCard key={index} project={project} index={index} />
-                ))}
-              </motion.div>
-            )}
-          </div>
+        <div className="col-span-6 col-start-1">
+          <section className="mb-[160px]">
+            <h1 className="mb-8">
+              Designer & Developer crafting unique digital experiences
+            </h1>
+            <p className="text-xl max-w-[46ch]">
+              Working as a freelance web developer.
+              <br/>Focused on creating modern, user-centered digital solutions.
+            </p>
+          </section>
 
-          {/* Toggle Button */}
-          <motion.button
-            onClick={handleToggleView}
-            className="bg-gray border-mid-gray/50 border text-lima drop-shadow-sm py-2 px-6 rounded-md z-10 mt-4 hover:bg-bluer/80 self-end transition-all duration-500"
-            transition={{ duration: 0.3 }}
-          >
-            {isProjectsVisible ? "Back to Intro" : "Show Projects"}
-          </motion.button>
+          <section id="work">
+            <h2 className="mb-[96px]">Selected Work</h2>
+            <div className="space-y-[96px]">
+              <article className="project-card">
+                <div className="project-title">
+                  <h3>Kostüme</h3>
+                </div>
+                <div className="project-content">
+                  <h4 className="text-xl mb-3">Fashion E-commerce</h4>
+                  <p className="mb-4">
+                    {projects[1].description}
+                  </p>
+                  <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <a href={projects[1].anchor} target="_blank" rel="noopener noreferrer">
+                      Visit Website
+                      <ArrowRightIcon className="w-4 h-4" />
+                    </a>
+                  </Button>
+                </div>
+              </article>
+
+              <article className="project-card">
+                <div className="project-title">
+                  <h3>El Desenfreno</h3>
+                </div>
+                <div className="project-content">
+                  <h4 className="text-xl mb-3">Independent Publishing House</h4>
+                  <p className="mb-4">
+                    {projects[0].description}
+                  </p>
+                  <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <a href={projects[0].anchor} target="_blank" rel="noopener noreferrer">
+                      Visit Website
+                      <ArrowRightIcon className="w-4 h-4" />
+                    </a>
+                  </Button>
+                </div>
+              </article>
+
+              <article className="project-card">
+                <div className="project-title">
+                  <h3>Vino Rodante</h3>
+                </div>
+                <div className="project-content">
+                  <h4 className="text-xl mb-3">Wine E-commerce</h4>
+                  <p className="mb-4">
+                    {projects[2].description}
+                  </p>
+                  <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <a href={projects[2].anchor} target="_blank" rel="noopener noreferrer">
+                      Visit Website
+                      <ArrowRightIcon className="w-4 h-4" />
+                    </a>
+                  </Button>
+                </div>
+              </article>
+            </div>
+          </section>
         </div>
-      </div>
 
-      <footer className="p-4 border-t border-mid-gray/50 text-xs text-gray-500 flex justify-between w-full">
-        <div>{currentYear}</div>
-        <div>UX/UI - Web Design - Front-End Development - Graphic Design</div>
-      </footer>
+        {/* Sidebar - aligned with main content */}
+        <aside className="col-span-3 col-start-10 sticky top-[120px] self-start">
+          <section id="about" className="focus-section">
+            <h2 className="focus-title">Focus</h2>
+            <div className="space-y-8">
+              <div className="focus-category">
+                <h3 className="uppercase-title">Development</h3>
+                <div className="badge-container">
+                  <Badge variant="outline" className="skill-badge">React</Badge>
+                  <Badge variant="outline" className="skill-badge">Next.js</Badge>
+                  <Badge variant="outline" className="skill-badge">TypeScript</Badge>
+                </div>
+              </div>
+              <div className="focus-category">
+                <h3 className="uppercase-title">Design</h3>
+                <div className="badge-container">
+                  <Badge variant="outline" className="skill-badge">UI/UX</Badge>
+                  <Badge variant="outline" className="skill-badge">Typography</Badge>
+                  <Badge variant="outline" className="skill-badge">Grid Systems</Badge>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <Separator className="my-8" />
+
+          <section className="space-y-6">
+            <h2 className="focus-title">Contact</h2>
+            <div className="space-y-4">
+              <a 
+                href="mailto:ivannevares9@gmail.com" 
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                ivannevares9@gmail.com
+              </a>
+              <a 
+                href="https://www.linkedin.com/in/ivan-nevares/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                LinkedIn
+              </a>
+              <a 
+                href="https://github.com/i9-9" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                GitHub
+              </a>
+              <a 
+                href="https://dribbble.com/i9i9" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Dribbble
+              </a>
+            </div>
+          </section>
+        </aside>
+      </div>
+      <Footer />
     </div>
   );
 };

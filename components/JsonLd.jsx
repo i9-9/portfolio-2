@@ -8,8 +8,9 @@ export default function JsonLd() {
     "jobTitle": "UX/UI Designer & Front-End Developer",
     "description": "Portfolio of Ivan Nevares, a creative UX/UI Designer and Front-End Developer specializing in visual identity, digital experiences, and web development.",
     "sameAs": [
-      "https://linkedin.com/in/inevares", // Replace with your actual LinkedIn
-      "https://github.com/inevares", // Replace with your actual GitHub
+      "https://github.com/i9-9", // GitHub profile
+      "https://dribbble.com/i9i9", // Dribbble profile
+      "https://linkedin.com/in/ivan-nevares" // LinkedIn profile
     ],
     "mainEntityOfPage": {
       "@type": "WebPage",
