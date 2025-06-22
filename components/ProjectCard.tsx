@@ -1,5 +1,8 @@
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 type ProjectProps = {
   project: {
@@ -7,7 +10,7 @@ type ProjectProps = {
     description: string;
     image: string;
     anchor: string;
-    tag?: string; // Optional tag
+    tag?: string;
   };
   index: number;
 };
@@ -15,42 +18,52 @@ type ProjectProps = {
 const ProjectCard: React.FC<ProjectProps> = ({ project, index }) => {
   return (
     <motion.div
-    initial={{ opacity: 0, filter: "blur(10px)" }}
-    animate={{ opacity: 1, filter: "blur(0)" }}
-    transition={{ delay: index * 0.15, duration: 0.8, ease: "easeInOut" }}
-    className="bg-[#070707] rounded-lg p-4 w-full sm:w-1/2 md:w-1/3 border border-mid-gray/40 transition-transform duration-300 ease-in-out"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: index * 0.15, duration: 0.8, ease: "easeInOut" }}
+      className="w-full group"
     >
-      {/* Imagen del proyecto */}
-      <Image
-        src={project.image}
-        alt={project.title}
-        layout="responsive"
-        width={16}
-        height={9}
-        className="w-full h-48 object-cover rounded-lg mb-4"
-      />
-
-      {/* Etiqueta opcional */}
-      {project.tag && (
-        <span className="bg-lima text-black text-sm px-2 py-1 rounded-full inline-block mb-2">
-          {project.tag}
-        </span>
-      )}
-
-      {/* Título y descripción */}
-      <h2 className="text-white font-bold text-xl">{project.title}</h2>
-      <p className="text-gray-400 text-sm">{project.description}</p>
-
-      {/* Enlace para ver el proyecto */}
-      <a
-        href={project.anchor}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`View ${project.title} project`}
-        className="text-lima mt-2 inline-block hover-underline-animation text-xs "
-      >
-        View Project
-      </a>
+      <Card className="w-full border-none bg-transparent hover:bg-accent/5 transition-colors">
+        <CardContent className="p-6">
+          <div className="flex flex-col space-y-1">
+            <div className="flex justify-between items-start">
+              <CardTitle className="text-xl text-white">{project.title}</CardTitle>
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Button 
+                    variant="link" 
+                    className="text-lima p-0 h-auto font-normal text-sm"
+                    asChild
+                  >
+                    <a 
+                      href={project.anchor}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1"
+                    >
+                      View Project
+                      <ArrowRightIcon className="w-4 h-4" />
+                    </a>
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80">
+                  <div className="flex justify-between space-x-4">
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-semibold">{project.title}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Click to view the live project
+                      </p>
+                    </div>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            </div>
+            <CardDescription className="text-gray-400">
+              {project.description}
+            </CardDescription>
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 };

@@ -1,17 +1,12 @@
-import Link from 'next/link'
-import React from 'react'
+import { motion } from "framer-motion";
 
-const Footer = () => {
+export default function Footer() {
   return (
-    <footer className='py-1 md:pb-2  px-4 z-10 w-full'>
-      <div className='mx-auto text-center flex items-center justify-between border-t-[1px] border-b-[1px] border-solid border-mid-gray/50 '>
-        <h5 className='text-verde font-light text-sm'>☯ {new Date().getFullYear() }</h5>
-        <Link href='/'>
-          <h6 className='font-bold text-verde text-md'>I / N</h6>
-        </Link>
-      </div>
-    </footer>
-  )
+    <motion.footer 
+      className="h-24"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    />
+  );
 }
-
-export default Footer
