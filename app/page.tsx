@@ -72,28 +72,28 @@ const ProfileLayout = () => {
         {/* Main Content */}
         <div className="col-span-6 col-start-1">
           <section className="mb-[160px]">
-            <h1 className="mb-8">
+            <h1 className="mb-8 font-helveticaNowDisplayBold">
               Designer & Developer crafting unique digital experiences
             </h1>
-            <p className="text-xl max-w-[46ch]">
+            <p className="text-lg max-w-[46ch] font-helveticaNowTextRegular">
               Working as a freelance web developer.
               <br/>Focused on creating modern, user-centered digital solutions.
             </p>
           </section>
 
           <section id="work">
-            <h2 className="mb-[96px]">Selected Work</h2>
+            <h2 className="mb-[96px] font-helveticaNowDisplayBold">Selected Work</h2>
             <div className="space-y-[96px]">
               <article className="project-card">
                 <div className="project-title">
-                  <h3>Kostüme</h3>
+                  <h3 className="font-helveticaNowDisplayBold">Kostüme</h3>
                 </div>
                 <div className="project-content">
-                  <h4 className="text-xl mb-3">Fashion E-commerce</h4>
-                  <p className="mb-4">
+                  <h4 className="text-xl mb-3 font-helveticaNowDisplayBold">Fashion E-commerce</h4>
+                  <p className="mb-4 font-helveticaNowTextRegular">
                     {projects[1].description}
                   </p>
-                  <Button variant="outline" size="sm" className="gap-2" asChild>
+                  <Button variant="outline" size="sm" className="gap-2 font-helveticaNowTextRegular" asChild>
                     <a href={projects[1].anchor} target="_blank" rel="noopener noreferrer">
                       Visit Website
                       <ArrowRightIcon className="w-4 h-4" />
@@ -104,14 +104,14 @@ const ProfileLayout = () => {
 
               <article className="project-card">
                 <div className="project-title">
-                  <h3>El Desenfreno</h3>
+                  <h3 className="font-helveticaNowDisplayBold">El Desenfreno</h3>
                 </div>
                 <div className="project-content">
-                  <h4 className="text-xl mb-3">Independent Publishing House</h4>
-                  <p className="mb-4">
+                  <h4 className="text-xl mb-3 font-helveticaNowDisplayBold">Independent Publishing House</h4>
+                  <p className="mb-4 font-helveticaNowTextRegular">
                     {projects[0].description}
                   </p>
-                  <Button variant="outline" size="sm" className="gap-2" asChild>
+                  <Button variant="outline" size="sm" className="gap-2 font-helveticaNowTextRegular" asChild>
                     <a href={projects[0].anchor} target="_blank" rel="noopener noreferrer">
                       Visit Website
                       <ArrowRightIcon className="w-4 h-4" />
@@ -122,14 +122,14 @@ const ProfileLayout = () => {
 
               <article className="project-card">
                 <div className="project-title">
-                  <h3>Vino Rodante</h3>
+                  <h3 className="font-helveticaNowDisplayBold">Vino Rodante</h3>
                 </div>
                 <div className="project-content">
-                  <h4 className="text-xl mb-3">Wine E-commerce</h4>
-                  <p className="mb-4">
+                  <h4 className="text-xl mb-3 font-helveticaNowDisplayBold">Wine E-commerce</h4>
+                  <p className="mb-4 font-helveticaNowTextRegular">
                     {projects[2].description}
                   </p>
-                  <Button variant="outline" size="sm" className="gap-2" asChild>
+                  <Button variant="outline" size="sm" className="gap-2 font-helveticaNowTextRegular" asChild>
                     <a href={projects[2].anchor} target="_blank" rel="noopener noreferrer">
                       Visit Website
                       <ArrowRightIcon className="w-4 h-4" />
@@ -144,22 +144,22 @@ const ProfileLayout = () => {
         {/* Sidebar - aligned with main content */}
         <aside className="col-span-3 col-start-10 sticky top-[120px] self-start">
           <section id="about" className="focus-section">
-            <h2 className="focus-title">Focus</h2>
+            <h2 className="focus-title font-helveticaNowDisplayBold">Focus</h2>
             <div className="space-y-8">
               <div className="focus-category">
-                <h3 className="uppercase-title">Development</h3>
+                <h3 className="uppercase-title font-helveticaNowDisplayBold">Development</h3>
                 <div className="badge-container">
-                  <Badge variant="outline" className="skill-badge">React</Badge>
-                  <Badge variant="outline" className="skill-badge">Next.js</Badge>
-                  <Badge variant="outline" className="skill-badge">TypeScript</Badge>
+                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">React</Badge>
+                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">Next.js</Badge>
+                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">TypeScript</Badge>
                 </div>
               </div>
               <div className="focus-category">
-                <h3 className="uppercase-title">Design</h3>
+                <h3 className="uppercase-title font-helveticaNowDisplayBold">Design</h3>
                 <div className="badge-container">
-                  <Badge variant="outline" className="skill-badge">UI/UX</Badge>
-                  <Badge variant="outline" className="skill-badge">Typography</Badge>
-                  <Badge variant="outline" className="skill-badge">Grid Systems</Badge>
+                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">UI/UX</Badge>
+                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">Typography</Badge>
+                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">Grid Systems</Badge>
                 </div>
               </div>
             </div>
@@ -168,11 +168,11 @@ const ProfileLayout = () => {
           <Separator className="my-8" />
 
           <section className="space-y-6">
-            <h2 className="focus-title">Contact</h2>
+            <h2 className="focus-title font-helveticaNowDisplayBold">Contact</h2>
             <div className="space-y-4">
               <a 
                 href="mailto:ivannevares9@gmail.com" 
-                className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular"
               >
                 ivannevares9@gmail.com
               </a>
@@ -180,7 +180,7 @@ const ProfileLayout = () => {
                 href="https://www.linkedin.com/in/ivan-nevares/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular"
               >
                 LinkedIn
               </a>
@@ -188,7 +188,7 @@ const ProfileLayout = () => {
                 href="https://github.com/i9-9" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular"
               >
                 GitHub
               </a>
@@ -196,7 +196,7 @@ const ProfileLayout = () => {
                 href="https://dribbble.com/i9i9" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular"
               >
                 Dribbble
               </a>
