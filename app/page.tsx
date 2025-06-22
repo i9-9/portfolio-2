@@ -112,30 +112,18 @@ const ProfileLayout = () => {
               <div className="space-y-3">
                 <h3 className="text-sm font-helveticaNowDisplayBold">{t('focus.development')}</h3>
                 <div className="flex flex-wrap gap-2">
-                  <div className="border border-border rounded-sm px-3 py-1">
-                    <span className="text-[9px] tracking-[0.2em] uppercase">React</span>
-                  </div>
-                  <div className="border border-border rounded-sm px-3 py-1">
-                    <span className="text-[9px] tracking-[0.2em] uppercase">Next.js</span>
-                  </div>
-                  <div className="border border-border rounded-sm px-3 py-1">
-                    <span className="text-[9px] tracking-[0.2em] uppercase">TypeScript</span>
-                  </div>
+                  <Badge variant="outline" className="text-[9px] tracking-[0.2em] uppercase">React</Badge>
+                  <Badge variant="outline" className="text-[9px] tracking-[0.2em] uppercase">Next.js</Badge>
+                  <Badge variant="outline" className="text-[9px] tracking-[0.2em] uppercase">TypeScript</Badge>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <h3 className="text-sm font-helveticaNowDisplayBold">{t('focus.design')}</h3>
                 <div className="flex flex-wrap gap-2">
-                  <div className="border border-border rounded-sm px-3 py-1">
-                    <span className="text-[9px] tracking-[0.2em] uppercase">UX/UI</span>
-                  </div>
-                  <div className="border border-border rounded-sm px-3 py-1">
-                    <span className="text-[9px] tracking-[0.2em] uppercase">Adobe</span>
-                  </div>
-                  <div className="border border-border rounded-sm px-3 py-1">
-                    <span className="text-[9px] tracking-[0.2em] uppercase">Figma</span>
-                  </div>
+                  <Badge variant="outline" className="text-[9px] tracking-[0.2em] uppercase">UX/UI</Badge>
+                  <Badge variant="outline" className="text-[9px] tracking-[0.2em] uppercase">Adobe</Badge>
+                  <Badge variant="outline" className="text-[9px] tracking-[0.2em] uppercase">Figma</Badge>
                 </div>
               </div>
             </div>
