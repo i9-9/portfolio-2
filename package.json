@@ -22,7 +22,7 @@
     "clsx": "^2.1.1",
     "eslint": "8.33.0",
     "firebase": "^9.17.1",
-    "framer-motion": "^9.0.2",
+    "framer-motion": "^9.1.7",
     "gray-matter": "^4.0.3",
     "gsap": "^3.13.0",
     "lucide-react": "^0.522.0",
