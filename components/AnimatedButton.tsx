@@ -1,56 +1,44 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { motion } from "framer-motion";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface AnimatedButtonProps {
   href: string;
 }
 
-export const AnimatedButton = ({ href }: AnimatedButtonProps) => {
-  const [isHovered, setIsHovered] = useState(false);
+export function AnimatedButton({ href }: AnimatedButtonProps) {
+  const { t } = useLanguage();
 
   return (
-    <Button 
-      variant="outline" 
-      size="sm" 
-      className="font-helveticaNowTextRegular"
-      asChild
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+    <motion.a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative inline-flex items-center justify-center overflow-hidden rounded-sm border border-border px-3 py-1 group"
+      whileHover="hover"
+      initial="initial"
     >
-      <a href={href} target="_blank" rel="noopener noreferrer" className="flex items-center">
-        <div className="relative overflow-hidden w-[105px] h-[24px]">
-          <AnimatePresence mode="wait">
-            {isHovered ? (
-              <motion.div
-                key="hover"
-                initial={{ x: "-100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="absolute inset-0 flex items-center whitespace-nowrap"
-              >
-                Visit website
-              </motion.div>
-            ) : (
-              <motion.div
-                key="default"
-                initial={{ x: "-100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="absolute inset-0 flex items-center whitespace-nowrap"
-              >
-                Visit website
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-        <ArrowRightIcon className="w-4 h-4 ml-2" />
-      </a>
-    </Button>
+      <motion.span
+        className="relative text-[9px] tracking-[0.2em] uppercase font-helveticaNowTextRegular"
+        variants={{
+          initial: { x: "0%" },
+          hover: { x: "-100%" }
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
+        {t('button.visit')}
+      </motion.span>
+      <motion.span
+        className="absolute text-[9px] tracking-[0.2em] uppercase font-helveticaNowTextRegular"
+        variants={{
+          initial: { x: "100%" },
+          hover: { x: "0%" }
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
+        {t('button.visit')}
+      </motion.span>
+    </motion.a>
   );
-}; 
+} 
