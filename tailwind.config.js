@@ -17,34 +17,9 @@ module.exports = {
   	},
   	extend: {
   		fontFamily: {
-  			helveticaNowDisplayBlack: [
-  				'HelveticaNowDisplay-Black',
-  				'Helvetica Neue',
-  				'Helvetica',
-  				'Arial',
-  				'sans-serif'
-  			],
-  			helveticaNowTextRegular: [
-  				'HelveticaNowText-Regular',
-  				'Helvetica Neue',
-  				'Helvetica',
-  				'Arial',
-  				'sans-serif'
-  			],
-  			helveticaNowDisplayBold: [
-  				'HelveticaNowDisplay-Bold',
-  				'Helvetica Neue',
-  				'Helvetica',
-  				'Arial',
-  				'sans-serif'
-  			],
-  			helveticaNowDisplayItalic: [
-  				'HelveticaNowDisplay-Italic',
-  				'Helvetica Neue',
-  				'Helvetica',
-  				'Arial',
-  				'sans-serif'
-  			]
+  			sans: ['var(--font-helvetica-now)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
+  			display: ['var(--font-helvetica-now)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
+  			text: ['var(--font-helvetica-now-text)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
   		},
   		fontSize: {
   			h1: [
@@ -103,10 +78,6 @@ module.exports = {
   			]
   		},
   		colors: {
-  			lima: '#B3CF54',
-  			bluer: '#4A55A2',
-  			verde: '#B3CF54',
-  			gris_oscuro: '#3D3D3E',
   			'mid-gray': '#6B7280',
   			'light-gray': '#D8D8D8',
   			gray: '#4A4A4A',

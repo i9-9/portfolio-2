@@ -374,7 +374,10 @@ const BrandForm = () => {
               Info
               <motion.span
                 animate={{ rotate: isInfoVisible ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ 
+                  duration: 0.4,
+                  ease: [0.4, 0, 0.2, 1]
+                }}
               >
                 <IoChevronDownOutline size={20} />
               </motion.span>
@@ -382,7 +385,20 @@ const BrandForm = () => {
             <motion.div
               className={`overflow-hidden ${
                 isInfoVisible ? "max-h-[500px]" : "max-h-0"
-              } transition-all duration-300`}
+              }`}
+              initial={false}
+              animate={{
+                maxHeight: isInfoVisible ? "500px" : "0px",
+                opacity: isInfoVisible ? 1 : 0
+              }}
+              transition={{
+                duration: 0.5,
+                ease: [0.4, 0, 0.2, 1],
+                opacity: {
+                  duration: 0.3,
+                  ease: "easeInOut"
+                }
+              }}
             >
               <ProfileIntro />
             </motion.div>

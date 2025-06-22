@@ -1,38 +1,52 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/react'
-import JsonLd from '../components/JsonLd'
-import Link from 'next/link'
-
-const inter = Inter({ subsets: ['latin'] })
+import { ClientLayout } from '@/components/ClientLayout'
+import { ThemeProvider } from "@/lib/theme/ThemeContext";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
+import { Analytics } from "@vercel/analytics/react";
+import { helveticaNow, helveticaNowText, inter } from "@/lib/fonts";
 
 export const metadata: Metadata = {
-  title: 'Ivan Nevares - Designer & Developer',
-  description: 'Portfolio of Ivan Nevares, a designer and developer crafting unique digital experiences.',
-  keywords: 'Ivan Nevares, Web Developer, Designer, UI/UX, Portfolio, Next.js, React',
+  title: 'Ivan Nevares - UX/UI Designer & Front-End Developer',
+  description: 'Portfolio of Ivan Nevares, a UX/UI Designer and Front-End Developer based in Buenos Aires, Argentina. Specializing in creating unique digital experiences.',
+  keywords: [
+    'Ivan Nevares',
+    'UX Designer',
+    'UI Designer',
+    'Front-End Developer',
+    'Web Developer',
+    'Portfolio',
+    'Buenos Aires',
+    'Argentina',
+  ],
   authors: [{ name: 'Ivan Nevares' }],
   openGraph: {
-    title: 'Ivan Nevares - Designer & Developer',
-    description: 'Portfolio of Ivan Nevares, a designer and developer crafting unique digital experiences.',
+    title: 'Ivan Nevares - UX/UI Designer & Front-End Developer',
+    description: 'Portfolio of Ivan Nevares, a UX/UI Designer and Front-End Developer based in Buenos Aires, Argentina. Specializing in creating unique digital experiences.',
     url: 'https://ivannevares.com',
     siteName: 'Ivan Nevares Portfolio',
-    images: [
-      {
-        url: '/logo_rrss.png',
-        width: 1200,
-        height: 630,
-        alt: 'Ivan Nevares Portfolio'
-      }
-    ],
     locale: 'en_US',
     type: 'website',
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   twitter: {
+    title: 'Ivan Nevares - UX/UI Designer & Front-End Developer',
     card: 'summary_large_image',
-    title: 'Ivan Nevares - Designer & Developer',
-    description: 'Portfolio of Ivan Nevares, a designer and developer crafting unique digital experiences.',
-    images: ['/logo_rrss.png'],
+  },
+  verification: {
+    google: 'google',
+    yandex: 'yandex',
+    yahoo: 'yahoo',
   },
 }
 
@@ -42,70 +56,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <link
-          rel="preload"
-          href="/fonts/HelveticaNowDisplay-Black.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/HelveticaNowText-Regular.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/HelveticaNowDisplay-Bold.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="icon"
-          href="/favicon_v2.ico"
-          type="image/x-icon"
-          sizes="16x16"
-        />
-        <JsonLd />
+        <link rel="icon" href="/favicon_v2.ico" />
       </head>
-      <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased`}>
-        <header className="fixed top-0 left-0 right-0 bg-nav/80 backdrop-blur-sm z-50">
-          <div className="max-w-[1600px] mx-auto grid grid-cols-12 px-12">
-            <div className="col-span-6 h-[24px] flex items-center">
-              <a href="/" className="text-[9px] tracking-[0.2em] uppercase">Ivan Nevares</a>
-            </div>
-            <nav className="col-span-3 col-start-10 h-[24px] flex items-center justify-end">
-              <ul className="flex gap-6">
-                <li>
-                  <Link 
-                    href="/#work" 
-                    className="text-[9px] text-muted-foreground hover:text-foreground transition-colors tracking-[0.2em] uppercase"
-                    scroll={true}
-                  >
-                    Work
-                  </Link>
-                </li>
-                <li>
-                  <a 
-                    href="/CV_Ivan_Nevares.pdf"
-                    download="CV_Ivan_Nevares.pdf"
-                    className="text-[9px] text-muted-foreground hover:text-foreground transition-colors tracking-[0.2em] uppercase"
-                  >
-                    CV
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </header>
-        <main className="relative">
-          {children}
-        </main>
+      <body className={`${helveticaNow.className} ${helveticaNowText.className} ${inter.className} font-sans bg-background text-foreground`}>
+        <ThemeProvider>
+          <LanguageProvider>
+            <ClientLayout>
+              {children}
+            </ClientLayout>
+          </LanguageProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

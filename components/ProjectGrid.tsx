@@ -28,8 +28,8 @@ const ProjectGrid = () => {
           className={`col-span-9 ${project.cols} space-y-4`}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: index * 0.2 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5 }}
         >
           <Link href={project.link} className="block group">
             <div className="relative aspect-[4/3] bg-accent/5 rounded-none overflow-hidden">
@@ -37,7 +37,10 @@ const ProjectGrid = () => {
                 src={project.image}
                 alt={project.title}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+                quality={75}
               />
             </div>
             <div className="mt-4">
@@ -46,7 +49,7 @@ const ProjectGrid = () => {
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.2 + index * 0.2 }}
+                transition={{ duration: 0.3 }}
               >
                 {project.title}
               </motion.h4>
@@ -55,7 +58,7 @@ const ProjectGrid = () => {
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.3 + index * 0.2 }}
+                transition={{ duration: 0.3 }}
               >
                 {project.description}
               </motion.p>
