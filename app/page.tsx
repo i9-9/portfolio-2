@@ -19,6 +19,10 @@ import ProjectGrid from "@/components/ProjectGrid";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { PinContainer } from "@/components/ui/3d-pin";
+import Image from "next/image";
+import GeometricFlowCard from "@/components/GeometricFlowCard";
+import { AnimatedButton } from "@/components/AnimatedButton";
 gsap.registerPlugin(ScrollTrigger);
 
 const currentYear = new Date().getFullYear();
@@ -76,7 +80,7 @@ const ProfileLayout = () => {
               Designer & Developer crafting unique digital experiences
             </h1>
             <p className="text-lg max-w-[46ch] font-helveticaNowTextRegular">
-              Working as a freelance web developer.
+              Freelance web developer.
               <br/>Focused on creating modern, user-centered digital solutions.
             </p>
           </section>
@@ -93,12 +97,7 @@ const ProfileLayout = () => {
                   <p className="mb-4 font-helveticaNowTextRegular">
                     {projects[1].description}
                   </p>
-                  <Button variant="outline" size="sm" className="gap-2 font-helveticaNowTextRegular" asChild>
-                    <a href={projects[1].anchor} target="_blank" rel="noopener noreferrer">
-                      Visit Website
-                      <ArrowRightIcon className="w-4 h-4" />
-                    </a>
-                  </Button>
+                  <AnimatedButton href={projects[1].anchor} />
                 </div>
               </article>
 
@@ -111,12 +110,7 @@ const ProfileLayout = () => {
                   <p className="mb-4 font-helveticaNowTextRegular">
                     {projects[0].description}
                   </p>
-                  <Button variant="outline" size="sm" className="gap-2 font-helveticaNowTextRegular" asChild>
-                    <a href={projects[0].anchor} target="_blank" rel="noopener noreferrer">
-                      Visit Website
-                      <ArrowRightIcon className="w-4 h-4" />
-                    </a>
-                  </Button>
+                  <AnimatedButton href={projects[0].anchor} />
                 </div>
               </article>
 
@@ -129,12 +123,7 @@ const ProfileLayout = () => {
                   <p className="mb-4 font-helveticaNowTextRegular">
                     {projects[2].description}
                   </p>
-                  <Button variant="outline" size="sm" className="gap-2 font-helveticaNowTextRegular" asChild>
-                    <a href={projects[2].anchor} target="_blank" rel="noopener noreferrer">
-                      Visit Website
-                      <ArrowRightIcon className="w-4 h-4" />
-                    </a>
-                  </Button>
+                  <AnimatedButton href={projects[2].anchor} />
                 </div>
               </article>
             </div>
@@ -157,9 +146,9 @@ const ProfileLayout = () => {
               <div className="focus-category">
                 <h3 className="uppercase-title font-helveticaNowDisplayBold">Design</h3>
                 <div className="badge-container">
-                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">UI/UX</Badge>
-                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">Typography</Badge>
-                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">Grid Systems</Badge>
+                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">UX/UI</Badge>
+                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">Adobe</Badge>
+                  <Badge variant="outline" className="skill-badge font-helveticaNowTextRegular">Figma</Badge>
                 </div>
               </div>
             </div>
@@ -201,6 +190,12 @@ const ProfileLayout = () => {
                 Dribbble
               </a>
             </div>
+          </section>
+
+          <Separator className="my-8" />
+          
+          <section className="mb-8">
+            <GeometricFlowCard />
           </section>
         </aside>
       </div>
