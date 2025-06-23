@@ -6,21 +6,20 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const ProfileCard = () => {
+  const { language } = useLanguage();
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
+      transition={{ duration: 0.8, delay: 0.2, ease: "easeInOut" }}
     >
-      <Card className="bg-accent/5 border-accent/10">
+      <Card className="w-full">
         <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <Avatar className="w-20 h-20">
-              <AvatarImage src="/profile.jpeg" alt="Ivan Nevares" />
-              <AvatarFallback>IN</AvatarFallback>
-            </Avatar>
+          <div className="flex flex-col">
             <div className="space-y-4">
               <div>
                 <h1 className="text-2xl font-bold text-white">Ivan Nevares</h1>
@@ -40,7 +39,7 @@ const ProfileCard = () => {
                   asChild
                 >
                   <a 
-                    href="/CV_Ivan_Nevares.pdf" 
+                    href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

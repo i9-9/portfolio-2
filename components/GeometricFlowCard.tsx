@@ -279,7 +279,6 @@ const GeometricFlowCard = () => {
         if (cyclePosition > PATTERN_DURATION) {
           const transitionTime = cyclePosition - PATTERN_DURATION;
           currentTransitionProgress = transitionTime / TRANSITION_DURATION;
-          // Suavizar la transición con easing
           currentTransitionProgress = (1 - Math.cos(currentTransitionProgress * Math.PI)) / 2;
         }
 
