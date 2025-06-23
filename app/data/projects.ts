@@ -8,7 +8,7 @@ export const projects = [
   {
     id: 2,
     name: "Kostüme",
-    anchor: "https://kostume.com.ar",
+    anchor: "https://www.kostumeweb.net",
     image: "/projects-landing/kostume/jul:24/4 - Macbook mockup.png",
   },
   {
