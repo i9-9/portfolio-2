@@ -141,20 +141,20 @@
 
 /* Grid System */
 .grid-container {
-  @apply max-w-[1600px] mx-auto grid grid-cols-12 gap-6 px-12;
+  @apply max-w-[1600px] mx-auto grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12;
 }
 
 /* Project Card Styles */
 .project-card {
-  @apply grid grid-cols-6 gap-6;
+  @apply grid grid-cols-1 lg:grid-cols-6 gap-2 lg:gap-6;
 }
 
 .project-title {
-  @apply col-span-2 uppercase-title;
+  @apply col-span-1 lg:col-span-2 uppercase-title mb-2 lg:mb-0;
 }
 
 .project-content {
-  @apply col-span-4;
+  @apply col-span-1 lg:col-span-4;
 }
 
 /* Focus Section Styles */
@@ -181,20 +181,12 @@
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
-  .grid-container {
-    @apply px-8;
-  }
-  
   h1, .h1 {
     @apply text-[3.5rem];
   }
 }
 
 @media (max-width: 768px) {
-  .grid-container {
-    @apply px-6;
-  }
-  
   h1, .h1 {
     @apply text-[2.5rem];
   }
