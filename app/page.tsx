@@ -47,27 +47,27 @@ const ProfileLayout = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="grid-container pt-[120px] pb-[96px]">
+      <div className="grid-container pt-[120px] pb-[96px] lg:pb-[96px]">
         {/* Main Content */}
-        <div className="col-span-6 col-start-1">
-          <section className="mb-[160px]">
-            <h1 className="mb-8 font-helveticaNowDisplayBold">
+        <div className="col-span-12 lg:col-span-6 lg:col-start-1 mb-12 lg:mb-0">
+          <section className="mb-[80px] lg:mb-[160px]">
+            <h1 className="mb-6 lg:mb-8 font-helveticaNowDisplayBold">
               {t('hero.title')}
             </h1>
-            <p className="text-lg max-w-[46ch] font-helveticaNowTextRegular whitespace-pre-line">
+            <p className="text-base lg:text-lg max-w-[46ch] font-helveticaNowTextRegular whitespace-pre-line">
               {t('hero.subtitle')}
             </p>
           </section>
 
           <section id="work">
-            <h2 className="mb-[96px] font-helveticaNowDisplayBold">{t('work.title')}</h2>
-            <div className="space-y-[96px]">
+            <h2 className="mb-[48px] lg:mb-[96px] font-helveticaNowDisplayBold">{t('work.title')}</h2>
+            <div className="space-y-[48px] lg:space-y-[96px]">
               <article className="project-card">
                 <div className="project-title">
                   <h3 className="font-helveticaNowDisplayBold">Kostüme</h3>
                 </div>
                 <div className="project-content">
-                  <h4 className="text-xl mb-3 font-helveticaNowDisplayBold">{t('work.kostume.title')}</h4>
+                  <h4 className="text-lg lg:text-xl mb-3 font-helveticaNowDisplayBold">{t('work.kostume.title')}</h4>
                   <p className="mb-4 font-helveticaNowTextRegular">
                     {t('work.kostume.description')}
                   </p>
@@ -80,7 +80,7 @@ const ProfileLayout = () => {
                   <h3 className="font-helveticaNowDisplayBold">El Desenfreno</h3>
                 </div>
                 <div className="project-content">
-                  <h4 className="text-xl mb-3 font-helveticaNowDisplayBold">{t('work.desenfreno.title')}</h4>
+                  <h4 className="text-lg lg:text-xl mb-3 font-helveticaNowDisplayBold">{t('work.desenfreno.title')}</h4>
                   <p className="mb-4 font-helveticaNowTextRegular">
                     {t('work.desenfreno.description')}
                   </p>
@@ -93,7 +93,7 @@ const ProfileLayout = () => {
                   <h3 className="font-helveticaNowDisplayBold">Vino Rodante</h3>
                 </div>
                 <div className="project-content">
-                  <h4 className="text-xl mb-3 font-helveticaNowDisplayBold">{t('work.vinorodante.title')}</h4>
+                  <h4 className="text-lg lg:text-xl mb-3 font-helveticaNowDisplayBold">{t('work.vinorodante.title')}</h4>
                   <p className="mb-4 font-helveticaNowTextRegular">
                     {t('work.vinorodante.description')}
                   </p>
@@ -104,8 +104,8 @@ const ProfileLayout = () => {
           </section>
         </div>
 
-        {/* Sidebar - aligned with main content */}
-        <aside className="col-span-3 col-start-10 sticky top-[120px] self-start">
+        {/* Sidebar - becomes full width on mobile */}
+        <aside className="col-span-12 lg:col-span-3 lg:col-start-10 lg:sticky lg:top-[120px] lg:self-start mt-12 lg:mt-0">
           <section id="about" className="focus-section">
             <h2 className="focus-title font-helveticaNowDisplayBold">{t('focus.title')}</h2>
             <div className="space-y-8">
