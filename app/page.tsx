@@ -71,7 +71,7 @@ const ProfileLayout = () => {
                   <p className="mb-4 font-helveticaNowTextRegular">
                     {t('work.kostume.description')}
                   </p>
-                  <AnimatedButton href={projects[1].anchor} />
+                  <AnimatedButton href={projects[1].anchor} previewImage={projects[1].previewImage} />
                 </div>
               </article>
 
@@ -84,7 +84,7 @@ const ProfileLayout = () => {
                   <p className="mb-4 font-helveticaNowTextRegular">
                     {t('work.desenfreno.description')}
                   </p>
-                  <AnimatedButton href={projects[0].anchor} />
+                  <AnimatedButton href={projects[0].anchor} previewImage={projects[0].previewImage} />
                 </div>
               </article>
 
@@ -97,7 +97,7 @@ const ProfileLayout = () => {
                   <p className="mb-4 font-helveticaNowTextRegular">
                     {t('work.vinorodante.description')}
                   </p>
-                  <AnimatedButton href={projects[2].anchor} />
+                  <AnimatedButton href={projects[2].anchor} previewImage={projects[2].previewImage} />
                 </div>
               </article>
             </div>

@@ -8,6 +8,10 @@ export const translations = {
       theme: {
         light: "Dark",
         dark: "Light"
+      },
+      cvDropdown: {
+        download: "Download",
+        view: "View"
       }
     },
     hero: {
@@ -55,6 +59,10 @@ export const translations = {
       theme: {
         light: "Oscuro",
         dark: "Claro"
+      },
+      cvDropdown: {
+        download: "Descarga",
+        view: "Ver"
       }
     },
     hero: {
