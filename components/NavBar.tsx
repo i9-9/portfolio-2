@@ -52,16 +52,50 @@ export function NavBar() {
         </button>
       </li>
       <li>
-        <a 
-          href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-          download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-          className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors",
-            isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          {t('nav.cv')}
-        </a>
+        {isMobile ? (
+          // Mobile: Simple link
+          <a 
+            href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+            download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+            className={cn(
+              "text-[9px] tracking-[0.2em] uppercase transition-colors",
+              "text-foreground/90 hover:text-foreground"
+            )}
+          >
+            {t('nav.cv')}
+          </a>
+        ) : (
+          // Desktop: Dropdown menu
+          <div className="relative group">
+            <button
+              className={cn(
+                "text-[9px] tracking-[0.2em] uppercase transition-colors",
+                "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {t('nav.cv')}
+            </button>
+            <div className="absolute top-full right-0 mt-1 w-32 bg-popover border border-border rounded-md shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div className="py-1">
+                <a 
+                  href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+                  download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+                  className="block px-3 py-1.5 text-[8px] tracking-[0.2em] uppercase text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
+                  {t('nav.cvDropdown.download')}
+                </a>
+                <a 
+                  href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block px-3 py-1.5 text-[8px] tracking-[0.2em] uppercase text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
+                  {t('nav.cvDropdown.view')}
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
       </li>
       <li>
         <button 
