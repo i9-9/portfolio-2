@@ -22,6 +22,7 @@ import Image from "next/image";
 import GeometricFlowCard from "@/components/GeometricFlowCard";
 import { AnimatedButton } from "@/components/AnimatedButton";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { ContactFormModal } from "@/components/ContactFormModal";
 
 const currentYear = new Date().getFullYear();
 
@@ -30,6 +31,7 @@ const ProfileLayout = () => {
   const [hovered, setHovered] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isInfoVisible, setIsInfoVisible] = useState(false);
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const headlineRef = useRef(null);
   const { t } = useLanguage();
 
@@ -164,6 +166,12 @@ const ProfileLayout = () => {
               >
                 Dribbble
               </a>
+              <button
+                onClick={() => setIsContactFormOpen(true)}
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular text-left"
+              >
+                {t('contact.form')}
+              </button>
             </div>
           </section>
 
@@ -175,6 +183,12 @@ const ProfileLayout = () => {
         </aside>
       </div>
       <Footer />
+      
+      {/* Contact Form Modal */}
+      <ContactFormModal 
+        isOpen={isContactFormOpen} 
+        onClose={() => setIsContactFormOpen(false)} 
+      />
     </div>
   );
 };
