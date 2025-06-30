@@ -54,16 +54,16 @@ export function NavBar() {
       <li>
         {isMobile ? (
           // Mobile: Simple link
-          <a 
-            href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-            download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-            className={cn(
-              "text-[9px] tracking-[0.2em] uppercase transition-colors",
+        <a 
+          href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+          download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+          className={cn(
+            "text-[9px] tracking-[0.2em] uppercase transition-colors",
               "text-foreground/90 hover:text-foreground"
-            )}
-          >
-            {t('nav.cv')}
-          </a>
+          )}
+        >
+          {t('nav.cv')}
+        </a>
         ) : (
           // Desktop: Dropdown menu
           <div className="relative group">

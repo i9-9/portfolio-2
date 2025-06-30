@@ -43,7 +43,21 @@ export const translations = {
       design: "Design"
     },
     contact: {
-      title: "Contact"
+      title: "Contact",
+      form: "Form"
+    },
+    form: {
+      title: "Contact Form",
+      subtitle: "Send me a message",
+      name: "Name",
+      email: "Email",
+      message: "Message",
+      send: "Send Message",
+      close: "Close",
+      success: "Message sent successfully!",
+      error: "Error sending message. Please try again.",
+      required: "This field is required",
+      invalidEmail: "Please enter a valid email"
     },
     button: {
       visit: "Visit website",
@@ -94,7 +108,21 @@ export const translations = {
       design: "Diseño"
     },
     contact: {
-      title: "Contacto"
+      title: "Contacto",
+      form: "Formulario"
+    },
+    form: {
+      title: "Formulario de Contacto",
+      subtitle: "Envíame un mensaje",
+      name: "Nombre",
+      email: "Email",
+      message: "Mensaje",
+      send: "Enviar Mensaje",
+      close: "Cerrar",
+      success: "¡Mensaje enviado exitosamente!",
+      error: "Error al enviar el mensaje. Por favor intenta de nuevo.",
+      required: "Este campo es requerido",
+      invalidEmail: "Por favor ingresa un email válido"
     },
     button: {
       visit: "Visitar sitio",
