@@ -2,6 +2,7 @@ export const translations = {
   en: {
     nav: {
       work: "Work",
+      graphics: "Graphics",
       cv: "CV",
       about: "About",
       language: "ES",
@@ -28,9 +29,9 @@ export const translations = {
         title: "Fashion E-commerce",
         description: "A fashion e-commerce platform that combines minimalist design with powerful functionality. Built with Next.js and Tienda Nube, featuring a custom checkout process and real-time inventory management."
       },
-      desenfreno: {
-        title: "Independent Publishing House",
-        description: "A digital platform for an independent publishing house, showcasing their catalog and editorial vision. Features a custom CMS for content management and an integrated e-commerce solution."
+      heybristol: {
+        title: "Audiovisual Production",
+        description: "A modern website for an audiovisual production company showcasing their creative work and services. Built with Next.js featuring dynamic content management and interactive design elements."
       },
       vinorodante: {
         title: "Wine E-commerce",
@@ -62,11 +63,17 @@ export const translations = {
     button: {
       visit: "Visit website",
       close: "Close"
+    },
+    graphics: {
+      title: "Graphics",
+      subtitle: "A collection of graphic design work including posters, covers, and visual compositions.",
+      backToPortfolio: "Back to Portfolio"
     }
   },
   es: {
     nav: {
       work: "Proyectos",
+      graphics: "Gráficos",
       cv: "CV",
       about: "Sobre mí",
       language: "EN",
@@ -93,9 +100,9 @@ export const translations = {
         title: "E-commerce de Moda",
         description: "Una plataforma de comercio electrónico de moda que combina diseño minimalista con funcionalidad avanzada. Construida con Next.js y Tienda Nube, con proceso de pago personalizado y gestión de inventario en tiempo real."
       },
-      desenfreno: {
-        title: "Editorial Independiente",
-        description: "Una plataforma digital para una editorial independiente, mostrando su catálogo y visión editorial. Cuenta con un CMS personalizado para la gestión de contenido y una solución de comercio electrónico integrada."
+      heybristol: {
+        title: "Productora Audiovisual",
+        description: "Un sitio web moderno para una productora audiovisual que muestra su trabajo creativo y servicios. Construido con Next.js con gestión de contenido dinámico y elementos de diseño interactivos."
       },
       vinorodante: {
         title: "E-commerce de Vinos",
@@ -127,6 +134,11 @@ export const translations = {
     button: {
       visit: "Visitar sitio",
       close: "Cerrar"
+    },
+    graphics: {
+      title: "Gráficos",
+      subtitle: "Una colección de trabajos de diseño gráfico incluyendo carteles, portadas y composiciones visuales.",
+      backToPortfolio: "Volver al Portfolio"
     }
   }
 }; 

@@ -32,7 +32,7 @@ export function NavBar() {
         <Link 
           href="/#work" 
           className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors",
+            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
             isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
           )}
           scroll={true}
@@ -44,7 +44,7 @@ export function NavBar() {
         <button
           onClick={() => setIsAboutOpen(true)}
           className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors",
+            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
             isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
           )}
         >
@@ -58,7 +58,7 @@ export function NavBar() {
           href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
           download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
           className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors",
+            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
               "text-foreground/90 hover:text-foreground"
           )}
         >
@@ -69,7 +69,7 @@ export function NavBar() {
           <div className="relative group">
             <button
               className={cn(
-                "text-[9px] tracking-[0.2em] uppercase transition-colors",
+                "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
                 "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -101,7 +101,7 @@ export function NavBar() {
         <button 
           onClick={toggleTheme}
           className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors",
+            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
             isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
           )}
         >

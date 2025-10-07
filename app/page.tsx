@@ -79,12 +79,12 @@ const ProfileLayout = () => {
 
               <article className="project-card">
                 <div className="project-title">
-                  <h3 className="font-helveticaNowDisplayBold">El Desenfreno</h3>
+                  <h3 className="font-helveticaNowDisplayBold">Hey Bristol</h3>
                 </div>
                 <div className="project-content">
-                  <h4 className="text-lg lg:text-xl mb-3 font-helveticaNowDisplayBold">{t('work.desenfreno.title')}</h4>
+                  <h4 className="text-lg lg:text-xl mb-3 font-helveticaNowDisplayBold">{t('work.heybristol.title')}</h4>
                   <p className="mb-4 font-helveticaNowTextRegular">
-                    {t('work.desenfreno.description')}
+                    {t('work.heybristol.description')}
                   </p>
                   <AnimatedButton href={projects[0].anchor} previewImage={projects[0].previewImage} />
                 </div>

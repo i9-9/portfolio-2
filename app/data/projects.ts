@@ -1,10 +1,10 @@
 export const projects = [
   {
     id: 1,
-    name: "El Desenfreno",
-    anchor: "https://eldesenfreno.com",
-    image: "/projects-eldesenfreno/el_desenfreno_macbook_mockup.png",
-    previewImage: "/projects/eldesenfreno.png"
+    name: "Hey Bristol",
+    anchor: "https://heybristol.com",
+    image: "/projects-heybristol/heybristol_macbook_mockup.png",
+    previewImage: "/projects/heybristol.png"
   },
   {
     id: 2,
