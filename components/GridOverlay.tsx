@@ -9,14 +9,14 @@ export function GridOverlay({ isVisible }: GridOverlayProps) {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999]">
-      {/* Horizontal rows with 32px spacing */}
+      {/* Horizontal rows with 64px spacing */}
       <div className="absolute inset-0">
         <div className="max-w-[1600px] mx-auto h-full px-4 lg:px-12">
           <div className="h-full flex flex-col">
-            {Array.from({ length: 50 }).map((_, i) => (
+            {Array.from({ length: 30 }).map((_, i) => (
               <div
                 key={`row-${i}`}
-                className="h-8 border-t border-red-500/20"
+                className="h-16 border-t border-red-500/20"
               />
             ))}
           </div>

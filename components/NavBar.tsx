@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { useGrid } from '@/lib/grid/GridContext';
@@ -24,37 +25,61 @@ export function NavBar() {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const NavItems = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <ul className={cn(
-      "flex flex-col lg:flex-row",
-      isMobile ? "gap-4" : "gap-6"
-    )}>
-      <li>
-        <button
-          onClick={() => setIsAboutOpen(true)}
-          className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-            isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          {t('nav.about')}
-        </button>
-      </li>
-      <li>
-        {isMobile ? (
-          // Mobile: Simple link
-        <a 
-          href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-          download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-          className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: -10, x: -10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 12,
+      },
+    },
+  };
+
+  const NavItems = ({ isMobile = false }: { isMobile?: boolean }) => {
+    const items = [
+      {
+        id: 'about',
+        element: (
+          <button
+            onClick={() => setIsAboutOpen(true)}
+            className={cn(
+              "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
+              isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {t('nav.about')}
+          </button>
+        ),
+      },
+      {
+        id: 'cv',
+        element: isMobile ? (
+          <a 
+            href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+            download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+            className={cn(
+              "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
               "text-foreground/90 hover:text-foreground"
-          )}
-        >
-          {t('nav.cv')}
-        </a>
+            )}
+          >
+            {t('nav.cv')}
+          </a>
         ) : (
-          // Desktop: Dropdown menu
           <div className="relative group">
             <button
               className={cn(
@@ -84,56 +109,101 @@ export function NavBar() {
               </div>
             </div>
           </div>
-        )}
-      </li>
-      <li>
-        <button 
-          onClick={toggleTheme}
-          className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-            isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
-          )}
+        ),
+      },
+      {
+        id: 'theme',
+        element: (
+          <button 
+            onClick={toggleTheme}
+            className={cn(
+              "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
+              isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {t(`nav.theme.${theme}`)}
+          </button>
+        ),
+      },
+      {
+        id: 'language',
+        element: (
+          <button
+            onClick={toggleLanguage}
+            className={cn(
+              "text-[9px] tracking-[0.2em] uppercase transition-colors",
+              isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {t('nav.language')}
+          </button>
+        ),
+      },
+      {
+        id: 'grid',
+        element: (
+          <button
+            onClick={toggleGrid}
+            className={cn(
+              "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
+              isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground",
+              isGridVisible && "text-foreground"
+            )}
+          >
+            Grid
+          </button>
+        ),
+      },
+    ];
+
+    const listContent = (
+      <>
+        {items.map((item) => (
+          <li key={item.id}>
+            {item.element}
+          </li>
+        ))}
+      </>
+    );
+
+    if (isMobile) {
+      return (
+        <motion.ul
+          className={cn("flex flex-col gap-4")}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          {t(`nav.theme.${theme}`)}
-        </button>
-      </li>
-      <li>
-        <button
-          onClick={toggleLanguage}
-          className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors",
-            isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          {t('nav.language')}
-        </button>
-      </li>
-      <li>
-        <button
-          onClick={toggleGrid}
-          className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-            isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground",
-            isGridVisible && "text-foreground"
-          )}
-        >
-          Grid
-        </button>
-      </li>
-    </ul>
-  );
+          {items.map((item, index) => (
+            <motion.li
+              key={item.id}
+              variants={itemVariants}
+            >
+              {item.element}
+            </motion.li>
+          ))}
+        </motion.ul>
+      );
+    }
+
+    return (
+      <ul className={cn("flex flex-row gap-6")}>
+        {listContent}
+      </ul>
+    );
+  };
 
   return (
     <>
       <header className="fixed top-0 left-0 right-0 bg-nav/80 backdrop-blur-sm z-[100]">
         <div className="max-w-[1600px] mx-auto grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12">
-          <div className="col-span-6 flex items-center h-[48px] lg:h-[24px]">
+          <div className="col-span-6 flex items-center h-[48px] lg:h-[40px]">
             <a href="/" className={cn(
               "text-[9px] tracking-[0.2em] uppercase flex items-center",
               isMobileMenuOpen ? "text-foreground" : "text-foreground/90 hover:text-foreground"
             )}>Ivan Nevares</a>
           </div>
-          <nav className="col-span-3 col-start-10 flex items-center justify-start h-[48px] lg:h-[24px]">
+          <nav className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end lg:justify-start h-[48px] lg:h-[40px]">
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center">
               <NavItems />
@@ -143,7 +213,7 @@ export function NavBar() {
             <div className="lg:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="p-2 flex items-center">
+                  <button className="p-2 flex items-center -mr-2">
                     <HamburgerMenu isOpen={isMobileMenuOpen} />
                   </button>
                 </SheetTrigger>

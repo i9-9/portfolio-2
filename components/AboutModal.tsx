@@ -39,6 +39,7 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps) {
                 <Badge variant="secondary" className="text-[10px] sm:text-xs">Next.js</Badge>
                 <Badge variant="secondary" className="text-[10px] sm:text-xs">TypeScript</Badge>
                 <Badge variant="secondary" className="text-[10px] sm:text-xs">UI/UX</Badge>
+                <Badge variant="secondary" className="text-[10px] sm:text-xs">{t('about.graphicDesign')}</Badge>
               </div>
             </div>
           </div>

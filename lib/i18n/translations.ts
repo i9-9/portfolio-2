@@ -21,7 +21,8 @@ export const translations = {
     },
     about: {
       title: "About Me",
-      content: "I'm a UX/UI Designer and Front-End Developer based in Buenos Aires, Argentina.\n\nI like intuitive and visually appealing digital experiences, combining design thinking with technical expertise to build modern web applications.\n\nMy approach focuses on user-centered design principles and clean, efficient code.\n\nI specialize in React, Next.js and TypeScript, while maintaining a solid foundation in UI/UX design using tools like Figma and Adobe Creative Suite."
+      content: "I'm a UX/UI Designer and Front-End Developer based in Buenos Aires, Argentina.\n\nI like intuitive and visually appealing digital experiences, combining design thinking with technical expertise to build modern web applications.\n\nMy approach focuses on user-centered design principles and clean, efficient code.\n\nI specialize in React, Next.js and TypeScript, while maintaining a solid foundation in UI/UX design using tools like Figma and Adobe Creative Suite.",
+      graphicDesign: "Graphic Design"
     },
     work: {
       title: "Selected Work",
@@ -43,7 +44,11 @@ export const translations = {
       },
       templodetierra: {
         title: "Sustainable Tourism",
-        description: "A sustainable and ecological tourism project focused on connection with nature and ancestral construction techniques. Built with Next.js. I designed the complete visual identity and logo."
+        description: "A sustainable and ecological tourism project focused on connection with nature and ancestral construction techniques. Built with Next.js."
+      },
+      desenfreno: {
+        title: "Independent Publishing House",
+        description: "A digital platform for an independent publishing house, showcasing their catalog and editorial vision. Features a custom CMS for content management and an integrated e-commerce solution."
       }
     },
     focus: {
@@ -100,7 +105,8 @@ export const translations = {
     },
     about: {
       title: "Sobre mí",
-      content: "Soy un Diseñador UX/UI y Desarrollador Front-End basado en Buenos Aires, Argentina.\n\nMe gustan las experiencias digitales intuitivas y visualmente atractivas, combino el pensamiento de diseño con experiencia técnica para construir aplicaciones web modernas.\n\nMi enfoque se centra en principios de diseño centrados en el usuario y código limpio y eficiente.\n\nMe especializo en React, Next.js y TypeScript, mientras mantengo una sólida base en diseño UI/UX usando herramientas como Figma y Adobe Creative Suite."
+      content: "Soy un Diseñador UX/UI y Desarrollador Front-End basado en Buenos Aires, Argentina.\n\nMe gustan las experiencias digitales intuitivas y visualmente atractivas, combino el pensamiento de diseño con experiencia técnica para construir aplicaciones web modernas.\n\nMi enfoque se centra en principios de diseño centrados en el usuario y código limpio y eficiente.\n\nMe especializo en React, Next.js y TypeScript, mientras mantengo una sólida base en diseño UI/UX usando herramientas como Figma y Adobe Creative Suite.",
+      graphicDesign: "Diseño Gráfico"
     },
     work: {
       title: "Proyectos Seleccionados",
@@ -120,10 +126,14 @@ export const translations = {
         title: "Portfolio de Directora de Arte",
         description: "Sitio web portfolio para la directora de arte y set designer Ursula Benavidez. Desarrollado en Next.js, exhibiendo su trabajo creativo con un diseño limpio enfocado en galería que destaca sus proyectos."
       },
-      templodetierra: {
-        title: "Turismo Sostenible",
-        description: "Un proyecto de turismo sostenible y ecológico enfocado en la conexión con la naturaleza y las técnicas ancestrales de construcción. Desarrollado en Next.js. Diseñé la identidad visual completa y el logo."
-      }
+        templodetierra: {
+          title: "Turismo Sostenible",
+          description: "Un proyecto de turismo sostenible y ecológico enfocado en la conexión con la naturaleza y las técnicas ancestrales de construcción. Desarrollado en Next.js."
+        },
+        desenfreno: {
+          title: "Editorial Independiente",
+          description: "Una plataforma digital para una editorial independiente, mostrando su catálogo y visión editorial. Cuenta con un CMS personalizado para la gestión de contenido y una solución de comercio electrónico integrada."
+        }
     },
     focus: {
       title: "Enfoque",

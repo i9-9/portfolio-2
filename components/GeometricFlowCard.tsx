@@ -28,12 +28,14 @@ const GeometricFlowCard = () => {
     const GRID_SIZE = 24; // Reduced from 32 to 24 (576 vs 1024 particles - 44% reduction)
     const CELL_SIZE = 13.33; // Adjusted to maintain visual size (320px total)
     const CONTAINER_SIZE = GRID_SIZE * CELL_SIZE;
+    const CONTAINER_SIZE_MOBILE = CONTAINER_SIZE * 1.4; // 40% larger on mobile
     const PARTICLE_COUNT = GRID_SIZE * GRID_SIZE;
 
     return {
       GRID_SIZE,
       CELL_SIZE,
       CONTAINER_SIZE,
+      CONTAINER_SIZE_MOBILE,
       PARTICLE_COUNT,
       MIN_SIZE: 0.006,
       MAX_SIZE: 0.016,
@@ -45,7 +47,11 @@ const GeometricFlowCard = () => {
     if (!containerRef.current || sceneRef.current) return;
 
     try {
-      const { CONTAINER_SIZE, GRID_SIZE, PARTICLE_COUNT } = config;
+      const { CONTAINER_SIZE, CONTAINER_SIZE_MOBILE, GRID_SIZE, PARTICLE_COUNT } = config;
+
+      // Determinar tamaño según viewport
+      const isMobile = window.innerWidth < 1024;
+      const renderSize = isMobile ? CONTAINER_SIZE_MOBILE : CONTAINER_SIZE;
 
       // Scene
       const scene = new THREE.Scene();
@@ -63,7 +69,7 @@ const GeometricFlowCard = () => {
         alpha: true,
         powerPreference: "high-performance"
       });
-      renderer.setSize(CONTAINER_SIZE, CONTAINER_SIZE);
+      renderer.setSize(renderSize, renderSize);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       containerRef.current.appendChild(renderer.domElement);
@@ -76,10 +82,11 @@ const GeometricFlowCard = () => {
 
       // Configurar grid exactamente como tu original
       let index = 0;
+      const VISIBLE_SIZE = 14; // Reduced from 18 to 14 for smaller inner square
       for (let row = 0; row < GRID_SIZE; row++) {
         for (let col = 0; col < GRID_SIZE; col++) {
-          const x = (col / (GRID_SIZE - 1) - 0.5) * 18;
-          const y = (row / (GRID_SIZE - 1) - 0.5) * 18;
+          const x = (col / (GRID_SIZE - 1) - 0.5) * VISIBLE_SIZE;
+          const y = (row / (GRID_SIZE - 1) - 0.5) * VISIBLE_SIZE;
 
           positions[index * 3] = x;
           positions[index * 3 + 1] = y;
@@ -345,11 +352,7 @@ const GeometricFlowCard = () => {
       <div className="relative w-full h-full flex items-center justify-center">
         <div 
           ref={containerRef}
-          className="relative"
-          style={{
-            width: `${config.CONTAINER_SIZE}px`,
-            height: `${config.CONTAINER_SIZE}px`,
-          }}
+          className="relative w-[448px] h-[448px] lg:w-[320px] lg:h-[320px]"
         />
       </div>
     </div>

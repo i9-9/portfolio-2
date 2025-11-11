@@ -34,5 +34,12 @@ export const projects = [
     image: "/projects/templodetierra.png",
     previewImage: "/projects/templodetierra.png"
   },
+  {
+    id: 6,
+    name: "El Desenfreno",
+    anchor: "https://eldesenfreno.com",
+    image: "/projects-eldesenfreno/el_desenfreno_macbook_mockup.png",
+    previewImage: "/projects/eldesenfreno.png"
+  },
 ];
   
