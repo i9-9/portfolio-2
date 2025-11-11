@@ -1,6 +1,5 @@
 "use client";
 
-import Link from 'next/link';
 import { useState } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
@@ -30,18 +29,6 @@ export function NavBar() {
       "flex flex-col lg:flex-row",
       isMobile ? "gap-4" : "gap-6"
     )}>
-      <li>
-        <Link 
-          href="/#work" 
-          className={cn(
-            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-            isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
-          )}
-          scroll={true}
-        >
-          {t('nav.work')}
-        </Link>
-      </li>
       <li>
         <button
           onClick={() => setIsAboutOpen(true)}
