@@ -209,53 +209,25 @@ html, body {
   scroll-behavior: smooth;
 }
 
-@font-face {
-  font-family: 'HelveticaNowDisplay-Black';
-  src: url('/fonts/HelveticaNowDisplay-Black.ttf') format('truetype');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'HelveticaNowText-Regular';
-  src: url('/fonts/HelveticaNowText-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'HelveticaNowDisplay-Bold';
-  src: url('/fonts/HelveticaNowDisplay-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'HelveticaNowDisplay-Italic';
-  src: url('/fonts/HelveticaNowDisplay-Italic.ttf') format('truetype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
+/* Font classes using Next.js font loading from lib/fonts.ts */
 .font-helveticaNowDisplayBlack {
-  font-family: 'HelveticaNowDisplay-Black', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: var(--font-helvetica-now), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
 }
 
 .font-helveticaNowTextRegular {
-  font-family: var(--font-helvetica-now-text) !important;
-  font-weight: 400 !important;
+  font-family: var(--font-helvetica-now-text), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
 }
 
 .font-helveticaNowDisplayBold {
-  font-family: 'HelveticaNowDisplay-Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: var(--font-helvetica-now), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
 }
 
 .font-helveticaNowDisplayItalic {
-  font-family: 'HelveticaNowDisplay-Italic', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: var(--font-helvetica-now), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-style: italic;
 }
 
 

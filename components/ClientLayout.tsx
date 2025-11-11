@@ -1,20 +1,28 @@
 "use client";
 
-import { Analytics } from '@vercel/analytics/react';
-import { LanguageProvider } from '@/lib/i18n/LanguageContext';
-import { ThemeProvider } from '@/lib/theme/ThemeContext';
 import { NavBar } from '@/components/NavBar';
+import { GridProvider } from '@/lib/grid/GridContext';
+import { GridOverlay } from '@/components/GridOverlay';
+import { useGrid } from '@/lib/grid/GridContext';
+
+function ClientLayoutContent({ children }: { children: React.ReactNode }) {
+  const { isGridVisible } = useGrid();
+
+  return (
+    <>
+      <NavBar />
+      <main className="relative">
+        {children}
+      </main>
+      <GridOverlay isVisible={isGridVisible} />
+    </>
+  );
+}
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider>
-      <LanguageProvider>
-        <NavBar />
-        <main className="relative">
-          {children}
-        </main>
-        <Analytics />
-      </LanguageProvider>
-    </ThemeProvider>
+    <GridProvider>
+      <ClientLayoutContent>{children}</ClientLayoutContent>
+    </GridProvider>
   );
 } 

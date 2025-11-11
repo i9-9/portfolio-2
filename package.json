@@ -27,7 +27,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "eslint": "8.33.0",
-    "firebase": "^9.17.1",
     "framer-motion": "^10.18.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.522.0",

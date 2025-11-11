@@ -1,59 +1,29 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import ScreenSeparator from "../components/ScreenSeparator";
-import ProjectCard from "../components/ProjectCard";
-import ProfileIntro from "../components/ProfileIntro";
-import FloatingImage from "../components/FloatingImage";
+import { useState } from "react";
 import { projects } from "./data/projects";
-import { IoChevronDownOutline } from "react-icons/io5";
-import ProfileCard from "@/components/ProfileCard";
-import Work from "@/components/Work";
 import Footer from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
-import ProjectGrid from "@/components/ProjectGrid";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { PinContainer } from "@/components/ui/3d-pin";
-import Image from "next/image";
 import GeometricFlowCard from "@/components/GeometricFlowCard";
 import { AnimatedButton } from "@/components/AnimatedButton";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { ContactFormModal } from "@/components/ContactFormModal";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const currentYear = new Date().getFullYear();
 
 const ProfileLayout = () => {
-  const [isProjectsVisible, setIsProjectsVisible] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
-  const headlineRef = useRef(null);
   const { t } = useLanguage();
-
-  const handleToggleView = () => {
-    setIsProjectsVisible((prev) => !prev);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setPosition({ x: e.clientX, y: e.clientY });
-  };
-
-  const toggleInfo = () => {
-    setIsInfoVisible((prev) => !prev);
-  };
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="grid-container pt-[120px] pb-[96px] lg:pb-[96px]">
+      <div className="grid-container pt-24 pb-24">
         {/* Main Content */}
-        <div className="col-span-12 lg:col-span-6 lg:col-start-1 mb-12 lg:mb-0">
-          <section className="mb-[80px] lg:mb-[160px]">
-            <h1 className="mb-6 lg:mb-8 font-helveticaNowDisplayBold">
+        <div className="col-span-12 lg:col-span-6 lg:col-start-1 mb-16 lg:mb-0">
+          <section className="mb-32 lg:mb-40">
+            <h1 className="mb-8 font-helveticaNowDisplayBold">
               {t('hero.title')}
             </h1>
             <p className="text-base lg:text-lg max-w-[46ch] font-helveticaNowTextRegular whitespace-pre-line">
@@ -62,56 +32,75 @@ const ProfileLayout = () => {
           </section>
 
           <section id="work">
-            <h2 className="mb-[48px] lg:mb-[96px] font-helveticaNowDisplayBold">{t('work.title')}</h2>
-            <div className="space-y-[48px] lg:space-y-[96px]">
-              <article className="project-card">
-                <div className="project-title">
-                  <h3 className="font-helveticaNowDisplayBold">Kostüme</h3>
-                </div>
-                <div className="project-content">
-                  <h4 className="text-lg lg:text-xl mb-3 font-helveticaNowDisplayBold">{t('work.kostume.title')}</h4>
-                  <p className="mb-4 font-helveticaNowTextRegular">
+            <h2 className="mb-8 font-helveticaNowDisplayBold">{t('work.title')}</h2>
+            <Tabs defaultValue="kostume" className="w-full">
+              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 mb-8 h-auto">
+                <TabsTrigger value="kostume" className="font-helveticaNowDisplayBold">Kostüme</TabsTrigger>
+                <TabsTrigger value="heybristol" className="font-helveticaNowDisplayBold">Hey Bristol</TabsTrigger>
+                <TabsTrigger value="vinorodante" className="font-helveticaNowDisplayBold">Vino Rodante</TabsTrigger>
+                <TabsTrigger value="ursulabenavidez" className="font-helveticaNowDisplayBold">Ursula Benavidez</TabsTrigger>
+                <TabsTrigger value="templodetierra" className="font-helveticaNowDisplayBold">Templo de Tierra</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="kostume" className="mt-0">
+                <div className="space-y-4">
+                  <h4 className="text-lg lg:text-xl font-helveticaNowDisplayBold">{t('work.kostume.title')}</h4>
+                  <p className="font-helveticaNowTextRegular">
                     {t('work.kostume.description')}
                   </p>
-                  <AnimatedButton href={projects[1].anchor} previewImage={projects[1].previewImage} />
+                  <AnimatedButton href={projects[1].anchor} />
                 </div>
-              </article>
+              </TabsContent>
 
-              <article className="project-card">
-                <div className="project-title">
-                  <h3 className="font-helveticaNowDisplayBold">Hey Bristol</h3>
-                </div>
-                <div className="project-content">
-                  <h4 className="text-lg lg:text-xl mb-3 font-helveticaNowDisplayBold">{t('work.heybristol.title')}</h4>
-                  <p className="mb-4 font-helveticaNowTextRegular">
+              <TabsContent value="heybristol" className="mt-0">
+                <div className="space-y-4">
+                  <h4 className="text-lg lg:text-xl font-helveticaNowDisplayBold">{t('work.heybristol.title')}</h4>
+                  <p className="font-helveticaNowTextRegular">
                     {t('work.heybristol.description')}
                   </p>
-                  <AnimatedButton href={projects[0].anchor} previewImage={projects[0].previewImage} />
+                  <AnimatedButton href={projects[0].anchor} />
                 </div>
-              </article>
+              </TabsContent>
 
-              <article className="project-card">
-                <div className="project-title">
-                  <h3 className="font-helveticaNowDisplayBold">Vino Rodante</h3>
-                </div>
-                <div className="project-content">
-                  <h4 className="text-lg lg:text-xl mb-3 font-helveticaNowDisplayBold">{t('work.vinorodante.title')}</h4>
-                  <p className="mb-4 font-helveticaNowTextRegular">
+              <TabsContent value="vinorodante" className="mt-0">
+                <div className="space-y-4">
+                  <h4 className="text-lg lg:text-xl font-helveticaNowDisplayBold">{t('work.vinorodante.title')}</h4>
+                  <p className="font-helveticaNowTextRegular">
                     {t('work.vinorodante.description')}
                   </p>
-                  <AnimatedButton href={projects[2].anchor} previewImage={projects[2].previewImage} />
+                  <AnimatedButton href={projects[2].anchor} />
                 </div>
-              </article>
-            </div>
+              </TabsContent>
+
+              <TabsContent value="ursulabenavidez" className="mt-0">
+                <div className="space-y-4">
+                  <h4 className="text-lg lg:text-xl font-helveticaNowDisplayBold">{t('work.ursulabenavidez.title')}</h4>
+                  <p className="font-helveticaNowTextRegular">
+                    {t('work.ursulabenavidez.description')}
+                  </p>
+                  <AnimatedButton href={projects[3].anchor} />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="templodetierra" className="mt-0">
+                <div className="space-y-4">
+                  <h4 className="text-lg lg:text-xl font-helveticaNowDisplayBold">{t('work.templodetierra.title')}</h4>
+                  <p className="font-helveticaNowTextRegular">
+                    {t('work.templodetierra.description')}
+                  </p>
+                  <AnimatedButton href={projects[4].anchor} />
+                </div>
+              </TabsContent>
+            </Tabs>
           </section>
         </div>
 
         {/* Sidebar - becomes full width on mobile */}
-        <aside className="col-span-12 lg:col-span-3 lg:col-start-10 lg:sticky lg:top-[120px] lg:self-start mt-12 lg:mt-0">
+        <aside className="col-span-12 lg:col-span-3 lg:col-start-10 lg:sticky lg:top-32 lg:self-start mt-16 lg:mt-0">
           <section id="about" className="focus-section">
             <h2 className="focus-title font-helveticaNowDisplayBold">{t('focus.title')}</h2>
             <div className="space-y-8">
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="text-sm font-helveticaNowDisplayBold">{t('focus.development')}</h3>
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="outline" className="text-[9px] tracking-[0.2em] uppercase">React</Badge>
@@ -120,7 +109,7 @@ const ProfileLayout = () => {
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="text-sm font-helveticaNowDisplayBold">{t('focus.design')}</h3>
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="outline" className="text-[9px] tracking-[0.2em] uppercase">UX/UI</Badge>
@@ -133,30 +122,22 @@ const ProfileLayout = () => {
 
           <Separator className="my-8" />
 
-          <section className="space-y-6">
+          <section className="space-y-4 py-4">
             <h2 className="focus-title font-helveticaNowDisplayBold">{t('contact.title')}</h2>
-            <div className="space-y-4">
-              <a 
-                href="mailto:ivannevares9@gmail.com" 
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              <a
+                href="mailto:ivannevares9@gmail.com"
                 className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular"
               >
-                ivannevares9@gmail.com
+                Mail
               </a>
-              <a 
-                href="https://www.linkedin.com/in/ivan-nevares/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href="https://www.linkedin.com/in/ivan-nevares/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular"
               >
                 LinkedIn
-              </a>
-              <a 
-                href="https://github.com/i9-9" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular"
-              >
-                GitHub
               </a>
               <a 
                 href="https://dribbble.com/i9i9" 
@@ -166,9 +147,17 @@ const ProfileLayout = () => {
               >
                 Dribbble
               </a>
+              <a 
+                href="https://github.com/i9-9" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular"
+              >
+                GitHub
+              </a>
               <button
                 onClick={() => setIsContactFormOpen(true)}
-                className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular text-left"
+                className="block text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular text-left col-span-2"
               >
                 {t('contact.form')}
               </button>
@@ -176,7 +165,7 @@ const ProfileLayout = () => {
           </section>
 
           <Separator className="my-8" />
-          
+
           <section className="mb-8">
             <GeometricFlowCard />
           </section>

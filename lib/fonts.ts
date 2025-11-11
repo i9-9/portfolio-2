@@ -27,6 +27,11 @@ export const helveticaNow = localFont({
       style: 'normal',
     },
     {
+      path: '../public/fonts/HelveticaNowDisplay-Black.ttf',
+      weight: '900',
+      style: 'normal',
+    },
+    {
       path: '../public/fonts/HelveticaNowDisplay-Italic.ttf',
       weight: '400',
       style: 'italic',

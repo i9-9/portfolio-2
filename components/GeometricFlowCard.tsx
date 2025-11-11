@@ -23,13 +23,13 @@ const GeometricFlowCard = () => {
     setIsVisible(true);
   }, []);
 
-  // Configuración para halftone grid (basado en tu original)
+  // Configuración para halftone grid - optimized for performance
   const config = useMemo(() => {
-    const GRID_SIZE = 32;
-    const CELL_SIZE = 10;
+    const GRID_SIZE = 24; // Reduced from 32 to 24 (576 vs 1024 particles - 44% reduction)
+    const CELL_SIZE = 13.33; // Adjusted to maintain visual size (320px total)
     const CONTAINER_SIZE = GRID_SIZE * CELL_SIZE;
     const PARTICLE_COUNT = GRID_SIZE * GRID_SIZE;
-    
+
     return {
       GRID_SIZE,
       CELL_SIZE,

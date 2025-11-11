@@ -16,12 +16,12 @@ export const translations = {
       }
     },
     hero: {
-      title: "Designer & Developer crafting unique digital experiences",
+      title: "Design & Systems",
       subtitle: "Freelance web developer.\nFocused on creating modern, user-centered digital solutions."
     },
     about: {
       title: "About Me",
-      content: "I'm a UX/UI Designer and Front-End Developer based in Buenos Aires, Argentina. With a passion for creating intuitive and visually appealing digital experiences, I combine design thinking with technical expertise to build modern web applications. My approach focuses on user-centered design principles and clean, efficient code.\n\nI specialize in React, Next.js, and TypeScript, while maintaining a strong foundation in UI/UX design using tools like Figma and Adobe Creative Suite. When I'm not coding or designing, I'm constantly learning about new technologies and design trends to deliver the best solutions for my clients."
+      content: "I'm a UX/UI Designer and Front-End Developer based in Buenos Aires, Argentina.\n\nI like intuitive and visually appealing digital experiences, combining design thinking with technical expertise to build modern web applications.\n\nMy approach focuses on user-centered design principles and clean, efficient code.\n\nI specialize in React, Next.js and TypeScript, while maintaining a solid foundation in UI/UX design using tools like Figma and Adobe Creative Suite."
     },
     work: {
       title: "Selected Work",
@@ -35,7 +35,15 @@ export const translations = {
       },
       vinorodante: {
         title: "Wine E-commerce",
-        description: "An e-commerce platform for a boutique wine distributor, featuring a curated selection of wines. Built with Next.js and includes a subscription service and wine club management system."
+        description: "An e-commerce platform for a boutique wine distributor, featuring a curated selection of wines. Built with Next.js and includes a subscription service and wine club management system. I handled the complete brand identity design."
+      },
+      ursulabenavidez: {
+        title: "Art Director Portfolio",
+        description: "Portfolio website for art director and set designer Ursula Benavidez. Built with Next.js, showcasing her creative work with a clean, gallery-focused design that highlights her projects."
+      },
+      templodetierra: {
+        title: "Sustainable Tourism",
+        description: "A sustainable and ecological tourism project focused on connection with nature and ancestral construction techniques. Built with Next.js. I designed the complete visual identity and logo."
       }
     },
     focus: {
@@ -87,12 +95,12 @@ export const translations = {
       }
     },
     hero: {
-      title: "Diseñador y Desarrollador creando experiencias digitales únicas",
+      title: "Diseño & Sistemas",
       subtitle: "Desarrollador web freelance.\nEnfocado en crear soluciones digitales modernas centradas en el usuario."
     },
     about: {
       title: "Sobre mí",
-      content: "Soy un Diseñador UX/UI y Desarrollador Front-End basado en Buenos Aires, Argentina. Con pasión por crear experiencias digitales intuitivas y visualmente atractivas, combino el pensamiento de diseño con experiencia técnica para construir aplicaciones web modernas. Mi enfoque se centra en principios de diseño centrados en el usuario y código limpio y eficiente.\n\nMe especializo en React, Next.js y TypeScript, mientras mantengo una sólida base en diseño UI/UX usando herramientas como Figma y Adobe Creative Suite. Cuando no estoy programando o diseñando, estoy constantemente aprendiendo sobre nuevas tecnologías y tendencias de diseño para ofrecer las mejores soluciones a mis clientes."
+      content: "Soy un Diseñador UX/UI y Desarrollador Front-End basado en Buenos Aires, Argentina.\n\nMe gustan las experiencias digitales intuitivas y visualmente atractivas, combino el pensamiento de diseño con experiencia técnica para construir aplicaciones web modernas.\n\nMi enfoque se centra en principios de diseño centrados en el usuario y código limpio y eficiente.\n\nMe especializo en React, Next.js y TypeScript, mientras mantengo una sólida base en diseño UI/UX usando herramientas como Figma y Adobe Creative Suite."
     },
     work: {
       title: "Proyectos Seleccionados",
@@ -106,7 +114,15 @@ export const translations = {
       },
       vinorodante: {
         title: "E-commerce de Vinos",
-        description: "Una plataforma de comercio electrónico para un distribuidor boutique de vinos, con una selección curada. Construida con Next.js e incluye servicio de suscripción y sistema de gestión de club de vinos."
+        description: "Una plataforma de comercio electrónico para un distribuidor boutique de vinos, con una selección curada. Construida con Next.js e incluye servicio de suscripción y sistema de gestión de club de vinos. Me ocupé del diseño de identidad en su totalidad."
+      },
+      ursulabenavidez: {
+        title: "Portfolio de Directora de Arte",
+        description: "Sitio web portfolio para la directora de arte y set designer Ursula Benavidez. Desarrollado en Next.js, exhibiendo su trabajo creativo con un diseño limpio enfocado en galería que destaca sus proyectos."
+      },
+      templodetierra: {
+        title: "Turismo Sostenible",
+        description: "Un proyecto de turismo sostenible y ecológico enfocado en la conexión con la naturaleza y las técnicas ancestrales de construcción. Desarrollado en Next.js. Diseñé la identidad visual completa y el logo."
       }
     },
     focus: {

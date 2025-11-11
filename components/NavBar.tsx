@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
+import { useGrid } from '@/lib/grid/GridContext';
 import { AboutModal } from './AboutModal';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/custom-sheet';
 import { HamburgerMenu } from './ui/hamburger-menu';
@@ -12,6 +13,7 @@ import { cn } from '@/lib/utils';
 export function NavBar() {
   const { language, setLanguage, t } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const { isGridVisible, toggleGrid } = useGrid();
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -109,7 +111,7 @@ export function NavBar() {
         </button>
       </li>
       <li>
-        <button 
+        <button
           onClick={toggleLanguage}
           className={cn(
             "text-[9px] tracking-[0.2em] uppercase transition-colors",
@@ -119,20 +121,32 @@ export function NavBar() {
           {t('nav.language')}
         </button>
       </li>
+      <li>
+        <button
+          onClick={toggleGrid}
+          className={cn(
+            "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
+            isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground",
+            isGridVisible && "text-foreground"
+          )}
+        >
+          Grid
+        </button>
+      </li>
     </ul>
   );
 
   return (
     <>
       <header className="fixed top-0 left-0 right-0 bg-nav/80 backdrop-blur-sm z-[100]">
-        <div className="max-w-[1600px] mx-auto grid grid-cols-12 px-4 lg:px-12">
+        <div className="max-w-[1600px] mx-auto grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12">
           <div className="col-span-6 flex items-center h-[48px] lg:h-[24px]">
             <a href="/" className={cn(
               "text-[9px] tracking-[0.2em] uppercase flex items-center",
               isMobileMenuOpen ? "text-foreground" : "text-foreground/90 hover:text-foreground"
             )}>Ivan Nevares</a>
           </div>
-          <nav className="col-span-3 col-start-10 flex items-center justify-end h-[48px] lg:h-[24px]">
+          <nav className="col-span-3 col-start-10 flex items-center justify-start h-[48px] lg:h-[24px]">
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center">
               <NavItems />

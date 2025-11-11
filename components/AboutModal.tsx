@@ -21,7 +21,7 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps) {
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col space-y-4 sm:space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-end gap-4">
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 overflow-hidden rounded-md">
               <Image
                 src="/profile.jpeg"
@@ -31,8 +31,8 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps) {
                 sizes="(max-width: 640px) 64px, 80px"
               />
             </div>
-            <div className="space-y-2">
-              <h2 className="text-base sm:text-lg font-helveticaNowDisplayBold">Ivan Nevares</h2>
+            <div className="space-y-1">
+              <h2 className="text-base sm:text-lg font-helveticaNowDisplayBold tracking-tight">Ivan Nevares</h2>
               <p className="text-xs sm:text-sm text-muted-foreground">UX/UI Designer & Front-End Developer</p>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 <Badge variant="secondary" className="text-[10px] sm:text-xs">React</Badge>
