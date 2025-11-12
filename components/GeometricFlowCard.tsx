@@ -3,12 +3,16 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import * as THREE from 'three';
 
-const GeometricFlowCard = () => {
+interface GeometricFlowCardProps {
+  fullScreen?: boolean;
+}
+
+const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [patternType, setPatternType] = useState(0);
   const [transitionProgress, setTransitionProgress] = useState(0);
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene>();
   const rendererRef = useRef<THREE.WebGLRenderer>();
@@ -17,6 +21,8 @@ const GeometricFlowCard = () => {
   const animationFrameRef = useRef<number>();
   const startTimeRef = useRef<number>();
   const materialRef = useRef<THREE.ShaderMaterial>();
+  const resizeObserverRef = useRef<ResizeObserver>();
+  const initialPatternRef = useRef<number>(fullScreen ? Math.floor(Math.random() * 6) : 0);
 
   useEffect(() => {
     setIsMounted(true);
@@ -25,7 +31,7 @@ const GeometricFlowCard = () => {
 
   // Configuración para halftone grid - optimized for performance
   const config = useMemo(() => {
-    const GRID_SIZE = 24; // Reduced from 32 to 24 (576 vs 1024 particles - 44% reduction)
+    const GRID_SIZE = fullScreen ? 60 : 24; // Muchas más partículas en fullScreen (60x60 = 3600)
     const CELL_SIZE = 13.33; // Adjusted to maintain visual size (320px total)
     const CONTAINER_SIZE = GRID_SIZE * CELL_SIZE;
     const CONTAINER_SIZE_MOBILE = CONTAINER_SIZE * 1.4; // 40% larger on mobile
@@ -37,21 +43,21 @@ const GeometricFlowCard = () => {
       CONTAINER_SIZE,
       CONTAINER_SIZE_MOBILE,
       PARTICLE_COUNT,
-      MIN_SIZE: 0.006,
-      MAX_SIZE: 0.016,
+      MIN_SIZE: fullScreen ? 0.005 : 0.006,
+      MAX_SIZE: fullScreen ? 0.018 : 0.016,
     };
-  }, []);
+  }, [fullScreen]);
 
   // Inicializar Three.js para halftone dots
   const initThreeJS = () => {
     if (!containerRef.current || sceneRef.current) return;
 
     try {
-      const { CONTAINER_SIZE, CONTAINER_SIZE_MOBILE, GRID_SIZE, PARTICLE_COUNT } = config;
+      const { GRID_SIZE, PARTICLE_COUNT } = config;
 
-      // Determinar tamaño según viewport
-      const isMobile = window.innerWidth < 1024;
-      const renderSize = isMobile ? CONTAINER_SIZE_MOBILE : CONTAINER_SIZE;
+      // Obtener tamaño real del contenedor
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const renderSize = Math.min(containerRect.width, containerRect.height) || 320;
 
       // Scene
       const scene = new THREE.Scene();
@@ -65,14 +71,35 @@ const GeometricFlowCard = () => {
 
       // Renderer
       const renderer = new THREE.WebGLRenderer({
-        antialias: true,
+        antialias: false,
         alpha: true,
         powerPreference: "high-performance"
       });
-      renderer.setSize(renderSize, renderSize);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      const updateRendererSize = () => {
+        if (!containerRef.current || !renderer) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        // Siempre mantener aspecto cuadrado
+        const size = Math.min(rect.width, rect.height) || 320;
+        renderer.setSize(size, size);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        // Asegurar que el canvas no se salga del contenedor
+        renderer.domElement.style.maxWidth = '100%';
+        renderer.domElement.style.maxHeight = '100%';
+        renderer.domElement.style.width = 'auto';
+        renderer.domElement.style.height = 'auto';
+      };
 
+      updateRendererSize();
+      renderer.domElement.style.display = 'block';
+      renderer.domElement.style.maxWidth = '100%';
+      renderer.domElement.style.maxHeight = '100%';
       containerRef.current.appendChild(renderer.domElement);
+
+      // ResizeObserver para actualizar el tamaño cuando cambie el contenedor
+      resizeObserverRef.current = new ResizeObserver(() => {
+        updateRendererSize();
+      });
+      resizeObserverRef.current.observe(containerRef.current);
 
       // Crear grid de puntos halftone
       const geometry = new THREE.BufferGeometry();
@@ -82,7 +109,7 @@ const GeometricFlowCard = () => {
 
       // Configurar grid exactamente como tu original
       let index = 0;
-      const VISIBLE_SIZE = 14; // Reduced from 18 to 14 for smaller inner square
+      const VISIBLE_SIZE = fullScreen ? 24 : 14; // Mucho más grande en fullScreen
       for (let row = 0; row < GRID_SIZE; row++) {
         for (let col = 0; col < GRID_SIZE; col++) {
           const x = (col / (GRID_SIZE - 1) - 0.5) * VISIBLE_SIZE;
@@ -104,29 +131,33 @@ const GeometricFlowCard = () => {
       geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
       // Material shader para puntos halftone perfectos
+      const pointSizeMultiplier = fullScreen ? 5000.0 : 2500.0; // Ajustado para círculos que crecen más
       const material = new THREE.ShaderMaterial({
         uniforms: {
           time: { value: 0 },
+          pointSizeMultiplier: { value: pointSizeMultiplier },
         },
         vertexShader: `
           attribute float size;
-          
+          uniform float pointSizeMultiplier;
+
           void main() {
             vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-            gl_PointSize = size * 2500.0;
+            gl_PointSize = size * pointSizeMultiplier;
             gl_Position = projectionMatrix * mvPosition;
           }
         `,
         fragmentShader: `
           precision highp float;
-          
+
           void main() {
             vec2 coord = gl_PointCoord - vec2(0.5);
             float dist = length(coord);
-            
+
             if (dist > 0.5) discard;
-            
-            float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
+
+            // Bordes más nítidos
+            float alpha = 1.0 - smoothstep(0.4, 0.5, dist);
             gl_FragColor = vec4(0.2, 0.2, 0.2, alpha);
           }
         `,
@@ -279,7 +310,7 @@ const GeometricFlowCard = () => {
         const TOTAL_CYCLE = PATTERN_DURATION + TRANSITION_DURATION; // 8 segundos total
 
         const cyclePosition = deltaTime % TOTAL_CYCLE;
-        const currentPatternIndex = Math.floor(deltaTime / TOTAL_CYCLE) % 6;
+        const currentPatternIndex = (initialPatternRef.current + Math.floor(deltaTime / TOTAL_CYCLE)) % 6;
         
         // Calcular progreso de transición
         let currentTransitionProgress = 0;
@@ -311,6 +342,12 @@ const GeometricFlowCard = () => {
       clearTimeout(timeoutId);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
+      }
+      
+      // Cleanup ResizeObserver
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+        resizeObserverRef.current = undefined;
       }
       
       // Cleanup Three.js
@@ -347,12 +384,29 @@ const GeometricFlowCard = () => {
 
   if (!isMounted) return null;
 
-  return (
-    <div className="w-full aspect-square bg-background border border-border rounded-lg overflow-hidden p-2">
-      <div className="relative w-full h-full flex items-center justify-center">
-        <div 
+  if (fullScreen) {
+    return (
+      <div className="w-screen h-screen bg-background overflow-hidden m-0 p-0 flex items-center justify-center">
+        <div
           ref={containerRef}
-          className="relative w-[448px] h-[448px] lg:w-[320px] lg:h-[320px]"
+          className="m-0 p-0"
+          style={{
+            boxSizing: 'border-box',
+            width: 'max(100vw, 100vh)',
+            height: 'max(100vw, 100vh)'
+          }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full aspect-square bg-background border border-border rounded-lg overflow-hidden p-2 max-w-full box-border">
+      <div className="relative w-full h-full flex items-center justify-center box-border">
+        <div
+          ref={containerRef}
+          className="relative w-full h-full max-w-full max-h-full box-border"
+          style={{ boxSizing: 'border-box' }}
         />
       </div>
     </div>

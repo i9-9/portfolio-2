@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { ClientLayout } from '@/components/ClientLayout'
 import { ThemeProvider } from "@/lib/theme/ThemeContext";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
+import { SplashProvider } from "@/lib/splash/SplashContext";
 import { Analytics } from "@vercel/analytics/react";
 import { helveticaNow, helveticaNowText, inter } from "@/lib/fonts";
 
@@ -63,9 +64,11 @@ export default function RootLayout({
       <body className={`${helveticaNow.className} ${helveticaNowText.className} ${inter.className} font-sans bg-background text-foreground`}>
         <ThemeProvider>
           <LanguageProvider>
-            <ClientLayout>
-              {children}
-            </ClientLayout>
+            <SplashProvider>
+              <ClientLayout>
+                {children}
+              </ClientLayout>
+            </SplashProvider>
           </LanguageProvider>
         </ThemeProvider>
         <Analytics />

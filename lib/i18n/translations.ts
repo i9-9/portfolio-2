@@ -58,7 +58,8 @@ export const translations = {
     },
     contact: {
       title: "Contact",
-      form: "Form"
+      form: "Form",
+      mailCopied: "Mail copied to clipboard"
     },
     form: {
       title: "Contact Form",
@@ -142,7 +143,8 @@ export const translations = {
     },
     contact: {
       title: "Contacto",
-      form: "Formulario"
+      form: "Formulario",
+      mailCopied: "Mail copiado al portapapeles"
     },
     form: {
       title: "Formulario de Contacto",

@@ -16,6 +16,9 @@ module.exports = {
   		},
   	},
   	extend: {
+  		gridTemplateColumns: {
+  			'7': 'repeat(7, minmax(0, 1fr))',
+  		},
   		fontFamily: {
   			sans: ['var(--font-helvetica-now)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
   			display: ['var(--font-helvetica-now)', 'var(--font-inter)', 'system-ui', 'sans-serif'],

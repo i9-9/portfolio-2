@@ -58,8 +58,8 @@ export function NavBar() {
           <button
             onClick={() => setIsAboutOpen(true)}
             className={cn(
-              "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
+              "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
+              isMobile ? "text-xs text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
             )}
           >
             {t('nav.about')}
@@ -69,36 +69,30 @@ export function NavBar() {
       {
         id: 'cv',
         element: isMobile ? (
-          <a 
+          <a
             href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
             download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-            className={cn(
-              "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              "text-foreground/90 hover:text-foreground"
-            )}
+            className="text-xs tracking-[0.2em] uppercase transition-colors whitespace-nowrap text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2 flex items-center"
           >
             {t('nav.cv')}
           </a>
         ) : (
           <div className="relative group">
             <button
-              className={cn(
-                "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-                "text-muted-foreground hover:text-foreground"
-              )}
+              className="text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap py-1 px-2 text-muted-foreground hover:text-foreground"
             >
               {t('nav.cv')}
             </button>
             <div className="absolute top-full right-0 mt-1 w-32 bg-popover border border-border rounded-md shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <div className="py-1">
-                <a 
+                <a
                   href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
                   download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
                   className="block px-3 py-1.5 text-[8px] tracking-[0.2em] uppercase text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
                 >
                   {t('nav.cvDropdown.download')}
                 </a>
-                <a 
+                <a
                   href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -114,11 +108,11 @@ export function NavBar() {
       {
         id: 'theme',
         element: (
-          <button 
+          <button
             onClick={toggleTheme}
             className={cn(
-              "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
+              "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
+              isMobile ? "text-xs text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
             )}
           >
             {t(`nav.theme.${theme}`)}
@@ -131,8 +125,8 @@ export function NavBar() {
           <button
             onClick={toggleLanguage}
             className={cn(
-              "text-[9px] tracking-[0.2em] uppercase transition-colors",
-              isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground"
+              "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
+              isMobile ? "text-xs text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
             )}
           >
             {t('nav.language')}
@@ -145,8 +139,8 @@ export function NavBar() {
           <button
             onClick={toggleGrid}
             className={cn(
-              "text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-foreground/90 hover:text-foreground" : "text-muted-foreground hover:text-foreground",
+              "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
+              isMobile ? "text-xs text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2",
               isGridVisible && "text-foreground"
             )}
           >
@@ -169,7 +163,7 @@ export function NavBar() {
     if (isMobile) {
       return (
         <motion.ul
-          className={cn("flex flex-col gap-4")}
+          className={cn("flex flex-col gap-6")}
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -198,10 +192,7 @@ export function NavBar() {
       <header className="fixed top-0 left-0 right-0 bg-nav/80 backdrop-blur-sm z-[100]">
         <div className="max-w-[1600px] mx-auto grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12">
           <div className="col-span-6 flex items-center h-[48px] lg:h-[40px]">
-            <a href="/" className={cn(
-              "text-[9px] tracking-[0.2em] uppercase flex items-center",
-              isMobileMenuOpen ? "text-foreground" : "text-foreground/90 hover:text-foreground"
-            )}>Ivan Nevares</a>
+            <a href="/" className="text-xs md:text-[9px] tracking-[0.2em] uppercase flex items-center text-foreground/90 hover:text-foreground py-2 md:py-0">Ivan Nevares</a>
           </div>
           <nav className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end lg:justify-start h-[48px] lg:h-[40px]">
             {/* Desktop Navigation */}
@@ -213,7 +204,7 @@ export function NavBar() {
             <div className="lg:hidden">
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="p-2 flex items-center -mr-2">
+                  <button className="p-3 flex items-center -mr-1 min-h-[44px] min-w-[44px] justify-center">
                     <HamburgerMenu isOpen={isMobileMenuOpen} />
                   </button>
                 </SheetTrigger>
