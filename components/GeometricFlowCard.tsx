@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import * as THREE from 'three';
 
 interface GeometricFlowCardProps {
@@ -31,7 +31,9 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
 
   // Configuración para halftone grid - optimized for performance
   const config = useMemo(() => {
-    const GRID_SIZE = fullScreen ? 60 : 24; // Muchas más partículas en fullScreen (60x60 = 3600)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    // Reducir partículas en mobile para mejor rendimiento: 30x30 = 900 en mobile vs 60x60 = 3600 en desktop
+    const GRID_SIZE = fullScreen ? (isMobile ? 30 : 60) : 24;
     const CELL_SIZE = 13.33; // Adjusted to maintain visual size (320px total)
     const CONTAINER_SIZE = GRID_SIZE * CELL_SIZE;
     const CONTAINER_SIZE_MOBILE = CONTAINER_SIZE * 1.4; // 40% larger on mobile
@@ -45,11 +47,12 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
       PARTICLE_COUNT,
       MIN_SIZE: fullScreen ? 0.005 : 0.006,
       MAX_SIZE: fullScreen ? 0.018 : 0.016,
+      isMobile,
     };
   }, [fullScreen]);
 
   // Inicializar Three.js para halftone dots
-  const initThreeJS = () => {
+  const initThreeJS = useCallback(() => {
     if (!containerRef.current || sceneRef.current) return;
 
     try {
@@ -81,7 +84,9 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
         // Siempre mantener aspecto cuadrado
         const size = Math.min(rect.width, rect.height) || 320;
         renderer.setSize(size, size);
-        renderer.setPixelRatio(window.devicePixelRatio);
+        // Limitar pixelRatio en móvil para mejor rendimiento
+        const isMobile = window.innerWidth < 768;
+        renderer.setPixelRatio(isMobile ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
         // Asegurar que el canvas no se salga del contenedor
         renderer.domElement.style.maxWidth = '100%';
         renderer.domElement.style.maxHeight = '100%';
@@ -174,15 +179,13 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
       particlesRef.current = particles;
       materialRef.current = material;
       particles.userData = { originalPositions };
-
-      console.log('🎨 Three.js halftone system initialized');
     } catch (error) {
       console.error('Three.js initialization failed:', error);
     }
-  };
+  }, [config, fullScreen]);
 
   // Tus patrones originales exactos
-  const getCurrentPattern = (x: number, y: number, type: number, time: number, timeOffset = 0) => {
+  const getCurrentPattern = useCallback((x: number, y: number, type: number, time: number, timeOffset = 0) => {
     const adjustedTime = time + timeOffset;
     const centerX = 0.5;
     const centerY = 0.5;
@@ -229,10 +232,10 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
       default:
         return 0;
     }
-  };
+  }, []);
 
   // Actualizar patrones halftone
-  const updateHalftonePattern = (time: number, patternType: number, transitionProgress: number) => {
+  const updateHalftonePattern = useCallback((time: number, patternType: number, transitionProgress: number) => {
     if (!particlesRef.current) return;
 
     const geometry = particlesRef.current.geometry;
@@ -246,8 +249,8 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
         const x = originalPositions[index * 2];
         const y = originalPositions[index * 2 + 1];
 
-        let influence;
-        
+        let influence: number;
+
         if (transitionProgress > 0) {
           const nextPattern = (patternType + 1) % 6;
           const currentInfluence = getCurrentPattern(x, y, patternType, time, -transitionProgress * 0.2);
@@ -267,16 +270,8 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
     }
 
     geometry.attributes.size.needsUpdate = true;
-  };
+  }, [config, getCurrentPattern]);
 
-  // Estados para debug (opcional, puedes remover después)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log(`Pattern: ${patternType + 1}/6, Transition: ${Math.round(transitionProgress * 100)}%`);
-    }, 1000);
-    
-    return () => clearInterval(interval);
-  }, [patternType, transitionProgress]);
 
   // Intersection Observer para performance
   useEffect(() => {
@@ -295,11 +290,40 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
   useEffect(() => {
     if (!isMounted || !isVisible) return;
 
-    initThreeJS();
-    
+    // Copiar ref al inicio para usar en cleanup
+    const container = containerRef.current;
+
+    // Usar requestIdleCallback para inicializar cuando el navegador esté libre
+    const initWhenIdle = () => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          initThreeJS();
+          startAnimation();
+        }, { timeout: 2000 });
+      } else {
+        // Fallback para navegadores sin requestIdleCallback
+        setTimeout(() => {
+          initThreeJS();
+          startAnimation();
+        }, 100);
+      }
+    };
+
     const startAnimation = () => {
+      let lastFrameTime = 0;
+      const targetFPS = 30; // Reducir a 30 FPS para mejor rendimiento
+      const frameInterval = 1000 / targetFPS;
+      
       const animateLoop = (currentTime: number) => {
         if (!sceneRef.current || !rendererRef.current || !cameraRef.current || !isVisible) return;
+
+        // Throttle a 30 FPS para reducir carga en móvil
+        const elapsed = currentTime - lastFrameTime;
+        if (elapsed < frameInterval) {
+          animationFrameRef.current = requestAnimationFrame(animateLoop);
+          return;
+        }
+        lastFrameTime = currentTime - (elapsed % frameInterval);
 
         if (!startTimeRef.current) startTimeRef.current = currentTime;
         const deltaTime = (currentTime - startTimeRef.current) / 1000;
@@ -336,10 +360,9 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
       animationFrameRef.current = requestAnimationFrame(animateLoop);
     };
     
-    const timeoutId = setTimeout(startAnimation, 100);
+    initWhenIdle();
 
     return () => {
-      clearTimeout(timeoutId);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
@@ -353,7 +376,6 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
       // Cleanup Three.js
       if (rendererRef.current) {
         try {
-          const currentContainer = containerRef.current;
           if (sceneRef.current) sceneRef.current.clear();
           if (particlesRef.current) {
             particlesRef.current.geometry.dispose();
@@ -363,10 +385,10 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
               particlesRef.current.material.forEach(mat => mat.dispose());
             }
           }
-          
+
           const canvas = rendererRef.current.domElement;
-          if (canvas && currentContainer && currentContainer.contains(canvas)) {
-            currentContainer.removeChild(canvas);
+          if (canvas && container && container.contains(canvas)) {
+            container.removeChild(canvas);
           }
           
           rendererRef.current.dispose();
@@ -380,7 +402,7 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
         materialRef.current = undefined;
       }
     };
-  }, [isMounted, isVisible, initThreeJS, updateHalftonePattern]);
+  }, [isMounted, isVisible, fullScreen, config, initThreeJS, updateHalftonePattern]);
 
   if (!isMounted) return null;
 

@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { projects } from "./data/projects";
 import Footer from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import GeometricFlowCard from "@/components/GeometricFlowCard";
 import { AnimatedButton } from "@/components/AnimatedButton";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { useSplash } from "@/lib/splash/SplashContext";
 import { ContactFormModal } from "@/components/ContactFormModal";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Toast } from "@/components/ui/toast";
 import { Mail, Github, Linkedin, Dribbble, MessageSquare, Palette } from "lucide-react";
-import { SplashScreen } from "@/components/SplashScreen";
+
+// Lazy load GeometricFlowCard para reducir el bundle inicial
+const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
 
 const currentYear = new Date().getFullYear();
 
@@ -22,12 +22,6 @@ const ProfileLayout = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const { t } = useLanguage();
-  const { showSplash, setShowSplash } = useSplash();
-
-  const handleSplashComplete = () => {
-    sessionStorage.setItem("hasSeenSplash", "true");
-    setShowSplash(false);
-  };
 
   const copyEmailToClipboard = async () => {
     try {
@@ -42,12 +36,8 @@ const ProfileLayout = () => {
   };
 
   return (
-    <>
-      {/* Splash Screen */}
-      {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
-
-      <div className="min-h-screen bg-background">
-        <div className="grid-container pt-24 pb-24">
+    <div className="min-h-screen bg-background">
+      <div className="grid-container pt-24 pb-24">
         {/* Main Content */}
         <div className="col-span-12 lg:col-span-6 lg:col-start-1 mb-16 lg:mb-0">
           <section className="mb-32 lg:mb-40">
@@ -186,10 +176,10 @@ const ProfileLayout = () => {
                   {t('contact.title')}
                 </AccordionTrigger>
                 <AccordionContent className="px-0 pb-0">
-                  <div className="grid grid-cols-2 gap-x-3 gap-y-3 accordion-item-stagger">
+                  <div className="flex flex-col gap-3 accordion-item-stagger md:grid md:grid-cols-2 md:gap-x-4 md:gap-y-3">
                     <button
                       onClick={copyEmailToClipboard}
-                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular text-left py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular text-left py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
                     >
                       <Mail className="w-4 h-4 flex-shrink-0" />
                       <span>Mail</span>
@@ -198,7 +188,7 @@ const ProfileLayout = () => {
                       href="https://github.com/i9-9"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
                     >
                       <Github className="w-4 h-4 flex-shrink-0" />
                       <span>GitHub</span>
@@ -207,7 +197,7 @@ const ProfileLayout = () => {
                       href="https://www.linkedin.com/in/ivan-nevares/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
                     >
                       <Linkedin className="w-4 h-4 flex-shrink-0" />
                       <span>LinkedIn</span>
@@ -216,7 +206,7 @@ const ProfileLayout = () => {
                       href="https://www.behance.net/ivan_nevares"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
                     >
                       <Palette className="w-4 h-4 flex-shrink-0" />
                       <span>Behance</span>
@@ -225,14 +215,14 @@ const ProfileLayout = () => {
                       href="https://dribbble.com/i9i9"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
                     >
                       <Dribbble className="w-4 h-4 flex-shrink-0" />
                       <span>Dribbble</span>
                     </a>
                     <button
                       onClick={() => setIsContactFormOpen(true)}
-                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular text-left py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors font-helveticaNowTextRegular text-left py-2 px-2 min-h-[44px] md:min-h-0 -mx-2 md:mx-0 rounded-md hover:bg-accent/50"
                     >
                       <MessageSquare className="w-4 h-4 flex-shrink-0" />
                       <span>{t('contact.form')}</span>
@@ -245,11 +235,11 @@ const ProfileLayout = () => {
 
           <Separator className="my-8" />
 
-          {!showSplash && (
-            <section className="mb-8 w-full max-w-full overflow-hidden">
+          <section className="mb-8 w-full max-w-full overflow-hidden">
+            <Suspense fallback={<div className="w-full aspect-square bg-muted/50 rounded-lg animate-pulse" />}>
               <GeometricFlowCard />
-            </section>
-          )}
+            </Suspense>
+          </section>
         </aside>
       </div>
       <Footer />
@@ -259,11 +249,10 @@ const ProfileLayout = () => {
         isOpen={isContactFormOpen} 
         onClose={() => setIsContactFormOpen(false)} 
       />
-
+      
       {/* Toast Notification */}
       <Toast message={t('contact.mailCopied')} isVisible={showToast} />
-      </div>
-    </>
+    </div>
   );
 };
 
