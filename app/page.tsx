@@ -138,7 +138,7 @@ const ProfileLayout = () => {
 
         {/* Sidebar - becomes full width on mobile */}
         <aside className="col-span-12 lg:col-span-3 lg:col-start-10 lg:sticky lg:top-32 lg:self-start mt-16 lg:mt-0 w-full max-w-full overflow-hidden">
-          <Accordion type="multiple" defaultValue={[]} className="w-full">
+          <Accordion type="multiple" defaultValue={["contact"]} className="w-full">
             <AccordionItem value="focus" className="border-none">
               <section id="about" className="focus-section">
                 <AccordionTrigger className="focus-title font-helveticaNowDisplayBold hover:no-underline px-0 pb-6">
