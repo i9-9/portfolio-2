@@ -18,7 +18,7 @@ export function HamburgerMenu({ isOpen }: HamburgerMenuProps) {
     open: { rotate: -45, y: -4, width: "22px" }
   };
 
-  const transition = { duration: 0.15, ease: [0.4, 0.0, 0.2, 1] };
+  const transition = { duration: 0.15, ease: [0.4, 0.0, 0.2, 1] as const };
 
   return (
     <div className="relative w-7 h-[10px] flex flex-col justify-between cursor-pointer">

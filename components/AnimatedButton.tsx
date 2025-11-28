@@ -13,12 +13,12 @@ export function AnimatedButton({ href, previewImage }: AnimatedButtonProps) {
   const { t } = useLanguage();
 
   return (
-    <div className="relative group">
+    <div className="relative group inline-block">
       <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="relative inline-flex items-center gap-3 rounded-sm border border-border px-6 py-4 min-h-[48px] md:min-h-0 text-sm tracking-[0.15em] uppercase font-helveticaNowTextRegular transition-all duration-300 hover:bg-foreground hover:border-foreground active:bg-foreground active:border-foreground active:scale-[0.98] group w-fit touch-manipulation"
+        className="relative inline-flex items-center gap-3 rounded-sm border border-border px-6 py-4 min-h-[48px] md:min-h-0 text-sm tracking-[0.15em] uppercase font-helveticaNowTextRegular transition-all duration-300 hover:bg-foreground hover:border-foreground active:bg-foreground active:border-foreground active:scale-[0.98] touch-manipulation"
       >
         {/* Text container with fixed width and overflow hidden */}
         <div className="relative overflow-hidden">

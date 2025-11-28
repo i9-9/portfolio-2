@@ -17,7 +17,7 @@ export const translations = {
     },
     hero: {
       title: "Design & Systems",
-      subtitle: "Freelance web developer.\nFocused on creating modern, user-centered digital solutions."
+      subtitle: ""
     },
     about: {
       title: "About Me",
@@ -102,7 +102,7 @@ export const translations = {
     },
     hero: {
       title: "Diseño & Sistemas",
-      subtitle: "Desarrollador web freelance.\nEnfocado en crear soluciones digitales modernas centradas en el usuario."
+      subtitle: ""
     },
     about: {
       title: "Sobre mí",

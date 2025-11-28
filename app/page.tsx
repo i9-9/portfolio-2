@@ -16,8 +16,6 @@ import { Mail, Github, Linkedin, Dribbble, MessageSquare, Palette } from "lucide
 // Lazy load GeometricFlowCard para reducir el bundle inicial
 const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
 
-const currentYear = new Date().getFullYear();
-
 const ProfileLayout = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -38,17 +36,16 @@ const ProfileLayout = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="grid-container pt-24 pb-24">
-        {/* Main Content */}
+        {/* Main Content - 6 columns */}
         <div className="col-span-12 lg:col-span-6 lg:col-start-1 mb-16 lg:mb-0">
-          <section className="mb-32 lg:mb-40">
-            <h1 className="mb-6 font-helveticaNowDisplayBold pt-1">
+          {/* Hero */}
+          <section className="mb-48 lg:mb-64">
+            <h1 className="font-helveticaNowDisplayBold pt-1">
               {t('hero.title')}
             </h1>
-            <p className="text-base lg:text-lg max-w-[46ch] font-helveticaNowTextRegular whitespace-pre-line">
-              {t('hero.subtitle')}
-            </p>
           </section>
 
+          {/* Work Section */}
           <section id="work">
             <h2 className="mb-8 font-helveticaNowDisplayBold">{t('work.title')}</h2>
             <Tabs defaultValue="kostume" className="w-full">
@@ -136,8 +133,8 @@ const ProfileLayout = () => {
           </section>
         </div>
 
-        {/* Sidebar - becomes full width on mobile */}
-        <aside className="col-span-12 lg:col-span-3 lg:col-start-10 lg:sticky lg:top-32 lg:self-start mt-16 lg:mt-0 w-full max-w-full overflow-hidden">
+        {/* Sidebar - 3 columns starting at column 10, sticky */}
+        <aside className="col-span-12 lg:col-span-3 lg:col-start-10 lg:sticky lg:top-24 lg:self-start mt-16 lg:mt-0 w-full max-w-full overflow-hidden">
           <Accordion type="multiple" defaultValue={["contact"]} className="w-full">
             <AccordionItem value="focus" className="border-none">
               <section id="about" className="focus-section">

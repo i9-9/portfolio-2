@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { useGrid } from '@/lib/grid/GridContext';
-import { AboutModal } from './AboutModal';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/custom-sheet';
 import { HamburgerMenu } from './ui/hamburger-menu';
 import { cn } from '@/lib/utils';
@@ -14,7 +13,6 @@ export function NavBar() {
   const { language, setLanguage, t } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { isGridVisible, toggleGrid } = useGrid();
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleLanguage = () => {
@@ -43,7 +41,7 @@ export function NavBar() {
       y: 0,
       x: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 12,
       },
@@ -52,20 +50,6 @@ export function NavBar() {
 
   const NavItems = ({ isMobile = false }: { isMobile?: boolean }) => {
     const items = [
-      {
-        id: 'about',
-        element: (
-          <button
-            onClick={() => setIsAboutOpen(true)}
-            className={cn(
-              "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-xs text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
-            )}
-          >
-            {t('nav.about')}
-          </button>
-        ),
-      },
       {
         id: 'cv',
         element: isMobile ? (
@@ -168,7 +152,7 @@ export function NavBar() {
           initial="hidden"
           animate="visible"
         >
-          {items.map((item, index) => (
+          {items.map((item) => (
             <motion.li
               key={item.id}
               variants={itemVariants}
@@ -181,7 +165,7 @@ export function NavBar() {
     }
 
     return (
-      <ul className={cn("flex flex-row gap-6")}>
+      <ul className={cn("flex flex-row gap-6 -ml-2")}>
         {listContent}
       </ul>
     );
@@ -191,9 +175,12 @@ export function NavBar() {
     <>
       <header className="fixed top-0 left-0 right-0 bg-nav/80 backdrop-blur-sm z-[100]">
         <div className="max-w-[1600px] mx-auto grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12">
+          {/* Logo - 6 columns on mobile, auto on desktop */}
           <div className="col-span-6 flex items-center h-[48px] lg:h-[40px]">
             <a href="/" className="text-xs md:text-[9px] tracking-[0.2em] uppercase flex items-center text-foreground/90 hover:text-foreground py-2 md:py-0">Ivan Nevares</a>
           </div>
+          
+          {/* Navigation - 3 columns starting at column 10 (aligned with sidebar) */}
           <nav className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end lg:justify-start h-[48px] lg:h-[40px]">
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center">
@@ -225,7 +212,6 @@ export function NavBar() {
           </nav>
         </div>
       </header>
-      <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
     </>
   );
-} 
+}
