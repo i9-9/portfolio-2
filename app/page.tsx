@@ -19,7 +19,7 @@ const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
 const ProfileLayout = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const copyEmailToClipboard = async () => {
     try {
@@ -41,7 +41,9 @@ const ProfileLayout = () => {
           {/* Hero */}
           <section className="mb-48 lg:mb-64">
             <h1 className="font-helveticaNowDisplayBold pt-1">
-              {t('hero.title')}
+              {language === 'en' ? (
+                <>Design & <span style={{ letterSpacing: '0.01em' }}>S</span>ystems</>
+              ) : t('hero.title')}
             </h1>
           </section>
 

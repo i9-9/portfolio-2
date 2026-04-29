@@ -174,7 +174,7 @@ export function NavBar() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 bg-nav/80 backdrop-blur-sm z-[100]">
-        <div className="max-w-[1600px] mx-auto grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12">
+        <div className="w-full grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12">
           {/* Logo - 6 columns on mobile, auto on desktop */}
           <div className="col-span-6 flex items-center h-[48px] lg:h-[40px]">
             <a href="/" className="text-xs md:text-[9px] tracking-[0.2em] uppercase flex items-center text-foreground/90 hover:text-foreground py-2 md:py-0">Ivan Nevares</a>
@@ -195,11 +195,11 @@ export function NavBar() {
                     <HamburgerMenu isOpen={isMobileMenuOpen} />
                   </button>
                 </SheetTrigger>
-                <SheetContent 
+                <SheetContent
                   className="w-full h-[100vh] sm:max-w-none border-none bg-nav/95 backdrop-blur-md mt-[48px] p-0"
                   side="top"
                 >
-                  <div className="max-w-[1600px] mx-auto w-full h-full">
+                  <div className="w-full h-full">
                     <div className="grid grid-cols-12 px-4 lg:px-12 pt-24">
                       <div className="col-span-6">
                         <NavItems isMobile={true} />

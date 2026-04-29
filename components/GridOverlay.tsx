@@ -11,7 +11,7 @@ export function GridOverlay({ isVisible }: GridOverlayProps) {
     <div className="fixed inset-0 pointer-events-none z-[9999]">
       {/* Horizontal rows with 64px spacing */}
       <div className="absolute inset-0">
-        <div className="max-w-[1600px] mx-auto h-full px-4 lg:px-12">
+        <div className="w-full h-full px-4 lg:px-12">
           <div className="h-full flex flex-col">
             {Array.from({ length: 30 }).map((_, i) => (
               <div
@@ -24,7 +24,7 @@ export function GridOverlay({ isVisible }: GridOverlayProps) {
       </div>
 
       {/* Vertical columns */}
-      <div className="max-w-[1600px] mx-auto h-full px-4 lg:px-12">
+      <div className="w-full h-full px-4 lg:px-12">
         <div className="grid grid-cols-12 gap-4 lg:gap-6 h-full">
           {Array.from({ length: 12 }).map((_, i) => (
             <div
