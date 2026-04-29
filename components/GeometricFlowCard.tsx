@@ -14,14 +14,14 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
   const [transitionProgress, setTransitionProgress] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<THREE.Scene>();
-  const rendererRef = useRef<THREE.WebGLRenderer>();
-  const cameraRef = useRef<THREE.OrthographicCamera>();
-  const particlesRef = useRef<THREE.Points>();
-  const animationFrameRef = useRef<number>();
-  const startTimeRef = useRef<number>();
-  const materialRef = useRef<THREE.ShaderMaterial>();
-  const resizeObserverRef = useRef<ResizeObserver>();
+  const sceneRef = useRef<THREE.Scene | undefined>(undefined);
+  const rendererRef = useRef<THREE.WebGLRenderer | undefined>(undefined);
+  const cameraRef = useRef<THREE.OrthographicCamera | undefined>(undefined);
+  const particlesRef = useRef<THREE.Points | undefined>(undefined);
+  const animationFrameRef = useRef<number | undefined>(undefined);
+  const startTimeRef = useRef<number | undefined>(undefined);
+  const materialRef = useRef<THREE.ShaderMaterial | undefined>(undefined);
+  const resizeObserverRef = useRef<ResizeObserver | undefined>(undefined);
   const initialPatternRef = useRef<number>(fullScreen ? Math.floor(Math.random() * 6) : 0);
 
   useEffect(() => {
