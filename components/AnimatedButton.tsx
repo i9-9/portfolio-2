@@ -46,7 +46,7 @@ export function AnimatedButton({ href, previewImage }: AnimatedButtonProps) {
           </span>
         </div>
 
-        <ArrowRightIcon className="w-5 h-5 flex-shrink-0 transition-all duration-300 group-hover:translate-x-1 group-active:translate-x-1 text-foreground group-hover:text-background group-active:text-background relative z-10" />
+        <ArrowRightIcon className="w-5 h-5 flex-shrink-0 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5 group-active:rotate-90 group-active:translate-y-0.5 text-foreground group-hover:text-background group-active:text-background relative z-10" />
       </a>
 
       {/* Preview Image - Only on Desktop */}

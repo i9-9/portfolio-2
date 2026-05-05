@@ -42,7 +42,7 @@ const ProjectCard: React.FC<ProjectProps> = ({ project, index }) => {
                       className="flex items-center gap-1"
                     >
                       View Project
-                      <ArrowRightIcon className="w-4 h-4" />
+                      <ArrowRightIcon className="w-4 h-4 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5" />
                     </a>
                   </Button>
                 </HoverCardTrigger>

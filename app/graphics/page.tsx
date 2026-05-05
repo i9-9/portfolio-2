@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { ArrowLeftIcon, Cross2Icon } from "@radix-ui/react-icons";
+import { Cross2Icon } from "@radix-ui/react-icons";
 
 const MasonryGrid = ({ onImageClick }: { onImageClick: (imageName: string) => void }) => {
   const [images, setImages] = useState<string[]>([]);

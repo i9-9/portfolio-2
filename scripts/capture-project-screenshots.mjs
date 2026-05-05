@@ -22,6 +22,7 @@ const SITES = [
   ["ursulabenavidez", "https://www.ursulabenavidez.com/",    5000],
   ["templodetierra",  "https://templodetierra.com",          5000],
   ["eldesenfreno",    "https://eldesenfreno.com",            5000],
+  ["grupofrali",      "https://www.grupofrali.com/",        8000],
 ];
 
 (async () => {

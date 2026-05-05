@@ -61,7 +61,7 @@ export const PinContainer = ({
         >
           <div className={cn("relative z-50 flex items-center gap-2", className)}>
             <span className="text-white/80">Visit</span>
-            <ArrowRightIcon className="w-4 h-4 text-white/60" />
+            <ArrowRightIcon className="w-4 h-4 text-white/60 transition-transform duration-700 group-hover/pin:rotate-90 group-hover/pin:translate-y-0.5" />
           </div>
         </div>
       </div>

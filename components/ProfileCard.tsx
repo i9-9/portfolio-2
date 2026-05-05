@@ -35,7 +35,7 @@ const ProfileCard = () => {
               <div className="flex gap-3">
                 <Button 
                   variant="outline" 
-                  className="gap-2"
+                  className="gap-2 group"
                   asChild
                 >
                   <a 
@@ -44,12 +44,12 @@ const ProfileCard = () => {
                     rel="noopener noreferrer"
                   >
                     Download CV
-                    <ArrowRightIcon className="w-4 h-4" />
+                    <ArrowRightIcon className="w-4 h-4 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5" />
                   </a>
                 </Button>
                 <Button 
                   variant="default"
-                  className="gap-2"
+                  className="gap-2 group"
                   asChild
                 >
                   <a 
@@ -58,7 +58,7 @@ const ProfileCard = () => {
                     rel="noopener noreferrer"
                   >
                     Contact Me
-                    <ArrowRightIcon className="w-4 h-4" />
+                    <ArrowRightIcon className="w-4 h-4 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5" />
                   </a>
                 </Button>
               </div>

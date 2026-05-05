@@ -39,7 +39,7 @@ const ProfileIntro = () => {
           >
             <Button 
               variant="default"
-              className="gap-2"
+              className="gap-2 group"
               asChild
             >
               <a 
@@ -47,13 +47,13 @@ const ProfileIntro = () => {
                 className="flex items-center"
               >
                 View Projects
-                <ArrowRightIcon className="w-4 h-4" />
+                <ArrowRightIcon className="w-4 h-4 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5" />
               </a>
             </Button>
             
             <Button 
               variant="outline"
-              className="gap-2"
+              className="gap-2 group"
               asChild
             >
               <a 
@@ -62,7 +62,7 @@ const ProfileIntro = () => {
                 rel="noopener noreferrer"
               >
                 Get in Touch
-                <ArrowRightIcon className="w-4 h-4" />
+                <ArrowRightIcon className="w-4 h-4 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5" />
               </a>
             </Button>
           </motion.div>

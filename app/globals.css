@@ -106,6 +106,8 @@
 @layer base {
   * {
     @apply border-border;
+    margin: 0;
+    padding: 0;
   }
   body {
     @apply bg-background text-foreground antialiased;
@@ -220,6 +222,17 @@ html, body {
   scroll-behavior: smooth;
 }
 
+/* Lenis on /v2: `scroll-behavior: smooth` + fixed html/body height fights smooth scroll */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+  min-height: 100%;
+}
+
 /* Font classes using Next.js font loading from lib/fonts.ts */
 .font-helveticaNowDisplayBlack {
   font-family: var(--font-helvetica-now), 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -252,11 +265,6 @@ html, body {
 .button:hover {
   background-color: var(--gris_oscuro);
   color: var(--gris_claro);
-}
-
-* {
-  margin: 0;
-  padding: 0;
 }
 
 body {
@@ -590,6 +598,82 @@ html {
   background-size: 24px 100%;
   background-image: linear-gradient(to right, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
   z-index: 9999;
+}
+
+@layer utilities {
+  @keyframes work-row-marquee-x {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  .work-row-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: work-row-marquee-x 22s linear infinite;
+    animation-play-state: paused;
+    will-change: transform;
+  }
+
+  .group:hover .work-row-marquee-track {
+    animation-play-state: running;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-row-marquee-track {
+      animation: none;
+    }
+  }
+
+  /** Contact CTA: full-bleed infinite ticker (two identical rails → seamless -50% loop). */
+  .contact-cta-marquee-viewport {
+    overflow: hidden;
+  }
+
+  @keyframes contact-cta-marquee-shift {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  .contact-cta-marquee-track {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: max-content;
+    animation: contact-cta-marquee-shift 48s linear infinite;
+    will-change: transform;
+  }
+
+  .contact-cta-marquee-track:hover {
+    animation-duration: 32s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-cta-marquee-track {
+      animation: none;
+      transform: none;
+    }
+
+    .contact-cta-marquee-track:hover {
+      animation-duration: unset;
+    }
+  }
+
+  /** v2 stroke tour: single animated outline — hide underlying hero borders while overlay runs */
+  html.v2-stroke-tour-active [data-v2-stroke-hero="wrap"] {
+    border-color: transparent;
+  }
+
+  html.v2-stroke-tour-active [data-v2-stroke-hero="gd"] {
+    border-right-color: transparent;
+  }
 }
 
 

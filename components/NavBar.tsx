@@ -177,11 +177,20 @@ export function NavBar() {
         <div className="w-full grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12">
           {/* Logo - 6 columns on mobile, auto on desktop */}
           <div className="col-span-6 flex items-center h-[48px] lg:h-[40px]">
-            <a href="/" className="text-xs md:text-[9px] tracking-[0.2em] uppercase flex items-center text-foreground/90 hover:text-foreground py-2 md:py-0">Ivan Nevares</a>
+            <a
+              href="/"
+              data-v2-stroke-target="nav-brand"
+              className="text-xs md:text-[9px] tracking-[0.2em] uppercase flex items-center text-foreground/90 hover:text-foreground py-2 md:py-0"
+            >
+              Ivan Nevares
+            </a>
           </div>
-          
+
           {/* Navigation - 3 columns starting at column 10 (aligned with sidebar) */}
-          <nav className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end lg:justify-start h-[48px] lg:h-[40px]">
+          <nav
+            data-v2-stroke-target="nav-links"
+            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end lg:justify-start h-[48px] lg:h-[40px]"
+          >
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center">
               <NavItems />

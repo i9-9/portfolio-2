@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  useState, lazy, Suspense, useRef, useEffect,
+  useState, lazy, Suspense, useRef, useEffect, useLayoutEffect, useCallback,
 } from "react";
 import {
   motion, AnimatePresence,
@@ -13,31 +13,71 @@ import { projects } from "../data/projects";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import {
+  editorialMutedReadable,
+  editorialPrimary,
+} from "@/lib/editorial-cta";
+import { V2StrokeTour } from "@/components/V2StrokeTour";
+import { HeroHalftoneP5 } from "@/components/HeroHalftoneP5";
 import { ContactFormModal } from "@/components/ContactFormModal";
 import { Toast } from "@/components/ui/toast";
+import { cn } from "@/lib/utils";
 import {
-  Mail, ArrowRight, MessageSquare, ChevronDown,
-  Github, Linkedin, Dribbble, Palette, ArrowUpRight,
+  Mail, MessageSquare,
+  ArrowRight,
+  Asterisk,
 } from "lucide-react";
 
 const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
+/** Full-viewport exit: smooth in-out so the slab lifts without a sluggish ease-out tail. */
+const SPLASH_EXIT_EASE = [0.76, 0, 0.24, 1] as const;
 
-// ─── PageReveal ───────────────────────────────────────────────────────────
+/**
+ * Contact hero display: per-line tracking tuned per script (display size ~clamp 3.5–9rem).
+ * Pairs with OpenType kerning on the parent h2.
+ */
+const CONTACT_DISPLAY_KERN = {
+  en: [
+    "tracking-[-0.021em]", // “Let it read” — balance t↔i, d hook
+    "tracking-[-0.032em]", // “like design.” — second line slightly tighter
+  ],
+  es: [
+    "tracking-[-0.017em]", // “Que se lea” — subjuntivo sin tilde
+    "tracking-[-0.026em]", // “como diseño.” — round forms + tilde
+  ],
+} as const;
+
+// --- PageReveal -----------------------------------------------------------
 // Editorial splash in the Müller-Brockmann tradition: huge tabular counter
 // in the optical center, asymmetric grid metadata in the corners, single
 // horizontal rule. Counts 00 → 100 with ease-out-expo, then the entire
 // curtain lifts away as a single slab.
-function PageReveal() {
+function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
+  const reduced = useReducedMotion();
+  const handoffRef = useRef(onHandoff);
+  handoffRef.current = onHandoff;
+
   const [done, setDone]   = useState(false);
   const [count, setCount] = useState(0);
 
+  // Skip splash before first paint when reduced motion is requested
+  useLayoutEffect(() => {
+    if (!reduced) return;
+    setCount(100);
+    handoffRef.current?.();
+    setDone(true);
+  }, [reduced]);
+
   useEffect(() => {
+    if (reduced) return;
+
     const start = performance.now();
     const duration = 1100;
     let raf = 0;
+    let holdTimer: ReturnType<typeof setTimeout> | undefined;
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration);
       // ease-out-expo for a deliberate, decelerating count
@@ -46,13 +86,19 @@ function PageReveal() {
       if (t < 1) {
         raf = requestAnimationFrame(tick);
       } else {
-        // hold at 100 briefly before lifting the curtain
-        setTimeout(() => setDone(true), 220);
+        // hold at 100 briefly before lifting the curtain — handoff + exit same beat
+        holdTimer = setTimeout(() => {
+          handoffRef.current?.();
+          setDone(true);
+        }, 220);
       }
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+    return () => {
+      cancelAnimationFrame(raf);
+      if (holdTimer !== undefined) clearTimeout(holdTimer);
+    };
+  }, [reduced]);
 
   return (
     <AnimatePresence>
@@ -61,7 +107,7 @@ function PageReveal() {
           className="fixed inset-0 z-[10000] bg-background flex flex-col select-none"
           initial={{ y: 0 }}
           exit={{ y: "-101%" }}
-          transition={{ duration: 0.9, ease: EASE_OUT_EXPO }}
+          transition={{ duration: 0.78, ease: SPLASH_EXIT_EASE }}
         >
           {/* top metadata — asymmetric grid, Swiss style */}
           <div className="grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12 pt-6 lg:pt-8 text-[10px] lg:text-xs font-helveticaNowTextRegular tracking-[0.2em] uppercase text-muted-foreground">
@@ -100,7 +146,7 @@ function PageReveal() {
   );
 }
 
-// ─── Magnetic ─────────────────────────────────────────────────────────────
+// --- Magnetic -------------------------------------------------------------
 // Wraps any element to be "magnetically attracted" to the cursor. The hallmark
 // micro-interaction of high-end portfolios (Awwwards SOTD staple). Spring-
 // damped translate based on distance from element center.
@@ -149,7 +195,7 @@ function Magnetic({
 }
 
 
-// ─── WordReveal ───────────────────────────────────────────────────────────
+// --- WordReveal -----------------------------------------------------------
 // Splits a string into words and animates each with stagger.
 // No overflow clipping → no ascender/descender cuts. Uses opacity + blur to
 // mask in-flight motion. The signature animation pattern of high-end design
@@ -207,7 +253,7 @@ function WordReveal({
   );
 }
 
-// ─── ScrollProgress ───────────────────────────────────────────────────────
+// --- ScrollProgress -------------------------------------------------------
 function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   return (
@@ -218,12 +264,12 @@ function ScrollProgress() {
   );
 }
 
-// ─── CustomCursor ─────────────────────────────────────────────────────────
+// --- CustomCursor ---------------------------------------------------------
 function CustomCursor() {
   const mouseX    = useMotionValue(-200);
   const mouseY    = useMotionValue(-200);
   const isVisible = useRef(false);
-  const [show, setShow] = useState(false);
+  const [ready, setReady] = useState(false);
 
   const DOT  = 8;
   const RING = 28;
@@ -231,25 +277,24 @@ function CustomCursor() {
   const dotLeft = useTransform(mouseX, v => v - DOT  / 2);
   const dotTop  = useTransform(mouseY, v => v - DOT  / 2);
 
-  const lagX = useSpring(mouseX, { stiffness: 160, damping: 18, mass: 0.4 });
-  const lagY = useSpring(mouseY, { stiffness: 160, damping: 18, mass: 0.4 });
+  const lagX = useSpring(mouseX, { stiffness: 220, damping: 22, mass: 0.35 });
+  const lagY = useSpring(mouseY, { stiffness: 220, damping: 22, mass: 0.35 });
 
   const ringLeft     = useTransform(lagX, v => v - RING / 2);
   const ringTop      = useTransform(lagY, v => v - RING / 2);
   const ringScale    = useMotionValue(1);
-  const ringScaleSp  = useSpring(ringScale, { stiffness: 350, damping: 28 });
+  const ringScaleSp  = useSpring(ringScale, { stiffness: 400, damping: 30 });
   const dotOpacity   = useMotionValue(0);
-  const dotOpacitySp = useSpring(dotOpacity, { stiffness: 350, damping: 28 });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
+    setReady(true);
 
     const onMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
       if (!isVisible.current) {
         isVisible.current = true;
-        setShow(true);
         dotOpacity.set(1);
       }
     };
@@ -258,36 +303,58 @@ function CustomCursor() {
     const onLeave = () => dotOpacity.set(0);
     const onEnter = () => dotOpacity.set(1);
 
-    window.addEventListener("mousemove",       onMove);
-    document.addEventListener("mouseover",     onOver);
-    document.addEventListener("mouseout",      onOut);
-    document.addEventListener("mouseleave",    onLeave);
-    document.addEventListener("mouseenter",    onEnter);
+    window.addEventListener("mousemove", onMove, { passive: true });
+    document.addEventListener("mouseover",  onOver);
+    document.addEventListener("mouseout",   onOut);
+    document.addEventListener("mouseleave", onLeave);
+    document.addEventListener("mouseenter", onEnter);
     return () => {
-      window.removeEventListener("mousemove",      onMove);
-      document.removeEventListener("mouseover",    onOver);
-      document.removeEventListener("mouseout",     onOut);
-      document.removeEventListener("mouseleave",   onLeave);
-      document.removeEventListener("mouseenter",   onEnter);
+      window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseover",  onOver);
+      document.removeEventListener("mouseout",   onOut);
+      document.removeEventListener("mouseleave", onLeave);
+      document.removeEventListener("mouseenter", onEnter);
     };
   }, []);
 
-  if (!show) return null;
+  if (!ready) return null;
+  const invertBackdrop = {
+    /** Triggers reliable backdrop-filter compositing (WebKit/Chrome). */
+    backgroundColor: "rgba(255,255,255,0.015)",
+    backdropFilter: "invert(1)",
+    WebkitBackdropFilter: "invert(1)",
+  } as const;
+
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 rounded-full bg-white pointer-events-none z-[9999] mix-blend-difference"
-        style={{ left: dotLeft, top: dotTop, width: DOT, height: DOT, opacity: dotOpacitySp }}
+        className="fixed top-0 left-0 rounded-full pointer-events-none z-[10000] will-change-[transform,opacity] border border-foreground/25 dark:border-white/35"
+        style={{
+          left: ringLeft,
+          top: ringTop,
+          width: RING,
+          height: RING,
+          scale: ringScaleSp,
+          opacity: dotOpacity,
+          ...invertBackdrop,
+        }}
       />
       <motion.div
-        className="fixed top-0 left-0 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference"
-        style={{ left: ringLeft, top: ringTop, width: RING, height: RING, scale: ringScaleSp, opacity: dotOpacitySp }}
+        className="fixed top-0 left-0 rounded-full pointer-events-none z-[10001] will-change-[transform,opacity]"
+        style={{
+          left: dotLeft,
+          top: dotTop,
+          width: DOT,
+          height: DOT,
+          opacity: dotOpacity,
+          ...invertBackdrop,
+        }}
       />
     </>
   );
 }
 
-// ─── AnimatedLine ─────────────────────────────────────────────────────────
+// --- AnimatedLine ---------------------------------------------------------
 function AnimatedLine({ inView, delay = 0 }: { inView: boolean; delay?: number }) {
   return (
     <motion.div
@@ -299,7 +366,7 @@ function AnimatedLine({ inView, delay = 0 }: { inView: boolean; delay?: number }
   );
 }
 
-// ─── NumberScramble ───────────────────────────────────────────────────────
+// --- NumberScramble -------------------------------------------------------
 function NumberScramble({ value, inView }: { value: number; inView: boolean }) {
   const target = String(value).padStart(2, "0");
   const [display, setDisplay] = useState(target); // same width from start
@@ -323,55 +390,155 @@ function NumberScramble({ value, inView }: { value: number; inView: boolean }) {
   return <span className="tabular-nums">{display}</span>;
 }
 
-// ─── Project rows data ────────────────────────────────────────────────────
+// --- Project rows data ----------------------------------------------------
 const PROJECT_ROWS = [
-  { key: "heybristol",      idx: 0, year: 2024, preview: "/projects-v2/heybristol.png",      metricEn: "100% custom design system",    metricEs: "100% design system custom"   },
-  { key: "kostume",         idx: 1, year: 2023, preview: "/projects-v2/kostume.png",         metricEn: "Live in 6 weeks",               metricEs: "Live en 6 semanas"            },
-  { key: "vinorodante",     idx: 2, year: 2023, preview: "/projects-v2/vinorodante.png",     metricEn: "Full brand identity included",  metricEs: "Identidad de marca completa" },
-  { key: "ursulabenavidez", idx: 3, year: 2024, preview: "/projects-v2/ursulabenavidez.png", metricEn: "Zero third-party deps",         metricEs: "Sin dependencias externas"   },
-  { key: "templodetierra",  idx: 4, year: 2024, preview: "/projects-v2/templodetierra.png",  metricEn: "Mobile-first UX from scratch",  metricEs: "UX mobile-first desde cero"  },
-  { key: "desenfreno",      idx: 5, year: 2023, preview: "/projects-v2/eldesenfreno.png",    metricEn: "Custom CMS + e-commerce",       metricEs: "CMS custom + e-commerce"     },
+  {
+    key: "heybristol",
+    idx: 0,
+    preview: "/projects-v2/heybristol.png",
+    metricEn: "100% custom design system",
+    metricEs: "100% design system custom",
+    marqueeEn: "Lead design & frontend · Hey Bristol · Next.js · TypeScript · ",
+    marqueeEs: "Diseño y frontend · Hey Bristol · Next.js · TypeScript · ",
+  },
+  {
+    key: "kostume",
+    idx: 1,
+    preview: "/projects-v2/kostume.png",
+    metricEn: "Live in 6 weeks",
+    metricEs: "Live en 6 semanas",
+    marqueeEn: "Lead design & frontend · Kostüme · Next.js · Tienda Nube · ",
+    marqueeEs: "Diseño y frontend · Kostüme · Next.js · Tienda Nube · ",
+  },
+  {
+    key: "vinorodante",
+    idx: 2,
+    preview: "/projects-v2/vinorodante.png",
+    metricEn: "Full brand identity included",
+    metricEs: "Identidad de marca completa",
+    marqueeEn: "Brand, UX/UI & build · Vino Rodante · Next.js · ",
+    marqueeEs: "Marca, UX/UI y desarrollo · Vino Rodante · Next.js · ",
+  },
+  {
+    key: "ursulabenavidez",
+    idx: 3,
+    preview: "/projects-v2/ursulabenavidez.png",
+    metricEn: "Zero third-party deps",
+    metricEs: "Sin dependencias externas",
+    marqueeEn: "UX/UI & development · Ursula Benavidez · Next.js · ",
+    marqueeEs: "UX/UI y desarrollo · Ursula Benavidez · Next.js · ",
+  },
+  {
+    key: "templodetierra",
+    idx: 4,
+    preview: "/projects-v2/templodetierra.png",
+    metricEn: "Mobile-first UX from scratch",
+    metricEs: "UX mobile-first desde cero",
+    marqueeEn: "UX/UI & frontend · Templo de Tierra · Next.js · ",
+    marqueeEs: "UX/UI y frontend · Templo de Tierra · Next.js · ",
+  },
+  {
+    key: "desenfreno",
+    idx: 5,
+    preview: "/projects-v2/eldesenfreno.png",
+    metricEn: "Custom CMS + e-commerce",
+    metricEs: "CMS custom + e-commerce",
+    marqueeEn: "Product design & CMS · El Desenfreno · Next.js · Stripe · ",
+    marqueeEs: "Diseño de producto y CMS · El Desenfreno · Next.js · Stripe · ",
+  },
+  {
+    key: "grupofrali",
+    idx: 6,
+    preview: "/projects-v2/grupofrali.png",
+    metricEn: "Corporate site with live project metrics",
+    metricEs: "Sitio corporativo con métricas en vivo",
+    marqueeEn: "UX/UI & frontend · Grupo Frali · Next.js · TypeScript · ",
+    marqueeEs: "UX/UI y frontend · Grupo Frali · Next.js · TypeScript · ",
+  },
 ];
 
-// ─── ProjectRow ───────────────────────────────────────────────────────────
+// --- ProjectRow -----------------------------------------------------------
 function ProjectRow({
-  index, name, category, metric, year, url, previewImage, delay, inView,
+  index,
+  name,
+  category,
+  metric,
+  year,
+  slug,
+  previewImage,
+  marqueeLine,
+  delay,
+  inView,
 }: {
-  index: number; name: string; category: string; metric: string;
-  year: number; url: string; previewImage: string; delay: number; inView: boolean;
+  index: number;
+  name: string;
+  category: string;
+  metric: string;
+  year: number;
+  slug: string;
+  previewImage: string;
+  marqueeLine: string;
+  delay: number;
+  inView: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
 
-  // preview image follows cursor via spring — strict orthogonal motion only,
-  // no rotation. Müller-Brockmann grid discipline.
-  const pvX   = useMotionValue(0);
-  const pvY   = useMotionValue(0);
-  const pvXSp = useSpring(pvX, { stiffness: 220, damping: 24, mass: 0.6 });
-  const pvYSp = useSpring(pvY, { stiffness: 220, damping: 24, mass: 0.6 });
+  const PREVIEW_OFF = -9_999;
+  const pvX = useMotionValue(PREVIEW_OFF);
+  const pvY = useMotionValue(PREVIEW_OFF);
+
+  const seedPreview = (clientX: number, clientY: number) => {
+    pvX.set(clientX + 28);
+    pvY.set(clientY - 96);
+  };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    pvX.set(e.clientX + 28);
-    pvY.set(e.clientY - 96);
+    seedPreview(e.clientX, e.clientY);
   };
 
   return (
     <>
       <motion.a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
+        href={`/work/${slug}`}
         initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
         animate={inView
           ? { opacity: 1, y: 0, filter: "blur(0px)" }
           : { opacity: 0, y: 24, filter: "blur(6px)" }}
         transition={{ duration: 0.85, delay, ease: EASE_OUT_EXPO }}
         onHoverStart={() => setHovered(true)}
-        onHoverEnd={() => setHovered(false)}
+        onHoverEnd={() => {
+          setHovered(false);
+          pvX.set(PREVIEW_OFF);
+          pvY.set(PREVIEW_OFF);
+        }}
+        onPointerEnter={(e) => {
+          if (e.pointerType === "mouse") {
+            seedPreview(e.clientX, e.clientY);
+          }
+        }}
         onMouseMove={handleMouseMove}
-        className="group relative flex items-center justify-between gap-4 py-5 lg:py-6 -mx-4 lg:-mx-12 px-4 lg:px-12 transition-colors duration-500 hover:bg-foreground hover:text-background"
+        className="group relative flex flex-col -mx-4 px-4 transition-colors duration-500 hover:bg-foreground hover:text-background overflow-hidden lg:-mx-12 lg:px-12"
       >
+        <div className="relative flex items-center justify-between gap-4 py-5 lg:py-6">
+        {/* Editorial marquee — desktop: thin strip under row content (not tucked under title) */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-0 hidden h-8 motion-reduce:hidden lg:block overflow-hidden opacity-0 transition-opacity duration-500 [mask-image:linear-gradient(180deg,transparent_0%,#000_40%,#000_100%)] [-webkit-mask-image:linear-gradient(180deg,transparent_0%,#000_40%,#000_100%)] group-hover:opacity-100"
+          aria-hidden
+        >
+          <div className="flex h-full items-end pb-1">
+            <div className="work-row-marquee-track">
+              <span className="inline-block whitespace-nowrap pr-12 text-[9px] font-helveticaNowTextRegular uppercase tracking-[0.22em] text-background/40">
+                {marqueeLine}
+              </span>
+              <span className="inline-block whitespace-nowrap pr-12 text-[9px] font-helveticaNowTextRegular uppercase tracking-[0.22em] text-background/40">
+                {marqueeLine}
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* left: index + name + category */}
-        <div className="flex items-center gap-5 lg:gap-8 min-w-0">
+        <div className="relative z-10 flex items-center gap-5 lg:gap-8 min-w-0">
           <span className="text-xs font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 transition-colors duration-500 w-6 flex-shrink-0 tabular-nums">
             <NumberScramble value={index} inView={inView} />
           </span>
@@ -394,7 +561,7 @@ function ProjectRow({
         </div>
 
         {/* right: metric (absolute, on hover) + year (fixed col) + arrow */}
-        <div className="relative flex items-center gap-6 flex-shrink-0">
+        <div className="relative z-10 flex items-center gap-6 flex-shrink-0">
           <motion.span
             initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
             animate={hovered
@@ -410,11 +577,12 @@ function ProjectRow({
           </span>
           <motion.span
             className="inline-flex"
-            animate={hovered ? { x: 4, y: -4, rotate: 0 } : { x: 0, y: 0, rotate: 0 }}
+            animate={hovered ? { x: 3, y: 3 } : { x: 0, y: 0 }}
             transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
           >
-            <ArrowUpRight className="w-4 h-4 flex-shrink-0" />
+            <ArrowRight className="w-4 h-4 flex-shrink-0 transition-transform duration-500 ease-out group-hover:rotate-45" />
           </motion.span>
+        </div>
         </div>
       </motion.a>
 
@@ -423,7 +591,7 @@ function ProjectRow({
         {hovered && (
           <motion.div
             className="fixed pointer-events-none z-[9990] w-96 aspect-[16/10] overflow-hidden hidden lg:block bg-muted"
-            style={{ left: pvXSp, top: pvYSp }}
+            style={{ left: pvX, top: pvY }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
@@ -437,15 +605,22 @@ function ProjectRow({
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────
+// --- Page -----------------------------------------------------------------
 export default function ProfileLayoutV2() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [showToast,     setShowToast]     = useState(false);
   const { t, language } = useLanguage();
+  const heroReduced = useReducedMotion();
+  const [splashHandoff, setSplashHandoff] = useState(false);
+  const onSplashHandoff = useCallback(() => {
+    setSplashHandoff(true);
+  }, []);
+  /** Hero motion is synced to splash lift (same frame as setDone), not fixed mount delays */
+  const heroLive = splashHandoff || !!heroReduced;
 
   const workRef    = useRef(null);
   const aboutRef   = useRef(null);
-  const contactRef = useRef(null);
+  const contactRef = useRef<HTMLElement | null>(null);
   const sep1Ref    = useRef(null);
   const sep2Ref    = useRef(null);
   const sep3Ref    = useRef(null);
@@ -467,124 +642,99 @@ export default function ProfileLayoutV2() {
 
   const isEn = language === "en";
 
-  const heroLines = isEn
-    ? ["I design interfaces", "& systems for", "startups that need", "to scale fast."]
-    : ["Diseño interfaces", "y sistemas para", "startups que necesitan", "escalar rápido."];
+  const contactHeadlines = isEn
+    ? (["Let it read", "like design."] as const)
+    : (["Que se lea", "como diseño."] as const);
 
   return (
     <div className="min-h-screen bg-background lg:cursor-none relative">
-      <PageReveal />
+      <PageReveal onHandoff={onSplashHandoff} />
+      <V2StrokeTour active={splashHandoff} />
       <ScrollProgress />
       <CustomCursor />
 
-      {/* ── HERO ───────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[calc(100vh-6rem)] pt-24 flex flex-col justify-between px-4 lg:px-12 pb-16">
-        <div>
-          {/* availability — dot + text appear sequentially */}
-          <div className="flex items-center gap-2.5 mb-10">
-            <motion.span
-              className="relative flex h-2 w-2"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 1.45, ease: EASE_OUT_EXPO }}
+      {/* -- HERO — halftone dots (p5), glass plate over dots, stamp / name / blurb */}
+      <section className="relative isolate min-h-[calc(100vh-6rem)] flex flex-col justify-end overflow-hidden px-4 lg:px-12 pb-10 lg:pb-14 pt-24">
+        <HeroHalftoneP5 className="pointer-events-none z-0" />
+        <motion.div
+          initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
+          animate={
+            heroLive
+              ? { opacity: 1, y: 0, filter: "blur(0px)" }
+              : { opacity: 0, y: 18, filter: "blur(8px)" }
+          }
+          transition={{ duration: 0.95, delay: heroLive ? 0.06 : 0, ease: EASE_OUT_EXPO }}
+          className={cn(
+            "relative z-30 w-full max-w-[13rem] sm:max-w-[14rem] space-y-2.5 rounded-[22px]",
+            "border border-border/50 bg-background/55 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)]",
+            "backdrop-blur-2xl backdrop-saturate-150",
+            "ring-1 ring-inset ring-white/50 dark:border-white/[0.09] dark:bg-background/45 dark:shadow-[0_12px_48px_-16px_rgba(0,0,0,0.65)] dark:ring-inset dark:ring-white/[0.07]",
+            "p-4 sm:p-[1.125rem]",
+          )}
+        >
+          <div
+            className="inline-flex overflow-hidden rounded-[10px] border border-foreground/12 bg-foreground/[0.04] text-[7px] sm:text-[7.5px] font-helveticaNowTextRegular uppercase tracking-[0.18em] text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.45)] dark:border-white/[0.12] dark:bg-white/[0.04] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
+            aria-hidden
+            data-v2-stroke-hero="wrap"
+          >
+            <div
+              className="flex items-center px-1.5 py-1 sm:px-2 sm:py-1 border-r border-foreground/12 tabular-nums dark:border-white/10"
+              data-v2-stroke-hero="gd"
             >
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0, x: -6, filter: "blur(4px)" }}
-              animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.7, delay: 1.55, ease: EASE_OUT_EXPO }}
-              className="text-xs font-helveticaNowTextRegular tracking-[0.15em] uppercase text-muted-foreground"
+              {t("hero.stampGd")}
+            </div>
+            <div
+              className="flex items-center px-1.5 py-1 sm:px-2 sm:py-1 tabular-nums"
+              data-v2-stroke-hero="dev"
             >
-              {isEn ? "Available for freelance projects" : "Disponible para proyectos freelance"}
-            </motion.span>
+              {t("hero.stampDev")}
+            </div>
           </div>
 
-          {/* h1 — per-word reveal with stagger */}
-          <h1 className="font-helveticaNowDisplayBold leading-[0.95]">
-            {heroLines.map((line, lineIdx) => {
-              // accumulate word counts to compute the absolute delay across lines
-              const wordsBefore = heroLines
-                .slice(0, lineIdx)
-                .reduce((acc, l) => acc + l.split(" ").length, 0);
-              return (
-                <span key={lineIdx} className="block">
-                  <WordReveal
-                    text={line}
-                    baseDelay={1.5 + wordsBefore * 0.045}
-                    wordStagger={0.045}
-                    duration={1.0}
-                  />
-                </span>
-              );
-            })}
-          </h1>
-        </div>
-
-        {/* bottom row: subtitle | scroll indicator | CTAs */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mt-16">
-          <motion.p
-            initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 0.9, delay: 2.2, ease: EASE_OUT_EXPO }}
-            className="font-helveticaNowTextRegular text-muted-foreground text-base lg:text-lg max-w-xs"
-          >
-            {isEn
-              ? "UX/UI Design · Design Systems · Next.js & React"
-              : "Diseño UX/UI · Design Systems · Next.js & React"}
-          </motion.p>
-
-          {/* scroll indicator — desktop center */}
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 2.7, ease: EASE_OUT_EXPO }}
-            className="hidden lg:flex flex-col items-center gap-1.5 pb-1 text-muted-foreground"
-          >
-            <span className="text-[10px] font-helveticaNowTextRegular tracking-[0.2em] uppercase">
-              Scroll
-            </span>
-            <motion.div
-              animate={{ y: [0, 5, 0] }}
-              transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
-            >
-              <ChevronDown className="w-3.5 h-3.5" />
-            </motion.div>
-          </motion.div>
-
-          {/* CTAs — solid editorial blocks, no magnetic. Swiss precision. */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <motion.button
-              onClick={() => setIsContactOpen(true)}
-              initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.8, delay: 2.35, ease: EASE_OUT_EXPO }}
-              whileTap={{ scale: 0.98 }}
-              className="group inline-flex items-center justify-center gap-2 bg-foreground text-background px-6 py-4 text-sm tracking-[0.12em] uppercase font-helveticaNowTextRegular transition-colors duration-300 hover:bg-foreground/90"
-            >
-              {isEn ? "Let's talk" : "Hablemos"}
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </motion.button>
-            <motion.a
-              href="#work"
-              initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.8, delay: 2.45, ease: EASE_OUT_EXPO }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center justify-center gap-2 border border-foreground px-6 py-4 text-sm tracking-[0.12em] uppercase font-helveticaNowTextRegular transition-colors duration-300 hover:bg-foreground hover:text-background"
-            >
-              {isEn ? "See my work" : "Ver proyectos"}
-            </motion.a>
+          <div className="space-y-2">
+            <p className="font-helveticaNowDisplayBold text-[clamp(1.35rem,4vw,1.9rem)] leading-[0.98] tracking-tight">
+              {t("hero.stampName")}
+            </p>
+            <p className="font-helveticaNowDisplayBold text-[11px] sm:text-xs leading-[0.95] tracking-tight text-foreground/88 hyphens-none">
+              {t("contact.blurb")}
+              <Asterisk
+                className="inline-block align-top w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1 mt-0.5 text-muted-foreground opacity-80"
+                strokeWidth={1.25}
+                aria-hidden
+              />
+            </p>
           </div>
-        </div>
+
+          <a
+            href="#work"
+            className="group inline-flex items-center gap-1.5 pt-0.5 text-[9px] font-helveticaNowTextRegular uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {t("hero.stampWorkLink")}
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 ease-out group-hover:rotate-45" />
+          </a>
+        </motion.div>
       </section>
 
       {/* separator 1 */}
       <div ref={sep1Ref}><AnimatedLine inView={sep1InView} /></div>
 
-      {/* ── WORK ───────────────────────────────────────────────────────── */}
+      {/* -- WORK --------------------------------------------------------- */}
       <section id="work" ref={workRef} className="px-4 lg:px-12 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
+          animate={
+            workInView
+              ? { opacity: 1, y: 0, filter: "blur(0px)" }
+              : { opacity: 0, y: 16, filter: "blur(6px)" }
+          }
+          transition={{ duration: 0.8, ease: EASE_OUT_EXPO }}
+          className="mb-12"
+        >
+          <p className="max-w-2xl font-helveticaNowTextRegular text-sm leading-relaxed text-muted-foreground lg:text-[15px] lg:leading-relaxed">
+            {t("work.trustLead")}
+          </p>
+        </motion.div>
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={workInView ? { opacity: 1 } : { opacity: 0 }}
@@ -595,16 +745,17 @@ export default function ProfileLayoutV2() {
         </motion.p>
 
         <div className="divide-y divide-border">
-          {PROJECT_ROWS.map(({ key, idx, year, preview, metricEn, metricEs }, i) => (
+          {PROJECT_ROWS.map(({ key, idx, preview, metricEn, metricEs, marqueeEn, marqueeEs }, i) => (
             <ProjectRow
               key={key}
+              slug={key}
               index={i + 1}
               name={projects[idx].name}
               category={t(`work.${key}.title` as Parameters<typeof t>[0])}
               metric={isEn ? metricEn : metricEs}
-              year={year}
-              url={projects[idx].anchor}
+              year={projects[idx].year}
               previewImage={preview}
+              marqueeLine={isEn ? marqueeEn : marqueeEs}
               delay={i * 0.07}
               inView={workInView}
             />
@@ -615,7 +766,7 @@ export default function ProfileLayoutV2() {
       {/* separator 2 */}
       <div ref={sep2Ref}><AnimatedLine inView={sep2InView} /></div>
 
-      {/* ── ABOUT ──────────────────────────────────────────────────────── */}
+      {/* -- ABOUT -------------------------------------------------------- */}
       <section ref={aboutRef} className="px-4 lg:px-12 py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12">
         <motion.p
           initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
@@ -679,80 +830,155 @@ export default function ProfileLayoutV2() {
       {/* separator 3 */}
       <div ref={sep3Ref}><AnimatedLine inView={sep3InView} /></div>
 
-      {/* ── CONTACT ────────────────────────────────────────────────────── */}
-      <section ref={contactRef} className="px-4 lg:px-12 py-20">
-        <h2
-          className="font-helveticaNowDisplayBold leading-[0.95] mb-16"
-          style={{ fontSize: "clamp(3.5rem, 9vw, 9rem)" }}
-        >
-          {(isEn ? ["Let's work", "together."] : ["Trabajemos", "juntos."]).map((line, lineIdx) => {
-            const lines = isEn ? ["Let's work", "together."] : ["Trabajemos", "juntos."];
-            const wordsBefore = lines
-              .slice(0, lineIdx)
-              .reduce((acc, l) => acc + l.split(" ").length, 0);
-            return (
-              <span key={lineIdx} className="block">
-                <WordReveal
-                  text={line}
-                  inView={contactInView}
-                  baseDelay={wordsBefore * 0.06}
-                  wordStagger={0.06}
-                  duration={1.0}
-                />
-              </span>
-            );
-          })}
-        </h2>
+      {/* -- CONTACT — editorial / graphic studio block ------------------- */}
+      <section
+        ref={contactRef}
+        className="relative overflow-hidden px-4 py-16 pb-14 lg:px-12 lg:py-20 lg:pb-16"
+      >
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.17] [background-image:radial-gradient(circle_at_center,rgb(128_128_128/0.35)_1px,transparent_1px)] [background-size:13px_13px] dark:opacity-[0.12] dark:[background-image:radial-gradient(circle_at_center,rgb(255_255_255/0.12)_1px,transparent_1px)]"
+          aria-hidden
+        />
 
-        <motion.div
-          initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
-          animate={contactInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 0.9, delay: 0.45, ease: EASE_OUT_EXPO }}
-          className="flex flex-col sm:flex-row gap-3"
-        >
-          <Magnetic strength={0.2}>
-            <button
-              onClick={copyEmail}
-              className="inline-flex items-center gap-2 rounded-sm border border-border px-5 py-3 text-sm font-helveticaNowTextRegular tracking-wide transition-colors duration-300 hover:bg-accent active:scale-[0.98]"
-            >
-              <Mail className="w-4 h-4" />
-              ivannevares9@gmail.com
-            </button>
-          </Magnetic>
-          <Magnetic strength={0.2}>
-            <button
-              onClick={() => setIsContactOpen(true)}
-              className="group inline-flex items-center gap-2 rounded-sm bg-foreground text-background px-5 py-3 text-sm font-helveticaNowTextRegular tracking-wide transition-colors duration-300 hover:bg-foreground/90 active:scale-[0.98]"
-            >
-              <MessageSquare className="w-4 h-4" />
-              {isEn ? "Send a message" : "Enviar mensaje"}
-            </button>
-          </Magnetic>
-        </motion.div>
+        <div className="relative z-[1]">
+          <motion.div
+            initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+            animate={
+              contactInView
+                ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                : { opacity: 0, y: 10, filter: "blur(6px)" }
+            }
+            transition={{ duration: 0.75, delay: 0.08, ease: EASE_OUT_EXPO }}
+            className="mb-10 flex flex-wrap items-center gap-x-5 gap-y-3"
+          >
+            <p className="max-w-[min(100%,42rem)] text-[10px] font-helveticaNowDisplayBold uppercase leading-relaxed tracking-[0.14em] text-foreground">
+              {t("contact.kicker")}
+            </p>
+            <span className="hidden h-px min-w-[3rem] flex-1 bg-foreground/25 sm:block" aria-hidden />
+            <p className="text-[10px] font-helveticaNowTextRegular tabular-nums tracking-[0.22em] text-muted-foreground">
+              {t("contact.stamp")}
+            </p>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={contactInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.7, delay: 0.65, ease: EASE_OUT_EXPO }}
-          className="flex items-center gap-2 mt-8"
-        >
-          {[
-            { href: "https://github.com/i9-9",                  Icon: Github   },
-            { href: "https://www.linkedin.com/in/ivan-nevares/", Icon: Linkedin },
-            { href: "https://www.behance.net/ivan_nevares",      Icon: Palette  },
-            { href: "https://dribbble.com/i9i9",                 Icon: Dribbble },
-          ].map(({ href, Icon }, i) => (
-            <Magnetic key={href} strength={0.4}>
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-10 h-10 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-300"
+          <h2
+            lang={isEn ? "en" : "es"}
+            className="mb-8 font-helveticaNowDisplayBold leading-[0.82] [font-feature-settings:'kern'_1] [font-kerning:normal] [text-rendering:optimizeLegibility]"
+            style={{ fontSize: "clamp(3.5rem, 9vw, 9rem)" }}
+          >
+            {contactHeadlines.map((line, lineIdx) => {
+              const wordsBefore = contactHeadlines
+                .slice(0, lineIdx)
+                .reduce((acc, l) => acc + l.split(" ").length, 0);
+              const kernLine = CONTACT_DISPLAY_KERN[isEn ? "en" : "es"][lineIdx];
+              return (
+                <span key={lineIdx} className={cn("block", kernLine)}>
+                  <WordReveal
+                    text={line}
+                    inView={contactInView}
+                    baseDelay={wordsBefore * 0.06}
+                    wordStagger={0.06}
+                    duration={1.0}
+                  />
+                </span>
+              );
+            })}
+          </h2>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
+            animate={
+              contactInView
+                ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                : { opacity: 0, y: 16, filter: "blur(6px)" }
+            }
+            transition={{ duration: 0.9, delay: 0.32, ease: EASE_OUT_EXPO }}
+            className="flex flex-col flex-wrap gap-3 sm:flex-row sm:items-center"
+          >
+            <Magnetic strength={0.2}>
+              <button
+                type="button"
+                onClick={copyEmail}
+                className={editorialMutedReadable("justify-start text-left")}
               >
-                <Icon className="w-4 h-4" />
-              </a>
+                <Mail className="w-4 h-4" aria-hidden />
+                ivannevares9@gmail.com
+              </button>
             </Magnetic>
-          ))}
+            <Magnetic strength={0.2}>
+              <button
+                type="button"
+                onClick={() => setIsContactOpen(true)}
+                className={editorialPrimary("inline-flex items-center gap-2", "compact")}
+              >
+                <MessageSquare className="w-4 h-4" aria-hidden />
+                {isEn ? "Send a message" : "Enviar mensaje"}
+              </button>
+            </Magnetic>
+          </motion.div>
+        </div>
+
+        <motion.nav
+          initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+          animate={contactInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{ duration: 0.85, delay: 0.58, ease: EASE_OUT_EXPO }}
+          className="relative z-[1] mt-12"
+          aria-label={t("contact.socialNav")}
+        >
+          <p className="mb-4 text-[10px] font-helveticaNowTextRegular uppercase tracking-[0.22em] text-muted-foreground">
+            {t("contact.elsewhere")}
+          </p>
+          <div className="flex flex-wrap items-baseline gap-x-1 gap-y-2 font-helveticaNowTextRegular text-sm text-muted-foreground">
+            {(
+              [
+                { href: "https://github.com/i9-9", label: "GitHub" },
+                { href: "https://www.linkedin.com/in/ivan-nevares/", label: "LinkedIn" },
+                { href: "https://www.behance.net/ivan_nevares", label: "Behance" },
+                { href: "https://dribbble.com/i9i9", label: "Dribbble" },
+              ] as const
+            ).map(({ href, label }, i) => (
+              <span key={href} className="inline-flex flex-wrap items-baseline gap-x-1">
+                {i > 0 && (
+                  <span className="select-none px-1 text-muted-foreground/35" aria-hidden>
+                    —
+                  </span>
+                )}
+                <Magnetic strength={0.22}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-1 tracking-[0.06em] transition-colors duration-300 hover:text-foreground"
+                  >
+                    {label}
+                    <ArrowRight className="size-3.5 shrink-0 opacity-60 transition-all duration-300 group-hover:rotate-45 group-hover:opacity-100" aria-hidden />
+                  </a>
+                </Magnetic>
+              </span>
+            ))}
+          </div>
+        </motion.nav>
+
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={contactInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.75, delay: 0.7, ease: EASE_OUT_EXPO }}
+          className="relative z-[1] mt-16 -mx-4 bg-[#DFFF4D] text-neutral-950 lg:-mx-12"
+        >
+          {heroReduced ? (
+            <p className="px-4 py-2.5 text-center font-helveticaNowTextRegular text-[8px] uppercase leading-relaxed tracking-[0.3em]">
+              {t("contact.marquee")}
+            </p>
+          ) : (
+            <div className="contact-cta-marquee-viewport py-2" aria-hidden>
+              <div className="contact-cta-marquee-track font-helveticaNowTextRegular text-[7px] uppercase leading-none tracking-[0.32em] sm:text-[8px]">
+                {([0, 1] as const).map((key) => (
+                  <span key={key} className="inline-flex shrink-0 items-center whitespace-nowrap pr-14 sm:pr-20">
+                    {t("contact.marquee")}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </motion.div>
       </section>
 
