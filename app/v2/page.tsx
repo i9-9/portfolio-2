@@ -17,7 +17,6 @@ import {
   editorialMutedReadable,
   editorialPrimary,
 } from "@/lib/editorial-cta";
-import { V2StrokeTour } from "@/components/V2StrokeTour";
 import { HeroHalftoneP5 } from "@/components/HeroHalftoneP5";
 import { ContactFormModal } from "@/components/ContactFormModal";
 import { Toast } from "@/components/ui/toast";
@@ -41,12 +40,12 @@ const SPLASH_EXIT_EASE = [0.76, 0, 0.24, 1] as const;
  */
 const CONTACT_DISPLAY_KERN = {
   en: [
-    "tracking-[-0.021em]", // “Let it read” — balance t↔i, d hook
-    "tracking-[-0.032em]", // “like design.” — second line slightly tighter
+    "tracking-[-0.019em]", // “Coherence” — heavy word shape at display size
+    "tracking-[-0.028em]", // “end to end.” — loosen rounds + sentence rhythm
   ],
   es: [
-    "tracking-[-0.017em]", // “Que se lea” — subjuntivo sin tilde
-    "tracking-[-0.026em]", // “como diseño.” — round forms + tilde
+    "tracking-[-0.018em]", // “Coherencia” — wide counters
+    "tracking-[-0.024em]", // “de punta a punta.” — lowercase flow + periods
   ],
 } as const;
 
@@ -643,13 +642,12 @@ export default function ProfileLayoutV2() {
   const isEn = language === "en";
 
   const contactHeadlines = isEn
-    ? (["Let it read", "like design."] as const)
-    : (["Que se lea", "como diseño."] as const);
+    ? (["Coherence", "end to end."] as const)
+    : (["Coherencia", "de punta a punta."] as const);
 
   return (
     <div className="min-h-screen bg-background lg:cursor-none relative">
       <PageReveal onHandoff={onSplashHandoff} />
-      <V2StrokeTour active={splashHandoff} />
       <ScrollProgress />
       <CustomCursor />
 
@@ -675,17 +673,14 @@ export default function ProfileLayoutV2() {
           <div
             className="inline-flex overflow-hidden rounded-[10px] border border-foreground/12 bg-foreground/[0.04] text-[7px] sm:text-[7.5px] font-helveticaNowTextRegular uppercase tracking-[0.18em] text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.45)] dark:border-white/[0.12] dark:bg-white/[0.04] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
             aria-hidden
-            data-v2-stroke-hero="wrap"
           >
             <div
               className="flex items-center px-1.5 py-1 sm:px-2 sm:py-1 border-r border-foreground/12 tabular-nums dark:border-white/10"
-              data-v2-stroke-hero="gd"
             >
               {t("hero.stampGd")}
             </div>
             <div
               className="flex items-center px-1.5 py-1 sm:px-2 sm:py-1 tabular-nums"
-              data-v2-stroke-hero="dev"
             >
               {t("hero.stampDev")}
             </div>

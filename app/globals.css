@@ -666,14 +666,6 @@ html {
     }
   }
 
-  /** v2 stroke tour: single animated outline — hide underlying hero borders while overlay runs */
-  html.v2-stroke-tour-active [data-v2-stroke-hero="wrap"] {
-    border-color: transparent;
-  }
-
-  html.v2-stroke-tour-active [data-v2-stroke-hero="gd"] {
-    border-right-color: transparent;
-  }
 }
 
 
