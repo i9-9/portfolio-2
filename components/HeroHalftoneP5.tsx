@@ -5,7 +5,15 @@ import { useReducedMotion } from "framer-motion";
 import type P5 from "p5";
 import { cn } from "@/lib/utils";
 
-type Dot = { bx: number; by: number; x: number; y: number; baseR: number };
+type Dot = {
+  bx: number;
+  by: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  baseR: number;
+};
 
 /** Square grid halftone + pointer repel; DPR capped for sharp dots without 3× cost. */
 export function HeroHalftoneP5({ className }: { className?: string }) {
@@ -54,11 +62,16 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
       };
 
       const SPACING = 17;
-      const REPEL_RADIUS = 180;
-      const REPEL_MAX = 52;
+      const REPEL_RADIUS = 195;
+      /** Max radial push — kept modest vs SPACING so the grid stays readable */
+      const REPEL_MAX = 38;
       /** Cap draw rate — halftone no necesita 60fps */
       const TARGET_FPS = 24;
-      const EASE = 0.16;
+      /** Cursor smoothing so repulsion doesn’t “tear” on fast moves */
+      const POINTER_LERP = 0.22;
+      /** Velocity integration toward target (spring-ish, smoother than single lerp) */
+      const SPRING_K = 0.11;
+      const SPRING_FRICTION = 0.86;
 
       let dots: Dot[] = [];
       let cw = 0;
@@ -79,17 +92,22 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
             const t = Math.pow(by / ch, 0.72);
             const wobble = 0.88 + 0.12 * Math.sin(ix * 0.55 + iy * 0.31);
             const baseR = (p.lerp(0.75, 2.95, t) * wobble * SPACING) / 7.25;
-            dots.push({ bx, by, x: bx, y: by, baseR });
+            dots.push({ bx, by, x: bx, y: by, vx: 0, vy: 0, baseR });
           }
         }
       };
 
       const sketch = (p: P5) => {
+        let smx = pointer.x;
+        let smy = pointer.y;
+
         p.setup = () => {
           p.createCanvas(1, 1);
           const el = (p as unknown as { canvas?: HTMLCanvasElement }).canvas;
           el?.classList.add("block", "h-full", "w-full", "max-h-full", "max-w-full");
           rebuild(p);
+          smx = pointer.x;
+          smy = pointer.y;
           p.frameRate(TARGET_FPS);
         };
 
@@ -98,8 +116,11 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
           dotFill(p);
           p.noStroke();
 
-          const mx = pointer.x;
-          const my = pointer.y;
+          smx += (pointer.x - smx) * POINTER_LERP;
+          smy += (pointer.y - smy) * POINTER_LERP;
+
+          const mx = smx;
+          const my = smy;
           const R = REPEL_RADIUS;
           const R2 = R * R;
 
@@ -113,14 +134,21 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
             const d2 = dx * dx + dy * dy;
             if (d2 > 0 && d2 < R2) {
               const dist = Math.sqrt(d2);
-              const f = (R - dist) / R;
-              const push = f * f * REPEL_MAX;
+              /** Smoothstep on normalized radius — softer rim than quadratic (R-dist)²/R² */
+              const t = 1 - dist / R;
+              const f = t * t * (3 - 2 * t);
+              const push = f * REPEL_MAX;
               tx += (dx / dist) * push;
               ty += (dy / dist) * push;
             }
 
-            d.x += (tx - d.x) * EASE;
-            d.y += (ty - d.y) * EASE;
+            d.vx += (tx - d.x) * SPRING_K;
+            d.vy += (ty - d.y) * SPRING_K;
+            d.vx *= SPRING_FRICTION;
+            d.vy *= SPRING_FRICTION;
+            d.x += d.vx;
+            d.y += d.vy;
+
             p.circle(d.x, d.y, d.baseR * 2);
           }
         };
