@@ -27,8 +27,8 @@ export const translations = {
     },
     about: {
       title: "About",
-      p1: "Graphic design and websites.",
-      p2BeforeLink: "I'm at ",
+      p1: "Graphic designer and front-end developer.",
+      p2BeforeLink: "I work at ",
       p2AfterLink: " and take on freelance projects.",
       p3: "I study Graphic Design at UBA.",
       p4: "Based in Buenos Aires, Argentina. I collaborate with local and international clients.",
@@ -147,7 +147,7 @@ export const translations = {
     },
     about: {
       title: "Sobre mí",
-      p1: "Diseño gráfico y sitios web.",
+      p1: "Diseñador gráfico y desarrollador front-end.",
       p2BeforeLink: "Trabajo en ",
       p2AfterLink: " y hago trabajos freelance.",
       p3: "Estudio diseño gráfico en la UBA.",
