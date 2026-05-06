@@ -11,7 +11,6 @@ import {
 import Image from "next/image";
 import { projects } from "../data/projects";
 import Footer from "@/components/Footer";
-import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import {
   editorialMutedReadable,
@@ -34,20 +33,7 @@ const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
 /** Full-viewport exit: smooth in-out so the slab lifts without a sluggish ease-out tail. */
 const SPLASH_EXIT_EASE = [0.76, 0, 0.24, 1] as const;
 
-/**
- * Contact hero display: per-line tracking tuned per script (display size ~clamp 3.5–9rem).
- * Pairs with OpenType kerning on the parent h2.
- */
-const CONTACT_DISPLAY_KERN = {
-  en: [
-    "tracking-[-0.019em]", // “Coherence” — heavy word shape at display size
-    "tracking-[-0.028em]", // “end to end.” — loosen rounds + sentence rhythm
-  ],
-  es: [
-    "tracking-[-0.018em]", // “Coherencia” — wide counters
-    "tracking-[-0.024em]", // “de punta a punta.” — lowercase flow + periods
-  ],
-} as const;
+const WOHL_STUDIO_URL = "https://wohl.co/";
 
 // --- PageReveal -----------------------------------------------------------
 // Editorial splash in the Müller-Brockmann tradition: huge tabular counter
@@ -111,7 +97,7 @@ function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
           {/* top metadata — asymmetric grid, Swiss style */}
           <div className="grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12 pt-6 lg:pt-8 text-[10px] lg:text-xs font-helveticaNowTextRegular tracking-[0.2em] uppercase text-muted-foreground">
             <div className="col-span-6 lg:col-span-3">Ivan Nevares</div>
-            <div className="hidden lg:block col-span-6">UX/UI · Front-End</div>
+            <div className="hidden lg:block col-span-6">Graphic design · Websites</div>
             <div className="col-span-6 lg:col-span-3 text-right">Portfolio · MMXXVI</div>
           </div>
 
@@ -193,64 +179,6 @@ function Magnetic({
   );
 }
 
-
-// --- WordReveal -----------------------------------------------------------
-// Splits a string into words and animates each with stagger.
-// No overflow clipping → no ascender/descender cuts. Uses opacity + blur to
-// mask in-flight motion. The signature animation pattern of high-end design
-// portfolios (Locomotive, Active Theory, Resn).
-function WordReveal({
-  text,
-  inView = true,
-  baseDelay = 0,
-  wordStagger = 0.045,
-  duration = 0.95,
-  className = "",
-  as: Tag = "span",
-}: {
-  text: string;
-  inView?: boolean;
-  baseDelay?: number;
-  wordStagger?: number;
-  duration?: number;
-  className?: string;
-  as?: "span" | "div";
-}) {
-  const reduced = useReducedMotion();
-  const words = text.split(" ");
-
-  // accessibility: respect prefers-reduced-motion. show text immediately,
-  // skipping the animation entirely.
-  if (reduced) {
-    return <Tag className={className}>{text}</Tag>;
-  }
-
-  return (
-    <Tag className={className}>
-      {words.map((word, i) => (
-        <span key={i} className="inline-block">
-          <motion.span
-            className="inline-block will-change-transform"
-            initial={{ y: "0.55em", opacity: 0, filter: "blur(8px)" }}
-            animate={
-              inView
-                ? { y: 0, opacity: 1, filter: "blur(0px)" }
-                : { y: "0.55em", opacity: 0, filter: "blur(8px)" }
-            }
-            transition={{
-              duration,
-              delay: baseDelay + i * wordStagger,
-              ease: EASE_OUT_EXPO,
-            }}
-          >
-            {word}
-          </motion.span>
-          {i < words.length - 1 && "\u00A0"}
-        </span>
-      ))}
-    </Tag>
-  );
-}
 
 // --- ScrollProgress -------------------------------------------------------
 function ScrollProgress() {
@@ -395,64 +323,64 @@ const PROJECT_ROWS = [
     key: "heybristol",
     idx: 0,
     preview: "/projects-v2/heybristol.png",
-    metricEn: "100% custom design system",
-    metricEs: "100% design system custom",
-    marqueeEn: "Lead design & frontend · Hey Bristol · Next.js · TypeScript · ",
-    marqueeEs: "Diseño y frontend · Hey Bristol · Next.js · TypeScript · ",
+    metricEn: "",
+    metricEs: "",
+    marqueeEn: "Hey Bristol · ",
+    marqueeEs: "Hey Bristol · ",
   },
   {
     key: "kostume",
     idx: 1,
     preview: "/projects-v2/kostume.png",
-    metricEn: "Live in 6 weeks",
-    metricEs: "Live en 6 semanas",
-    marqueeEn: "Lead design & frontend · Kostüme · Next.js · Tienda Nube · ",
-    marqueeEs: "Diseño y frontend · Kostüme · Next.js · Tienda Nube · ",
+    metricEn: "",
+    metricEs: "",
+    marqueeEn: "Kostüme · ",
+    marqueeEs: "Kostüme · ",
   },
   {
     key: "vinorodante",
     idx: 2,
     preview: "/projects-v2/vinorodante.png",
-    metricEn: "Full brand identity included",
-    metricEs: "Identidad de marca completa",
-    marqueeEn: "Brand, UX/UI & build · Vino Rodante · Next.js · ",
-    marqueeEs: "Marca, UX/UI y desarrollo · Vino Rodante · Next.js · ",
+    metricEn: "",
+    metricEs: "",
+    marqueeEn: "Vino Rodante · ",
+    marqueeEs: "Vino Rodante · ",
   },
   {
     key: "ursulabenavidez",
     idx: 3,
     preview: "/projects-v2/ursulabenavidez.png",
-    metricEn: "Zero third-party deps",
-    metricEs: "Sin dependencias externas",
-    marqueeEn: "UX/UI & development · Ursula Benavidez · Next.js · ",
-    marqueeEs: "UX/UI y desarrollo · Ursula Benavidez · Next.js · ",
+    metricEn: "",
+    metricEs: "",
+    marqueeEn: "Ursula Benavidez · ",
+    marqueeEs: "Ursula Benavidez · ",
   },
   {
     key: "templodetierra",
     idx: 4,
     preview: "/projects-v2/templodetierra.png",
-    metricEn: "Mobile-first UX from scratch",
-    metricEs: "UX mobile-first desde cero",
-    marqueeEn: "UX/UI & frontend · Templo de Tierra · Next.js · ",
-    marqueeEs: "UX/UI y frontend · Templo de Tierra · Next.js · ",
+    metricEn: "",
+    metricEs: "",
+    marqueeEn: "Templo de Tierra · ",
+    marqueeEs: "Templo de Tierra · ",
   },
   {
     key: "desenfreno",
     idx: 5,
     preview: "/projects-v2/eldesenfreno.png",
-    metricEn: "Custom CMS + e-commerce",
-    metricEs: "CMS custom + e-commerce",
-    marqueeEn: "Product design & CMS · El Desenfreno · Next.js · Stripe · ",
-    marqueeEs: "Diseño de producto y CMS · El Desenfreno · Next.js · Stripe · ",
+    metricEn: "",
+    metricEs: "",
+    marqueeEn: "El Desenfreno · ",
+    marqueeEs: "El Desenfreno · ",
   },
   {
     key: "grupofrali",
     idx: 6,
     preview: "/projects-v2/grupofrali.png",
-    metricEn: "Corporate site with live project metrics",
-    metricEs: "Sitio corporativo con métricas en vivo",
-    marqueeEn: "UX/UI & frontend · Grupo Frali · Next.js · TypeScript · ",
-    marqueeEs: "UX/UI y frontend · Grupo Frali · Next.js · TypeScript · ",
+    metricEn: "",
+    metricEs: "",
+    marqueeEn: "Grupo Frali · ",
+    marqueeEs: "Grupo Frali · ",
   },
 ];
 
@@ -561,16 +489,18 @@ function ProjectRow({
 
         {/* right: metric (absolute, on hover) + year (fixed col) + arrow */}
         <div className="relative z-10 flex items-center gap-6 flex-shrink-0">
-          <motion.span
-            initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
-            animate={hovered
-              ? { opacity: 1, x: 0, filter: "blur(0px)" }
-              : { opacity: 0, x: -10, filter: "blur(4px)" }}
-            transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
-            className="hidden lg:block absolute right-full mr-6 text-xs font-helveticaNowTextRegular text-background/70 whitespace-nowrap"
-          >
-            {metric}
-          </motion.span>
+          {metric ? (
+            <motion.span
+              initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
+              animate={hovered
+                ? { opacity: 1, x: 0, filter: "blur(0px)" }
+                : { opacity: 0, x: -10, filter: "blur(4px)" }}
+              transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
+              className="hidden lg:block absolute right-full mr-6 text-xs font-helveticaNowTextRegular text-background/70 whitespace-nowrap"
+            >
+              {metric}
+            </motion.span>
+          ) : null}
           <span className="hidden lg:block text-xs font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 tabular-nums transition-colors duration-500 w-10 text-right">
             {year}
           </span>
@@ -641,10 +571,6 @@ export default function ProfileLayoutV2() {
 
   const isEn = language === "en";
 
-  const contactHeadlines = isEn
-    ? (["Coherence", "end to end."] as const)
-    : (["Coherencia", "de punta a punta."] as const);
-
   return (
     <div className="min-h-screen bg-background lg:cursor-none relative">
       <PageReveal onHandoff={onSplashHandoff} />
@@ -663,7 +589,7 @@ export default function ProfileLayoutV2() {
           }
           transition={{ duration: 0.95, delay: heroLive ? 0.06 : 0, ease: EASE_OUT_EXPO }}
           className={cn(
-            "relative z-30 w-full max-w-[13rem] sm:max-w-[14rem] space-y-2.5 rounded-[22px]",
+            "relative z-30 w-full max-w-[18rem] sm:max-w-[20rem] space-y-2.5 rounded-[22px]",
             "border border-border/50 bg-background/55 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)]",
             "backdrop-blur-2xl backdrop-saturate-150",
             "ring-1 ring-inset ring-white/50 dark:border-white/[0.09] dark:bg-background/45 dark:shadow-[0_12px_48px_-16px_rgba(0,0,0,0.65)] dark:ring-inset dark:ring-white/[0.07]",
@@ -691,7 +617,7 @@ export default function ProfileLayoutV2() {
               {t("hero.stampName")}
             </p>
             <p className="font-helveticaNowDisplayBold text-[11px] sm:text-xs leading-[0.95] tracking-tight text-foreground/88 hyphens-none">
-              {t("contact.blurb")}
+              {t("hero.blurb")}
               <Asterisk
                 className="inline-block align-top w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1 mt-0.5 text-muted-foreground opacity-80"
                 strokeWidth={1.25}
@@ -715,21 +641,6 @@ export default function ProfileLayoutV2() {
 
       {/* -- WORK --------------------------------------------------------- */}
       <section id="work" ref={workRef} className="px-4 lg:px-12 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
-          animate={
-            workInView
-              ? { opacity: 1, y: 0, filter: "blur(0px)" }
-              : { opacity: 0, y: 16, filter: "blur(6px)" }
-          }
-          transition={{ duration: 0.8, ease: EASE_OUT_EXPO }}
-          className="mb-12"
-        >
-          <p className="max-w-2xl font-helveticaNowTextRegular text-sm leading-relaxed text-muted-foreground lg:text-[15px] lg:leading-relaxed">
-            {t("work.trustLead")}
-          </p>
-        </motion.div>
-
         <motion.p
           initial={{ opacity: 0 }}
           animate={workInView ? { opacity: 1 } : { opacity: 0 }}
@@ -769,56 +680,37 @@ export default function ProfileLayoutV2() {
           transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
           className="lg:col-span-2 text-xs font-helveticaNowTextRegular tracking-[0.2em] uppercase text-muted-foreground self-start pt-1"
         >
-          {isEn ? "About" : "Sobre mí"}
+          {t("about.title")}
         </motion.p>
 
-        <div className="lg:col-span-6 space-y-4 font-helveticaNowTextRegular text-muted-foreground leading-relaxed">
-          {(isEn
-            ? "I'm a UX/UI Designer and Front-End Developer based in Buenos Aires. I work with startups and independent brands to build digital products that are fast, polished, and pleasant to use.\n\nI care about the details that make an interface feel right — hierarchy, spacing, feedback, performance. My stack is React / Next.js / TypeScript, and I design in Figma before I write a single line of code."
-            : "Soy Diseñador UX/UI y Desarrollador Front-End basado en Buenos Aires. Trabajo con startups y marcas independientes para construir productos digitales rápidos, pulidos y agradables de usar.\n\nMe importan los detalles que hacen que una interfaz se sienta bien — jerarquía, espaciado, feedback, rendimiento. Mi stack es React / Next.js / TypeScript, y diseño en Figma antes de escribir una línea de código."
-          ).split("\n\n").map((p, i) => (
-            <motion.p
-              key={i}
-              initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
-              animate={aboutInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-              transition={{ duration: 0.9, delay: 0.15 + i * 0.12, ease: EASE_OUT_EXPO }}
-            >
-              {p}
-            </motion.p>
-          ))}
-        </div>
+        <motion.p
+          className="lg:col-span-6 font-helveticaNowTextRegular text-muted-foreground leading-relaxed"
+          initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+          animate={aboutInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{ duration: 0.9, delay: 0.15, ease: EASE_OUT_EXPO }}
+        >
+          {t("about.p1")}{" "}
+          {t("about.p2BeforeLink")}
+          <a
+            href={WOHL_STUDIO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-foreground/90 underline decoration-muted-foreground/50 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground/50"
+          >
+            {t("contact.blurbWohl")}
+          </a>
+          {t("about.p2AfterLink")} {t("about.p3")} {t("about.p4")}
+        </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
           animate={aboutInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
           transition={{ duration: 0.9, delay: 0.35, ease: EASE_OUT_EXPO }}
-          className="lg:col-span-3 lg:col-start-10 space-y-6"
+          className="lg:col-span-3 lg:col-start-10"
         >
-          <div className="space-y-3">
-            <p className="text-xs font-helveticaNowDisplayBold tracking-[0.15em] uppercase">
-              {t("focus.development")}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["React", "Next.js", "TypeScript"].map(s => (
-                <Badge key={s} variant="outline" className="text-[9px] tracking-[0.2em] uppercase">{s}</Badge>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-3">
-            <p className="text-xs font-helveticaNowDisplayBold tracking-[0.15em] uppercase">
-              {t("focus.design")}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["UX/UI", "Adobe", "Figma"].map(s => (
-                <Badge key={s} variant="outline" className="text-[9px] tracking-[0.2em] uppercase">{s}</Badge>
-              ))}
-            </div>
-          </div>
-          <div className="pt-4">
-            <Suspense fallback={<div className="w-full aspect-square bg-muted/50 rounded-lg animate-pulse" />}>
-              <GeometricFlowCard />
-            </Suspense>
-          </div>
+          <Suspense fallback={<div className="w-full aspect-square bg-muted/50 rounded-lg animate-pulse" />}>
+            <GeometricFlowCard />
+          </Suspense>
         </motion.div>
       </section>
 
@@ -854,30 +746,6 @@ export default function ProfileLayoutV2() {
               {t("contact.stamp")}
             </p>
           </motion.div>
-
-          <h2
-            lang={isEn ? "en" : "es"}
-            className="mb-8 font-helveticaNowDisplayBold leading-[0.82] [font-feature-settings:'kern'_1] [font-kerning:normal] [text-rendering:optimizeLegibility]"
-            style={{ fontSize: "clamp(3.5rem, 9vw, 9rem)" }}
-          >
-            {contactHeadlines.map((line, lineIdx) => {
-              const wordsBefore = contactHeadlines
-                .slice(0, lineIdx)
-                .reduce((acc, l) => acc + l.split(" ").length, 0);
-              const kernLine = CONTACT_DISPLAY_KERN[isEn ? "en" : "es"][lineIdx];
-              return (
-                <span key={lineIdx} className={cn("block", kernLine)}>
-                  <WordReveal
-                    text={line}
-                    inView={contactInView}
-                    baseDelay={wordsBefore * 0.06}
-                    wordStagger={0.06}
-                    duration={1.0}
-                  />
-                </span>
-              );
-            })}
-          </h2>
 
           <motion.div
             initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
@@ -922,7 +790,7 @@ export default function ProfileLayoutV2() {
           <p className="mb-4 text-[10px] font-helveticaNowTextRegular uppercase tracking-[0.22em] text-muted-foreground">
             {t("contact.elsewhere")}
           </p>
-          <div className="flex flex-wrap items-baseline gap-x-1 gap-y-2 font-helveticaNowTextRegular text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 font-helveticaNowTextRegular text-sm text-muted-foreground">
             {(
               [
                 { href: "https://github.com/i9-9", label: "GitHub" },
@@ -930,25 +798,18 @@ export default function ProfileLayoutV2() {
                 { href: "https://www.behance.net/ivan_nevares", label: "Behance" },
                 { href: "https://dribbble.com/i9i9", label: "Dribbble" },
               ] as const
-            ).map(({ href, label }, i) => (
-              <span key={href} className="inline-flex flex-wrap items-baseline gap-x-1">
-                {i > 0 && (
-                  <span className="select-none px-1 text-muted-foreground/35" aria-hidden>
-                    —
-                  </span>
-                )}
-                <Magnetic strength={0.22}>
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-1 tracking-[0.06em] transition-colors duration-300 hover:text-foreground"
-                  >
-                    {label}
-                    <ArrowRight className="size-3.5 shrink-0 opacity-60 transition-all duration-300 group-hover:rotate-45 group-hover:opacity-100" aria-hidden />
-                  </a>
-                </Magnetic>
-              </span>
+            ).map(({ href, label }) => (
+              <Magnetic key={href} strength={0.22}>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-1 tracking-[0.06em] transition-colors duration-300 hover:text-foreground"
+                >
+                  {label}
+                  <ArrowRight className="size-3.5 shrink-0 opacity-60 transition-all duration-300 group-hover:rotate-45 group-hover:opacity-100" aria-hidden />
+                </a>
+              </Magnetic>
             ))}
           </div>
         </motion.nav>

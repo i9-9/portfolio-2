@@ -52,7 +52,12 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
 
       const deviceDpr = () => Math.min(2, window.devicePixelRatio || 1);
 
+      /** p5 v2 starts asynchronously (#_start); ResizeObserver can fire before _renderer exists. */
+      const hasRenderer = (p: P5) =>
+        Boolean((p as unknown as { _renderer?: unknown })._renderer);
+
       const applyDpr = (p: P5) => {
+        if (!hasRenderer(p)) return;
         p.pixelDensity(deviceDpr());
         const ctx = (p as unknown as { drawingContext?: CanvasRenderingContext2D }).drawingContext;
         if (ctx) {
@@ -78,6 +83,7 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
       let ch = 0;
 
       const rebuild = (p: P5) => {
+        if (!hasRenderer(p) || disposed) return;
         cw = Math.max(1, container.clientWidth);
         ch = Math.max(1, container.clientHeight);
         p.resizeCanvas(cw, ch);
@@ -166,9 +172,12 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
       container.addEventListener("pointerleave", onLeave);
 
       ro = new ResizeObserver(() => {
-        if (pInst && !disposed) rebuild(pInst);
+        if (pInst && !disposed) requestAnimationFrame(() => rebuild(pInst!));
       });
-      if (!disposed) ro.observe(container);
+      // Defer observe: synchronous RO callbacks can run before p5 #_start creates the renderer.
+      requestAnimationFrame(() => {
+        if (!disposed && pInst && wrapRef.current === container) ro?.observe(container);
+      });
     })();
 
     return () => {
@@ -181,7 +190,20 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
     };
   }, [reduced]);
 
-  if (reduced) return null;
+  /** Static grid matches p5 `SPACING` when motion is reduced (p5 sketch is skipped). */
+  if (reduced) {
+    return (
+      <div
+        className={cn("absolute inset-0 overflow-hidden", className)}
+        aria-hidden
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at center, hsl(var(--foreground) / 0.16) 1.1px, transparent 1.2px)",
+          backgroundSize: "17px 17px",
+        }}
+      />
+    );
+  }
 
   return (
     <div

@@ -10,24 +10,6 @@ import {
   editorialPrimary,
 } from "@/lib/editorial-cta";
 import { CASE_STUDIES, type CaseStudySlug } from "@/lib/case-studies";
-import { Badge } from "@/components/ui/badge";
-
-function StudySection({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="grid grid-cols-1 gap-4 border-t border-border py-10 lg:grid-cols-12 lg:gap-6">
-      <h2 className="font-helveticaNowTextRegular text-[10px] uppercase leading-relaxed tracking-[0.22em] text-muted-foreground lg:col-span-3 lg:pt-0.5">
-        {label}
-      </h2>
-      <div className="space-y-4 lg:col-span-9">{children}</div>
-    </section>
-  );
-}
 
 export function CaseStudyPage({ slug }: { slug: string }) {
   const { language, t } = useLanguage();
@@ -68,11 +50,13 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           <p className="mt-2 font-helveticaNowTextRegular text-sm text-muted-foreground lg:text-base">
             {cat}
           </p>
-          <p className="mt-6 font-helveticaNowTextRegular text-base leading-relaxed text-muted-foreground lg:text-lg">
-            {loc.tagline}
-          </p>
+          {loc.tagline ? (
+            <p className="mt-6 font-helveticaNowTextRegular text-base leading-relaxed text-muted-foreground lg:text-lg">
+              {loc.tagline}
+            </p>
+          ) : null}
 
-          <div className="mt-10">
+          <div className={loc.tagline ? "mt-10" : "mt-6"}>
             <a
               href={project.anchor}
               target="_blank"
@@ -99,98 +83,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
       </div>
 
       <div className="grid-container pb-24 lg:pb-32">
-        <div className="col-span-12 py-16 lg:py-24">
-        <StudySection label={t("caseStudy.client")}>
-          {loc.client.paragraphs.map((p, i) => (
-            <p
-              key={i}
-              className="font-helveticaNowTextRegular text-sm leading-relaxed text-muted-foreground lg:text-[15px]"
-            >
-              {p}
-            </p>
-          ))}
-        </StudySection>
-
-        <StudySection label={t("caseStudy.brief")}>
-          {loc.brief.paragraphs.map((p, i) => (
-            <p
-              key={i}
-              className="font-helveticaNowTextRegular text-sm leading-relaxed text-muted-foreground lg:text-[15px]"
-            >
-              {p}
-            </p>
-          ))}
-        </StudySection>
-
-        <StudySection label={t("caseStudy.objectives")}>
-          <ul className="list-none space-y-3">
-            {loc.objectives.map((item, i) => (
-              <li
-                key={i}
-                className="flex gap-3 font-helveticaNowTextRegular text-sm leading-relaxed text-muted-foreground lg:text-[15px]"
-              >
-                <span className="mt-0.5 font-helveticaNowDisplayBold tabular-nums text-foreground/80">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </StudySection>
-
-        <StudySection label={t("caseStudy.outcomes")}>
-          {loc.outcomes.paragraphs.map((p, i) => (
-            <p
-              key={i}
-              className="font-helveticaNowTextRegular text-sm leading-relaxed text-muted-foreground lg:text-[15px]"
-            >
-              {p}
-            </p>
-          ))}
-          {loc.outcomes.highlights && loc.outcomes.highlights.length > 0 && (
-            <ul className="mt-4 space-y-2 border-l border-border pl-4">
-              {loc.outcomes.highlights.map((h, i) => (
-                <li
-                  key={i}
-                  className="font-helveticaNowTextRegular text-sm text-foreground/85 lg:text-[15px]"
-                >
-                  {h}
-                </li>
-              ))}
-            </ul>
-          )}
-        </StudySection>
-
-        <StudySection label={t("caseStudy.process")}>
-          <ol className="space-y-8">
-            {loc.process.map((step, i) => (
-              <li key={i} className="grid gap-2 sm:grid-cols-[minmax(0,7rem)_1fr] sm:gap-8">
-                <span className="font-helveticaNowDisplayBold text-xs uppercase tracking-[0.15em] text-foreground">
-                  {step.phase}
-                </span>
-                <p className="font-helveticaNowTextRegular text-sm leading-relaxed text-muted-foreground lg:text-[15px]">
-                  {step.text}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </StudySection>
-
-        <StudySection label={t("caseStudy.stack")}>
-          <div className="flex flex-wrap gap-2">
-            {loc.stack.map((s) => (
-              <Badge
-                key={s}
-                variant="outline"
-                className="text-[9px] font-normal tracking-[0.18em]"
-              >
-                {s}
-              </Badge>
-            ))}
-          </div>
-        </StudySection>
-
-        <div className="border-t border-border pt-12">
+        <div className="col-span-12 border-t border-border py-16 lg:py-24">
           <a
             href={project.anchor}
             target="_blank"
@@ -200,7 +93,6 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             {t("caseStudy.liveSite")}
             <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5" aria-hidden />
           </a>
-        </div>
         </div>
       </div>
     </article>

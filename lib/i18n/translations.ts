@@ -18,47 +18,52 @@ export const translations = {
     hero: {
       title: "Design & Systems",
       subtitle: "",
-      stampGd: "GD",
-      stampDev: "Design",
+      blurb:
+        "Identity, editorial and interfaces—work where the grid, type and production meet.",
+      stampGd: "Graphic design",
+      stampDev: "Websites",
       stampName: "Ivan Nevares",
       stampWorkLink: "Selected work",
     },
     about: {
-      title: "About Me",
-      content: "I'm a UX/UI Designer and Front-End Developer based in Buenos Aires, Argentina.\n\nI like intuitive and visually appealing digital experiences, combining design thinking with technical expertise to build modern web applications.\n\nMy approach focuses on user-centered design principles and clean, efficient code.\n\nI specialize in React, Next.js and TypeScript, while maintaining a solid foundation in UI/UX design using tools like Figma and Adobe Creative Suite.",
+      title: "About",
+      p1: "Graphic design and websites.",
+      p2BeforeLink: "I'm at ",
+      p2AfterLink: " and take on freelance projects.",
+      p3: "I study Graphic Design at UBA.",
+      p4: "Based in Buenos Aires, Argentina. I collaborate with local and international clients.",
       graphicDesign: "Graphic Design"
     },
     work: {
       title: "Selected Work",
-      trustLead:
-        "Projects for independent brands, studios and product teams — from pitch to launch.",
+      trustLead: "",
       kostume: {
-        title: "Fashion E-commerce",
-        description: "A fashion e-commerce platform that combines minimalist design with powerful functionality. Built with Next.js and Tienda Nube, featuring a custom checkout process and real-time inventory management."
+        title: "Fashion e‑commerce",
+        description: ""
       },
       heybristol: {
-        title: "Audiovisual Production",
-        description: "A modern website for an audiovisual production company showcasing their creative work and services. Built with Next.js featuring dynamic content management and interactive design elements."
+        title: "Audiovisual production",
+        description: ""
       },
       vinorodante: {
-        title: "Wine E-commerce",
-        description: "An e-commerce platform for a boutique wine distributor, featuring a curated selection of wines. Built with Next.js and includes a subscription service and wine club management system. I handled the complete brand identity design."
+        title: "Wine e‑commerce",
+        description: ""
       },
       ursulabenavidez: {
-        title: "Art Director Portfolio",
-        description: "Portfolio website for art director and set designer Ursula Benavidez. Built with Next.js, showcasing her creative work with a clean, gallery-focused design that highlights her projects."
+        title: "Art director portfolio",
+        description: ""
       },
       templodetierra: {
-        title: "Sustainable Tourism",
-        description: "A sustainable and ecological tourism project focused on connection with nature and ancestral construction techniques. Built with Next.js."
+        title: "Sustainable tourism",
+        description: ""
       },
       desenfreno: {
-        title: "Independent Publishing House",
-        description: "A digital platform for an independent publishing house, showcasing their catalog and editorial vision. Features a custom CMS for content management and an integrated e-commerce solution."
+        title: "Independent publishing",
+        description: ""
       },
       grupofrali: {
-        title: "Real Estate & Development",
-        description: "Corporate website for a diversified development group with hospitality, residential and energy projects across Argentina, Uruguay and the United States. Built with Next.js, featuring animated metrics, project showcases and bilingual content."
+        title: "Real estate & development",
+        description: ""
       }
     },
     focus: {
@@ -72,12 +77,12 @@ export const translations = {
       mailCopied: "Mail copied to clipboard",
       elsewhere: "Elsewhere",
       socialNav: "Social & profiles",
-      kicker: "Graphic design · Brand systems · Digital",
+      kicker: "Graphic design · Websites · Buenos Aires, Argentina",
       stamp: "MMXXVI · BUE",
-      blurb:
-        "Identity, editorial and interfaces—work where the grid, type and production meet.",
+      blurbWohl: "Wohl Studio",
+      blurbTail: " · UBA",
       marquee:
-        "Graphic design · Brand systems · Editorial · Posters · UX/UI · Front-end · ivannevares9@gmail.com · ",
+        "Graphic design · Websites · ivannevares9@gmail.com · ",
     },
     form: {
       title: "Contact Form",
@@ -98,7 +103,7 @@ export const translations = {
     },
     graphics: {
       title: "Graphics",
-      subtitle: "A collection of graphic design work including posters, covers, and visual compositions.",
+      subtitle: "",
       backToPortfolio: "Back to Portfolio"
     },
     caseStudy: {
@@ -133,48 +138,53 @@ export const translations = {
     hero: {
       title: "Diseño & Sistemas",
       subtitle: "",
-      stampGd: "GD",
-      stampDev: "Diseño",
+      blurb:
+        "Identidad, editorial e interfaces—trabajo donde la grilla, la tipografía y la producción se encuentran.",
+      stampGd: "Diseño gráfico",
+      stampDev: "Sitios web",
       stampName: "Ivan Nevares",
       stampWorkLink: "Ver proyectos",
     },
     about: {
       title: "Sobre mí",
-      content: "Soy un Diseñador UX/UI y Desarrollador Front-End basado en Buenos Aires, Argentina.\n\nMe gustan las experiencias digitales intuitivas y visualmente atractivas, combino el pensamiento de diseño con experiencia técnica para construir aplicaciones web modernas.\n\nMi enfoque se centra en principios de diseño centrados en el usuario y código limpio y eficiente.\n\nMe especializo en React, Next.js y TypeScript, mientras mantengo una sólida base en diseño UI/UX usando herramientas como Figma y Adobe Creative Suite.",
+      p1: "Diseño gráfico y sitios web.",
+      p2BeforeLink: "Trabajo en ",
+      p2AfterLink: " y hago trabajos freelance.",
+      p3: "Estudio diseño gráfico en la UBA.",
+      p4: "Basado en Buenos Aires, Argentina. Colaboro con clientes locales y del exterior.",
       graphicDesign: "Diseño Gráfico"
     },
     work: {
-      title: "Proyectos Seleccionados",
-      trustLead:
-        "Proyectos para marcas independientes, estudios y equipos de producto — del pitch al lanzamiento.",
+      title: "Proyectos",
+      trustLead: "",
       kostume: {
-        title: "E-commerce de Moda",
-        description: "Una plataforma de comercio electrónico de moda que combina diseño minimalista con funcionalidad avanzada. Construida con Next.js y Tienda Nube, con proceso de pago personalizado y gestión de inventario en tiempo real."
+        title: "E‑commerce de moda",
+        description: ""
       },
       heybristol: {
-        title: "Productora Audiovisual",
-        description: "Un sitio web moderno para una productora audiovisual que muestra su trabajo creativo y servicios. Construido con Next.js con gestión de contenido dinámico y elementos de diseño interactivos."
+        title: "Productora audiovisual",
+        description: ""
       },
       vinorodante: {
-        title: "E-commerce de Vinos",
-        description: "Una plataforma de comercio electrónico para un distribuidor boutique de vinos, con una selección curada. Construida con Next.js e incluye servicio de suscripción y sistema de gestión de club de vinos. Me ocupé del diseño de identidad en su totalidad."
+        title: "E‑commerce de vinos",
+        description: ""
       },
       ursulabenavidez: {
-        title: "Portfolio de Directora de Arte",
-        description: "Sitio web portfolio para la directora de arte y set designer Ursula Benavidez. Desarrollado en Next.js, exhibiendo su trabajo creativo con un diseño limpio enfocado en galería que destaca sus proyectos."
+        title: "Portfolio directora de arte",
+        description: ""
       },
-        templodetierra: {
-          title: "Turismo Sostenible",
-          description: "Un proyecto de turismo sostenible y ecológico enfocado en la conexión con la naturaleza y las técnicas ancestrales de construcción. Desarrollado en Next.js."
-        },
-        desenfreno: {
-          title: "Editorial Independiente",
-          description: "Una plataforma digital para una editorial independiente, mostrando su catálogo y visión editorial. Cuenta con un CMS personalizado para la gestión de contenido y una solución de comercio electrónico integrada."
-        },
-        grupofrali: {
-          title: "Inmobiliaria & Desarrollo",
-          description: "Sitio corporativo para un grupo desarrollador con proyectos de hotelería, residencial y energía en Argentina, Uruguay y Estados Unidos. Desarrollado en Next.js, con métricas animadas, destacados de proyectos y contenido bilingüe."
-        }
+      templodetierra: {
+        title: "Turismo sostenible",
+        description: ""
+      },
+      desenfreno: {
+        title: "Editorial independiente",
+        description: ""
+      },
+      grupofrali: {
+        title: "Inmobiliaria y desarrollo",
+        description: ""
+      }
     },
     focus: {
       title: "Enfoque",
@@ -187,12 +197,12 @@ export const translations = {
       mailCopied: "Mail copiado al portapapeles",
       elsewhere: "También en",
       socialNav: "Redes y perfiles",
-      kicker: "Diseño gráfico · Sistemas de marca · Digital",
+      kicker: "Diseño gráfico · Sitios web · Buenos Aires, Argentina",
       stamp: "MMXXVI · BUE",
-      blurb:
-        "Identidad, editorial e interfaces—trabajo donde la grilla, la tipografía y la producción se encuentran.",
+      blurbWohl: "Wohl Studio",
+      blurbTail: " · UBA",
       marquee:
-        "Diseño gráfico · Sistemas de marca · Editorial · Afiches · UX/UI · Front-end · ivannevares9@gmail.com · ",
+        "Diseño gráfico · Sitios web · ivannevares9@gmail.com · ",
     },
     form: {
       title: "Formulario de Contacto",
@@ -213,7 +223,7 @@ export const translations = {
     },
     graphics: {
       title: "Gráficos",
-      subtitle: "Una colección de trabajos de diseño gráfico incluyendo carteles, portadas y composiciones visuales.",
+      subtitle: "",
       backToPortfolio: "Volver al Portfolio"
     },
     caseStudy: {
@@ -229,4 +239,4 @@ export const translations = {
       stack: "Stack",
     }
   }
-}; 
+};

@@ -19,12 +19,13 @@ export async function generateMetadata({
     return { title: "Work" };
   }
   const tagline = CASE_STUDIES[slug].en.tagline;
+  const metaDescription = tagline || `${project.name} — case study`;
   return {
     title: `${project.name} — Case study · Ivan Nevares`,
-    description: tagline,
+    description: metaDescription,
     openGraph: {
       title: `${project.name} — Case study`,
-      description: tagline,
+      description: metaDescription,
     },
   };
 }

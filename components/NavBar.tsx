@@ -56,7 +56,7 @@ export function NavBar() {
           <a
             href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
             download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-            className="text-xs tracking-[0.2em] uppercase transition-colors whitespace-nowrap text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2 flex items-center"
+            className="text-xs tracking-[0.2em] uppercase transition-opacity whitespace-nowrap text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 flex items-center"
           >
             {t('nav.cv')}
           </a>
@@ -96,7 +96,7 @@ export function NavBar() {
             onClick={toggleTheme}
             className={cn(
               "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-xs text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
+              isMobile ? "text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 transition-opacity" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
             )}
           >
             {t(`nav.theme.${theme}`)}
@@ -110,7 +110,7 @@ export function NavBar() {
             onClick={toggleLanguage}
             className={cn(
               "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-xs text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
+              isMobile ? "text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 transition-opacity" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
             )}
           >
             {t('nav.language')}
@@ -124,7 +124,7 @@ export function NavBar() {
             onClick={toggleGrid}
             className={cn(
               "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-xs text-foreground/90 hover:text-foreground py-2 min-h-[44px] px-2" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2",
+              isMobile ? "text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 transition-opacity" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2",
               isGridVisible && "text-foreground"
             )}
           >
@@ -165,7 +165,7 @@ export function NavBar() {
     }
 
     return (
-      <ul className={cn("flex flex-row gap-6 -ml-2")}>
+      <ul className="flex flex-row gap-6 -mr-2">
         {listContent}
       </ul>
     );
@@ -187,7 +187,7 @@ export function NavBar() {
 
           {/* Navigation - 3 columns starting at column 10 (aligned with sidebar) */}
           <nav
-            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end lg:justify-start h-[48px] lg:h-[40px]"
+            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end h-[48px] lg:h-[40px]"
           >
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center">
@@ -203,7 +203,7 @@ export function NavBar() {
                   </button>
                 </SheetTrigger>
                 <SheetContent
-                  className="w-full h-[100vh] sm:max-w-none border-none bg-nav/95 backdrop-blur-md mt-[48px] p-0"
+                  className="w-full h-[100vh] sm:max-w-none border-b border-border/80 bg-background mt-[48px] p-0"
                   side="top"
                 >
                   <div className="w-full h-full">
