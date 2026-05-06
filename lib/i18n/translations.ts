@@ -37,6 +37,9 @@ export const translations = {
     work: {
       title: "Selected Work",
       trustLead: "",
+      filterLabel: "Filter projects",
+      filterGraphic: "Graphic",
+      filterWeb: "Web",
       kostume: {
         title: "Fashion e‑commerce",
         description: ""
@@ -157,6 +160,9 @@ export const translations = {
     work: {
       title: "Proyectos",
       trustLead: "",
+      filterLabel: "Filtrar proyectos",
+      filterGraphic: "Gráfico",
+      filterWeb: "Web",
       kostume: {
         title: "E‑commerce de moda",
         description: ""

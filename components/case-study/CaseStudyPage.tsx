@@ -25,7 +25,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
       <header className="grid-container pt-24 pb-12 lg:pb-16 lg:pt-28">
         <div className="col-span-12">
           <Link
-            href="/v2#work"
+            href="/#work"
             className="inline-flex items-center gap-2 font-helveticaNowTextRegular text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="size-3.5" aria-hidden />

@@ -5,7 +5,7 @@ import { useReducedMotion } from "framer-motion";
 import Lenis from "lenis";
 
 /**
- * Smooth scroll for `/v2` only. Disabled when `prefers-reduced-motion` is set.
+ * Smooth scroll for the main landing route. Disabled when `prefers-reduced-motion` is set.
  * Imperative Lenis (not ReactLenis) + `resize()` after paint avoids a stuck scroll
  * when global `html,body{height:100%}` under-measures document height.
  */

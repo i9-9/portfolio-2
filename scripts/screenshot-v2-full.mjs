@@ -1,7 +1,7 @@
 /**
- * Full-height PNG of `/v2` at 1440px wide.
+ * Full-height PNG of the main landing (`/`) at 1440px wide.
  *
- * Prerequisites: `npm run dev` (http://localhost:3000/v2)
+ * Prerequisites: `npm run dev` (http://localhost:3000/)
  *
  *   node scripts/screenshot-v2-full.mjs
  */
@@ -10,7 +10,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
 
-const ORIGIN = "http://localhost:3000/v2";
+const ORIGIN = "http://localhost:3000/";
 const OUT = path.resolve("portfolio-v2-full-site-desktop.png");
 
 /** Seconds after tall viewport applies (IO triggers + Framer lines + marquee + WebGL warmup).

@@ -222,7 +222,7 @@ html, body {
   scroll-behavior: smooth;
 }
 
-/* Lenis on /v2: `scroll-behavior: smooth` + fixed html/body height fights smooth scroll */
+/* Lenis on the main landing: `scroll-behavior: smooth` + fixed html/body height fights smooth scroll */
 html.lenis {
   scroll-behavior: auto !important;
 }
