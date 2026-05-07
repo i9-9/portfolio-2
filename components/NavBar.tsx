@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
@@ -10,10 +12,45 @@ import { HamburgerMenu } from './ui/hamburger-menu';
 import { cn } from '@/lib/utils';
 
 export function NavBar() {
+  return (
+    <Suspense fallback={<NavBarFallback />}>
+      <NavBarInner />
+    </Suspense>
+  );
+}
+
+function NavBarFallback() {
+  return (
+    <header
+      className="fixed top-0 left-0 right-0 bg-nav/80 backdrop-blur-sm z-[100] min-h-[48px] lg:min-h-[40px]"
+      aria-hidden
+    />
+  );
+}
+
+function NavBarInner() {
   const { language, setLanguage, t } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { isGridVisible, toggleGrid } = useGrid();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  /** Avoid hydration mismatch: pathname from usePathname can differ SSR vs first client paint for shared layout. */
+  const isV2 =
+    mounted &&
+    (pathname === '/' ||
+      pathname === '/v2' ||
+      pathname.startsWith('/v2/'));
+  const v2Graphic = mounted && searchParams.get('mode') === 'graphic';
+  const portfolioHome = '/v2';
+  const homeHref = portfolioHome;
+  const v2WebHref = portfolioHome;
+  const v2GraphicHref = `${portfolioHome}?mode=graphic`;
+  const v2WebActive =
+    mounted && (pathname === '/' || pathname === '/v2') && !v2Graphic;
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'es' : 'en');
@@ -49,6 +86,39 @@ export function NavBar() {
   };
 
   const NavItems = ({ isMobile = false }: { isMobile?: boolean }) => {
+    const v2NavLinks = isV2 ? (
+      <>
+        <li>
+          <Link
+            href={v2WebHref}
+            className={cn(
+              'tracking-[0.2em] uppercase transition-colors whitespace-nowrap',
+              isMobile
+                ? 'text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 flex items-center transition-opacity'
+                : 'text-[9px] py-1 px-2',
+              v2WebActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            {t('work.filterWeb')}
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={v2GraphicHref}
+            className={cn(
+              'tracking-[0.2em] uppercase transition-colors whitespace-nowrap',
+              isMobile
+                ? 'text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 flex items-center transition-opacity'
+                : 'text-[9px] py-1 px-2',
+              v2Graphic ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            {t('work.filterGraphic')}
+          </Link>
+        </li>
+      </>
+    ) : null;
+
     const items = [
       {
         id: 'cv',
@@ -136,6 +206,7 @@ export function NavBar() {
 
     const listContent = (
       <>
+        {v2NavLinks}
         {items.map((item) => (
           <li key={item.id}>
             {item.element}
@@ -152,6 +223,32 @@ export function NavBar() {
           initial="hidden"
           animate="visible"
         >
+          {isV2 ? (
+            <>
+              <motion.li variants={itemVariants}>
+                <Link
+                  href={v2WebHref}
+                  className={cn(
+                    'text-xs tracking-[0.2em] uppercase transition-opacity whitespace-nowrap py-2 min-h-[44px] px-2 flex items-center',
+                    v2WebActive ? 'text-foreground' : 'text-foreground/80',
+                  )}
+                >
+                  {t('work.filterWeb')}
+                </Link>
+              </motion.li>
+              <motion.li variants={itemVariants}>
+                <Link
+                  href={v2GraphicHref}
+                  className={cn(
+                    'text-xs tracking-[0.2em] uppercase transition-opacity whitespace-nowrap py-2 min-h-[44px] px-2 flex items-center',
+                    v2Graphic ? 'text-foreground' : 'text-foreground/80',
+                  )}
+                >
+                  {t('work.filterGraphic')}
+                </Link>
+              </motion.li>
+            </>
+          ) : null}
           {items.map((item) => (
             <motion.li
               key={item.id}
@@ -178,7 +275,7 @@ export function NavBar() {
           {/* Logo - 6 columns on mobile, auto on desktop */}
           <div className="col-span-6 flex items-center h-[48px] lg:h-[40px]">
             <a
-              href="/"
+              href={homeHref}
               className="text-xs md:text-[9px] tracking-[0.2em] uppercase flex items-center text-foreground/90 hover:text-foreground py-2 md:py-0"
             >
               Ivan Nevares

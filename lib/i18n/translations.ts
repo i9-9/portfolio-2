@@ -27,11 +27,8 @@ export const translations = {
     },
     about: {
       title: "About",
-      p1: "Graphic designer and front-end developer.",
-      p2BeforeLink: "I work at ",
-      p2AfterLink: " and take on freelance projects.",
-      p3: "I study Graphic Design at UBA.",
-      p4: "Based in Buenos Aires, Argentina. I collaborate with local and international clients.",
+      p1: "Designer and front-end developer based in Buenos Aires. Currently at ",
+      p2: "and studying Graphic Design at UBA. Open to freelance projects.",
       graphicDesign: "Graphic Design"
     },
     work: {
@@ -150,11 +147,8 @@ export const translations = {
     },
     about: {
       title: "Sobre mí",
-      p1: "Diseñador gráfico y desarrollador front-end.",
-      p2BeforeLink: "Trabajo en ",
-      p2AfterLink: " y hago trabajos freelance.",
-      p3: "Estudio diseño gráfico en la UBA.",
-      p4: "Basado en Buenos Aires, Argentina. Colaboro con clientes locales y del exterior.",
+      p1: "Diseñador y desarrollador front-end radicado en Buenos Aires. Actualmente en ",
+      p2: "y estudio Diseño Gráfico en la UBA. Abierto a proyectos freelance.",
       graphicDesign: "Diseño Gráfico"
     },
     work: {

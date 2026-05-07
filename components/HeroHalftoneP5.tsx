@@ -53,8 +53,8 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
       const deviceDpr = () => Math.min(2, window.devicePixelRatio || 1);
 
       /** p5 v2 starts asynchronously (#_start); ResizeObserver can fire before _renderer exists. */
-      const hasRenderer = (p: P5) =>
-        Boolean((p as unknown as { _renderer?: unknown })._renderer);
+      const hasRenderer = (p: P5 | null | undefined) =>
+        Boolean(p && (p as unknown as { _renderer?: unknown })._renderer);
 
       const applyDpr = (p: P5) => {
         if (!hasRenderer(p)) return;
@@ -172,7 +172,10 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
       container.addEventListener("pointerleave", onLeave);
 
       ro = new ResizeObserver(() => {
-        if (pInst && !disposed) requestAnimationFrame(() => rebuild(pInst!));
+        requestAnimationFrame(() => {
+          if (disposed || !pInst) return;
+          rebuild(pInst);
+        });
       });
       // Defer observe: synchronous RO callbacks can run before p5 #_start creates the renderer.
       requestAnimationFrame(() => {
