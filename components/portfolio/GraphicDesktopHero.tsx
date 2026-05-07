@@ -280,8 +280,11 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
                     <X className="size-4" strokeWidth={1.5} />
                   </button>
                 </div>
-                <div className="relative min-h-0 flex-1 overflow-hidden bg-[#f7f6f4] dark:bg-neutral-950/80">
-                  <div className="flex min-h-[40vh] items-center justify-center overflow-hidden p-4 sm:p-8">
+                <div
+                  className="max-h-[min(calc(88dvh-3.75rem),calc(100vh-8rem))] overflow-x-hidden overflow-y-auto overscroll-contain px-4 pb-4 pt-1 sm:px-5 sm:pb-5 sm:pt-2"
+                  style={{ scrollbarGutter: "stable" }}
+                >
+                  <div className="flex w-full justify-center">
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.div
                         key={openFile}
@@ -298,12 +301,11 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
                           filter: "blur(4px)",
                         }}
                         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                        className="flex w-full items-center justify-center"
                       >
                         <img
                           src={`/dg/${openFile}`}
                           alt={displayName(openFile)}
-                          className="max-h-[min(78dvh,calc(100vh-8rem))] w-auto max-w-full object-contain shadow-sm"
+                          className="block max-h-[min(calc(100dvh-9rem),80dvh)] w-auto max-w-full object-contain shadow-sm"
                           decoding="async"
                         />
                       </motion.div>
