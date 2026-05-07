@@ -67,7 +67,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${helveticaNow.variable} ${helveticaNowText.variable} ${inter.variable}`}>
+    <html lang="es" suppressHydrationWarning className={`${helveticaNow.variable} ${helveticaNowText.variable} ${inter.variable}`}>
       <head>
         <link rel="icon" href="/favicon_v2.ico" />
         {/* Preconnect to external domains for faster resource loading */}
