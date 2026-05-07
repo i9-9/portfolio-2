@@ -11,6 +11,9 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/custom-sheet'
 import { HamburgerMenu } from './ui/hamburger-menu';
 import { cn } from '@/lib/utils';
 
+/** CV link temporarily hidden from navbar */
+const NAV_SHOW_CV = false;
+
 export function NavBar() {
   return (
     <Suspense fallback={<NavBarFallback />}>
@@ -120,45 +123,50 @@ function NavBarInner() {
     ) : null;
 
     const items = [
-      {
-        id: 'cv',
-        element: isMobile ? (
-          <a
-            href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-            download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-            className="text-xs tracking-[0.2em] uppercase transition-opacity whitespace-nowrap text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 flex items-center"
-          >
-            {t('nav.cv')}
-          </a>
-        ) : (
-          <div className="relative group">
-            <button
-              className="text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap py-1 px-2 text-muted-foreground hover:text-foreground"
-            >
-              {t('nav.cv')}
-            </button>
-            <div className="absolute top-full right-0 mt-1 w-32 bg-popover border border-border rounded-md shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-              <div className="py-1">
+      ...(NAV_SHOW_CV
+        ? [
+            {
+              id: 'cv' as const,
+              element: isMobile ? (
                 <a
                   href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
                   download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-                  className="block px-3 py-1.5 text-[8px] tracking-[0.2em] uppercase text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="text-xs tracking-[0.2em] uppercase transition-opacity whitespace-nowrap text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 flex items-center"
                 >
-                  {t('nav.cvDropdown.download')}
+                  {t('nav.cv')}
                 </a>
-                <a
-                  href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block px-3 py-1.5 text-[8px] tracking-[0.2em] uppercase text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                >
-                  {t('nav.cvDropdown.view')}
-                </a>
-              </div>
-            </div>
-          </div>
-        ),
-      },
+              ) : (
+                <div className="relative group">
+                  <button
+                    type="button"
+                    className="text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap py-1 px-2 text-muted-foreground hover:text-foreground"
+                  >
+                    {t('nav.cv')}
+                  </button>
+                  <div className="absolute top-full right-0 mt-1 w-32 bg-popover border border-border rounded-md shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="py-1">
+                      <a
+                        href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+                        download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+                        className="block px-3 py-1.5 text-[8px] tracking-[0.2em] uppercase text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                      >
+                        {t('nav.cvDropdown.download')}
+                      </a>
+                      <a
+                        href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block px-3 py-1.5 text-[8px] tracking-[0.2em] uppercase text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                      >
+                        {t('nav.cvDropdown.view')}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ),
+            },
+          ]
+        : []),
       {
         id: 'theme',
         element: (

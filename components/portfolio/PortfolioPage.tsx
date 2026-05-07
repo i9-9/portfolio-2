@@ -3,6 +3,7 @@
 import {
   useState, lazy, Suspense, useRef, useEffect, useLayoutEffect, useCallback,
 } from "react";
+import dynamic from "next/dynamic";
 import {
   motion, AnimatePresence,
   useMotionValue, useSpring, useTransform,
@@ -16,9 +17,6 @@ import {
   editorialMutedReadable,
   editorialPrimary,
 } from "@/lib/editorial-cta";
-import { HeroHalftoneP5 } from "@/components/HeroHalftoneP5";
-import { GraphicDesktopHero } from "@/components/portfolio/GraphicDesktopHero";
-import { ContactFormModal } from "@/components/ContactFormModal";
 import { Toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import {
@@ -29,19 +27,69 @@ import {
 
 const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
 
+function HeroHalftoneFallback({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn("absolute inset-0 overflow-hidden pointer-events-none z-0", className)}
+      aria-hidden
+      style={{
+        backgroundImage:
+          "radial-gradient(circle at center, hsl(var(--foreground) / 0.16) 1.1px, transparent 1.2px)",
+        backgroundSize: "17px 17px",
+      }}
+    />
+  );
+}
+
+function GraphicHeroFallback({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-0 z-0 overflow-hidden",
+        "bg-[linear-gradient(165deg,rgb(245_245_245/0.9)_0%,rgb(235_235_235/0.95)_40%,rgb(228_228_228/1)_100%)]",
+        "dark:bg-[linear-gradient(165deg,rgb(24_24_24/1)_0%,rgb(28_28_28/1)_45%,rgb(32_32_32/1)_100%)]",
+        className,
+      )}
+      aria-hidden
+    />
+  );
+}
+
+const HeroHalftoneP5 = dynamic(
+  () => import("@/components/HeroHalftoneP5").then((m) => ({ default: m.HeroHalftoneP5 })),
+  {
+    ssr: false,
+    loading: () => <HeroHalftoneFallback className="pointer-events-none z-0" />,
+  },
+);
+
+const GraphicDesktopHero = dynamic(
+  () =>
+    import("@/components/portfolio/GraphicDesktopHero").then((m) => ({
+      default: m.GraphicDesktopHero,
+    })),
+  { ssr: false, loading: () => <GraphicHeroFallback /> },
+);
+
+const ContactFormModal = dynamic(
+  () => import("@/components/ContactFormModal").then((m) => ({ default: m.ContactFormModal })),
+  { ssr: false },
+);
+
 export type V2ContentMode = "web" | "graphic";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
-/** Full-viewport exit: smooth in-out so the slab lifts without a sluggish ease-out tail. */
+/** Full-viewport exit — shorter on slow paths so the site feels responsive. */
 const SPLASH_EXIT_EASE = [0.76, 0, 0.24, 1] as const;
+
+const SPLASH_SESSION_KEY = "v2-splash-seen";
 
 const WOHL_STUDIO_URL = "https://wohl.co/";
 
 // --- PageReveal -----------------------------------------------------------
-// Editorial splash: counter 00 → 100 over a fixed beat, then waits for
-// `document.fonts.ready` (capped) so the overlap hides webfont swap. Minimum
-// time is preserved for the motion; no fake “loading” beyond fonts.
+// Editorial splash: counter 00 → 100 over a fixed beat, then waits briefly for
+// `document.fonts.ready` (capped) so the overlap hides webfont swap.
 function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
   const reduced = useReducedMotion();
   const handoffRef = useRef(onHandoff);
@@ -50,9 +98,17 @@ function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
   const [done, setDone]   = useState(false);
   const [count, setCount] = useState(0);
 
-  // Skip splash before first paint when reduced motion is requested
+  // Skip splash before first paint when reduced motion or already seen this session.
   useLayoutEffect(() => {
-    if (!reduced) return;
+    let skipSession = false;
+    try {
+      skipSession =
+        typeof window !== "undefined" &&
+        window.sessionStorage.getItem(SPLASH_SESSION_KEY) === "1";
+    } catch {
+      skipSession = false;
+    }
+    if (!reduced && !skipSession) return;
     setCount(100);
     handoffRef.current?.();
     setDone(true);
@@ -61,21 +117,34 @@ function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
   useEffect(() => {
     if (reduced) return;
 
+    let skipSession = false;
+    try {
+      skipSession = window.sessionStorage.getItem(SPLASH_SESSION_KEY) === "1";
+    } catch {
+      skipSession = false;
+    }
+    if (skipSession) return;
+
     const fontsP =
       typeof document !== "undefined" && document.fonts?.ready
         ? document.fonts.ready.catch(() => undefined)
         : Promise.resolve(undefined);
 
-    const FONT_WAIT_CAP_MS = 4000;
+    const FONT_WAIT_CAP_MS = 1400;
 
     const start = performance.now();
-    const duration = 1100;
+    const duration = 720;
     let raf = 0;
     let holdTimer: ReturnType<typeof setTimeout> | undefined;
     let cancelled = false;
 
     const finishSplash = () => {
       if (cancelled) return;
+      try {
+        window.sessionStorage.setItem(SPLASH_SESSION_KEY, "1");
+      } catch {
+        /* private mode / quota */
+      }
       handoffRef.current?.();
       setDone(true);
     };
@@ -92,7 +161,7 @@ function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
             setTimeout(r, FONT_WAIT_CAP_MS);
           });
           void Promise.race([fontsP, cap]).finally(finishSplash);
-        }, 220);
+        }, 90);
       }
     };
     raf = requestAnimationFrame(tick);
@@ -110,7 +179,7 @@ function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
           className="fixed inset-0 z-[10000] bg-background flex flex-col select-none"
           initial={{ y: 0 }}
           exit={{ y: "-101%" }}
-          transition={{ duration: 0.78, ease: SPLASH_EXIT_EASE }}
+          transition={{ duration: 0.48, ease: SPLASH_EXIT_EASE }}
         >
           {/* top metadata — asymmetric grid, Swiss style */}
           <div className="grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12 pt-6 lg:pt-8 text-[10px] lg:text-xs font-helveticaNowTextRegular tracking-[0.2em] uppercase text-muted-foreground">
@@ -211,69 +280,81 @@ function ScrollProgress() {
 
 // --- CustomCursor ---------------------------------------------------------
 function CustomCursor() {
-  const mouseX    = useMotionValue(-200);
-  const mouseY    = useMotionValue(-200);
+  const mouseX = useMotionValue(-200);
+  const mouseY = useMotionValue(-200);
   const isVisible = useRef(false);
   const [ready, setReady] = useState(false);
 
-  const DOT  = 8;
+  const DOT = 8;
   const RING = 28;
 
-  const dotLeft = useTransform(mouseX, v => v - DOT  / 2);
-  const dotTop  = useTransform(mouseY, v => v - DOT  / 2);
+  const dotLeft = useTransform(mouseX, (v) => v - DOT / 2);
+  const dotTop = useTransform(mouseY, (v) => v - DOT / 2);
 
   const lagX = useSpring(mouseX, { stiffness: 220, damping: 22, mass: 0.35 });
   const lagY = useSpring(mouseY, { stiffness: 220, damping: 22, mass: 0.35 });
 
-  const ringLeft     = useTransform(lagX, v => v - RING / 2);
-  const ringTop      = useTransform(lagY, v => v - RING / 2);
-  const ringScale    = useMotionValue(1);
-  const ringScaleSp  = useSpring(ringScale, { stiffness: 400, damping: 30 });
-  const dotOpacity   = useMotionValue(0);
+  const ringLeft = useTransform(lagX, (v) => v - RING / 2);
+  const ringTop = useTransform(lagY, (v) => v - RING / 2);
+  const ringScale = useMotionValue(1);
+  const ringScaleSp = useSpring(ringScale, { stiffness: 400, damping: 30 });
+  const dotOpacity = useMotionValue(0);
 
   useLayoutEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
     setReady(true);
 
-    const onMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
+    let raf = 0;
+    const pending = { x: 0, y: 0, dirty: false };
+
+    const flushMove = () => {
+      raf = 0;
+      if (!pending.dirty) return;
+      pending.dirty = false;
+      mouseX.set(pending.x);
+      mouseY.set(pending.y);
       if (!isVisible.current) {
         isVisible.current = true;
         dotOpacity.set(1);
       }
     };
-    const onOver  = (e: MouseEvent) => { if ((e.target as Element).closest("a, button")) ringScale.set(2); };
-    const onOut   = (e: MouseEvent) => { if ((e.target as Element).closest("a, button")) ringScale.set(1); };
+
+    const onMove = (e: MouseEvent) => {
+      pending.x = e.clientX;
+      pending.y = e.clientY;
+      pending.dirty = true;
+      if (raf === 0) raf = requestAnimationFrame(flushMove);
+    };
+    const onOver = (e: MouseEvent) => {
+      if ((e.target as Element).closest("a, button")) ringScale.set(2);
+    };
+    const onOut = (e: MouseEvent) => {
+      if ((e.target as Element).closest("a, button")) ringScale.set(1);
+    };
     const onLeave = () => dotOpacity.set(0);
     const onEnter = () => dotOpacity.set(1);
 
     window.addEventListener("mousemove", onMove, { passive: true });
-    document.addEventListener("mouseover",  onOver);
-    document.addEventListener("mouseout",   onOut);
+    document.addEventListener("mouseover", onOver);
+    document.addEventListener("mouseout", onOut);
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("mouseenter", onEnter);
     return () => {
+      if (raf !== 0) cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseover",  onOver);
-      document.removeEventListener("mouseout",   onOut);
+      document.removeEventListener("mouseover", onOver);
+      document.removeEventListener("mouseout", onOut);
       document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("mouseenter", onEnter);
     };
   }, []);
 
   if (!ready) return null;
-  const invertBackdrop = {
-    /** Triggers reliable backdrop-filter compositing (WebKit/Chrome). */
-    backgroundColor: "rgba(255,255,255,0.015)",
-    backdropFilter: "invert(1)",
-    WebkitBackdropFilter: "invert(1)",
-  } as const;
 
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 rounded-full pointer-events-none z-[10000] will-change-[transform,opacity] border border-foreground/25 dark:border-white/35"
+        className="fixed top-0 left-0 rounded-full pointer-events-none z-[10000] will-change-transform border border-foreground/30 bg-transparent dark:border-white/40"
         style={{
           left: ringLeft,
           top: ringTop,
@@ -281,18 +362,16 @@ function CustomCursor() {
           height: RING,
           scale: ringScaleSp,
           opacity: dotOpacity,
-          ...invertBackdrop,
         }}
       />
       <motion.div
-        className="fixed top-0 left-0 rounded-full pointer-events-none z-[10001] will-change-[transform,opacity]"
+        className="fixed top-0 left-0 rounded-full pointer-events-none z-[10001] will-change-transform bg-foreground dark:bg-white"
         style={{
           left: dotLeft,
           top: dotTop,
           width: DOT,
           height: DOT,
           opacity: dotOpacity,
-          ...invertBackdrop,
         }}
       />
     </>
@@ -555,8 +634,13 @@ function ProjectRow({
 // --- Page -----------------------------------------------------------------
 export function PortfolioPage({ v2Mode = "web" }: { v2Mode?: V2ContentMode }) {
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [contactModalLoaded, setContactModalLoaded] = useState(false);
   const [showToast,     setShowToast]     = useState(false);
   const { t, language } = useLanguage();
+
+  useLayoutEffect(() => {
+    if (isContactOpen) setContactModalLoaded(true);
+  }, [isContactOpen]);
 
   const showGraphicDesktopHero = v2Mode === "graphic";
   const heroReduced = useReducedMotion();
@@ -865,7 +949,9 @@ export function PortfolioPage({ v2Mode = "web" }: { v2Mode?: V2ContentMode }) {
 
       <Footer />
 
-      <ContactFormModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+      {contactModalLoaded ? (
+        <ContactFormModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+      ) : null}
       <Toast message={t("contact.mailCopied")} isVisible={showToast} />
     </div>
   );

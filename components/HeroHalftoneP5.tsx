@@ -27,8 +27,20 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
     let disposed = false;
     let pInst: P5 | null = null;
     let ro: ResizeObserver | null = null;
+    let viewportIo: IntersectionObserver | null = null;
+    let onVisibility: (() => void) | null = null;
+    let heroIntersecting = true;
 
     const pointer = { x: -99999, y: -99999 };
+
+    const syncDrawing = () => {
+      if (!pInst || disposed) return;
+      if (document.hidden || !heroIntersecting) {
+        pInst.noLoop();
+      } else {
+        pInst.loop();
+      }
+    };
 
     const onPointer = (e: PointerEvent) => {
       const r = container.getBoundingClientRect();
@@ -168,6 +180,18 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
         return;
       }
 
+      viewportIo = new IntersectionObserver(
+        (entries) => {
+          heroIntersecting = entries[0]?.isIntersecting ?? true;
+          syncDrawing();
+        },
+        { threshold: 0, rootMargin: "64px 0px" },
+      );
+      viewportIo.observe(container);
+
+      onVisibility = () => syncDrawing();
+      document.addEventListener("visibilitychange", onVisibility);
+
       window.addEventListener("pointermove", onPointer, { passive: true });
       container.addEventListener("pointerleave", onLeave);
 
@@ -181,10 +205,33 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
       requestAnimationFrame(() => {
         if (!disposed && pInst && wrapRef.current === container) ro?.observe(container);
       });
+
+      syncDrawing();
+
+      if (disposed) {
+        viewportIo?.disconnect();
+        viewportIo = null;
+        if (onVisibility) {
+          document.removeEventListener("visibilitychange", onVisibility);
+          onVisibility = null;
+        }
+        ro?.disconnect();
+        ro = null;
+        window.removeEventListener("pointermove", onPointer);
+        container.removeEventListener("pointerleave", onLeave);
+        pInst?.remove();
+        pInst = null;
+      }
     })();
 
     return () => {
       disposed = true;
+      viewportIo?.disconnect();
+      viewportIo = null;
+      if (onVisibility) {
+        document.removeEventListener("visibilitychange", onVisibility);
+        onVisibility = null;
+      }
       ro?.disconnect();
       window.removeEventListener("pointermove", onPointer);
       container.removeEventListener("pointerleave", onLeave);

@@ -2,12 +2,12 @@
 
 import { useState, useEffect, type ReactNode } from "react";
 import { useReducedMotion } from "framer-motion";
-import Lenis from "lenis";
 
 /**
  * Smooth scroll for layouts that wrap this provider (e.g. `/v2`). Disabled when `prefers-reduced-motion` is set.
  * Imperative Lenis (not ReactLenis) + `resize()` after paint avoids a stuck scroll
  * when global `html,body{height:100%}` under-measures document height.
+ * Lenis is loaded asynchronously so it does not inflate the main layout bundle.
  */
 export function V2SmoothScroll({ children }: { children: ReactNode }) {
   const reducedMotion = useReducedMotion();
@@ -22,32 +22,47 @@ export function V2SmoothScroll({ children }: { children: ReactNode }) {
       return;
     }
 
-    const lenis = new Lenis({
-      lerp: 0.085,
-      wheelMultiplier: 0.9,
-      touchMultiplier: 1.15,
-      smoothWheel: true,
-      autoRaf: true,
-      anchors: true,
-    });
+    let lenis: import("lenis").default | null = null;
+    let ro: ResizeObserver | null = null;
+    let onLoad: (() => void) | null = null;
+    let cancelled = false;
+    let rafId: number | null = null;
 
-    const ro = new ResizeObserver(() => {
-      lenis.resize();
-    });
-    ro.observe(document.body);
+    void import("lenis").then(({ default: Lenis }) => {
+      if (cancelled) return;
 
-    const onLoad = () => lenis.resize();
-    window.addEventListener("load", onLoad);
+      lenis = new Lenis({
+        /** Higher lerp = closer to native scroll, less “floating” lag. */
+        lerp: 0.14,
+        wheelMultiplier: 1,
+        touchMultiplier: 1.1,
+        smoothWheel: true,
+        autoRaf: true,
+        anchors: true,
+      });
 
-    const id = requestAnimationFrame(() => {
-      lenis.resize();
+      ro = new ResizeObserver(() => {
+        lenis?.resize();
+      });
+      ro.observe(document.body);
+
+      onLoad = () => lenis?.resize();
+      window.addEventListener("load", onLoad);
+
+      rafId = requestAnimationFrame(() => {
+        lenis?.resize();
+      });
     });
 
     return () => {
-      cancelAnimationFrame(id);
-      window.removeEventListener("load", onLoad);
-      ro.disconnect();
-      lenis.destroy();
+      cancelled = true;
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      if (onLoad) window.removeEventListener("load", onLoad);
+      ro?.disconnect();
+      lenis?.destroy();
+      lenis = null;
+      ro = null;
+      onLoad = null;
     };
   }, [mounted, reducedMotion]);
 
