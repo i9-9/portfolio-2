@@ -73,21 +73,6 @@ export default function RootLayout({
         {/* Preconnect to external domains for faster resource loading */}
         <link rel="preconnect" href="https://vitals.vercel-insights.com" />
         <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
-        {/* Preload critical fonts - only the most used weights */}
-        <link 
-          rel="preload" 
-          href="/fonts/HelveticaNowDisplay-Bold.ttf" 
-          as="font" 
-          type="font/ttf" 
-          crossOrigin="anonymous"
-        />
-        <link 
-          rel="preload" 
-          href="/fonts/HelveticaNowText-Regular.ttf" 
-          as="font" 
-          type="font/ttf" 
-          crossOrigin="anonymous"
-        />
       </head>
       <body className="font-sans bg-background text-foreground antialiased">
         <ThemeProvider>
