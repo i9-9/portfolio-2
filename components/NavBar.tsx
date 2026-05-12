@@ -7,7 +7,12 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { useGrid } from '@/lib/grid/GridContext';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/custom-sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/custom-sheet';
 import { HamburgerMenu } from './ui/hamburger-menu';
 import { cn } from '@/lib/utils';
 
@@ -311,6 +316,7 @@ function NavBarInner() {
                   className="w-full h-[100vh] sm:max-w-none border-b border-border/80 bg-background mt-[48px] p-0"
                   side="top"
                 >
+                  <SheetTitle className="sr-only">{t('nav.mobileMenuTitle')}</SheetTitle>
                   <div className="w-full h-full">
                     <div className="grid grid-cols-12 px-4 lg:px-12 pt-24">
                       <div className="col-span-6">

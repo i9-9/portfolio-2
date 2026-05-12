@@ -5,6 +5,7 @@ export const translations = {
       graphics: "Graphics",
       cv: "CV",
       about: "About",
+      mobileMenuTitle: "Main menu",
       language: "ES",
       theme: {
         light: "Dark",
@@ -203,6 +204,7 @@ export const translations = {
       graphics: "Gráficos",
       cv: "CV",
       about: "Sobre mí",
+      mobileMenuTitle: "Menú principal",
       language: "EN",
       theme: {
         light: "Oscuro",
