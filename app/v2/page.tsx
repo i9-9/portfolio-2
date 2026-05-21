@@ -1,15 +1,15 @@
-import { PortfolioPage } from "@/components/portfolio/PortfolioPage";
+import { redirect } from "next/navigation";
 
 type PageProps = {
-  searchParams?: Promise<{ mode?: string }>;
+  searchParams: Promise<{ mode?: string }>;
 };
 
-/** Landing portfolio (v2 shell + content). `mode` from server avoids client hydration drift. */
-export default async function V2Page({ searchParams }: PageProps) {
-  const sp = (await searchParams) ?? {};
-  const v2Mode =
+/** Legacy `/v2` URLs redirect to `/` (query preserved). */
+export default async function V2RedirectPage({ searchParams }: PageProps) {
+  const sp = await searchParams;
+  const suffix =
     typeof sp.mode === "string" && sp.mode.toLowerCase() === "graphic"
-      ? ("graphic" as const)
-      : ("web" as const);
-  return <PortfolioPage v2Mode={v2Mode} />;
+      ? "?mode=graphic"
+      : "";
+  redirect(`/${suffix}`);
 }

@@ -1,15 +1,15 @@
-import { redirect } from "next/navigation";
+import { PortfolioPage } from "@/components/portfolio/PortfolioPage";
 
 type PageProps = {
-  searchParams: Promise<{ mode?: string }>;
+  searchParams?: Promise<{ mode?: string }>;
 };
 
-/** Canonical portfolio lives at `/v2`; `/` forwards query (e.g. `?mode=graphic`). */
+/** Portfolio home. `mode` from server avoids client hydration drift. */
 export default async function HomePage({ searchParams }: PageProps) {
-  const sp = await searchParams;
-  const suffix =
+  const sp = (await searchParams) ?? {};
+  const v2Mode =
     typeof sp.mode === "string" && sp.mode.toLowerCase() === "graphic"
-      ? "?mode=graphic"
-      : "";
-  redirect(`/v2${suffix}`);
+      ? ("graphic" as const)
+      : ("web" as const);
+  return <PortfolioPage v2Mode={v2Mode} />;
 }

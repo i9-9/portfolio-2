@@ -4,7 +4,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import { useReducedMotion } from "framer-motion";
 
 /**
- * Smooth scroll for layouts that wrap this provider (e.g. `/v2`). Disabled when `prefers-reduced-motion` is set.
+ * Smooth scroll for layouts that wrap this provider (e.g. home). Disabled when `prefers-reduced-motion` is set.
  * Imperative Lenis (not ReactLenis) + `resize()` after paint avoids a stuck scroll
  * when global `html,body{height:100%}` under-measures document height.
  * Lenis is loaded asynchronously so it does not inflate the main layout bundle.

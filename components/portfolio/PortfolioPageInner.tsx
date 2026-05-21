@@ -828,6 +828,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
       {/* -- CONTACT — editorial / graphic studio block ------------------- */}
       <section
+        id="contact"
         ref={contactRef}
         className="relative overflow-hidden px-4 py-16 pb-14 lg:px-12 lg:py-20 lg:pb-16"
       >

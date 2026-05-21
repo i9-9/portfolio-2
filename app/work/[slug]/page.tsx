@@ -18,8 +18,8 @@ export async function generateMetadata({
   if (!project || !isCaseStudySlug(slug)) {
     return { title: "Work" };
   }
-  const tagline = CASE_STUDIES[slug].en.tagline;
-  const metaDescription = tagline || `${project.name} — case study`;
+  const metaDescription =
+    CASE_STUDIES[slug].en.headline || `${project.name} — case study`;
   return {
     title: `${project.name} — Case study · Ivan Nevares`,
     description: metaDescription,

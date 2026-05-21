@@ -53,7 +53,7 @@ function NavBarInner() {
       pathname === '/v2' ||
       pathname.startsWith('/v2/'));
   const v2Graphic = mounted && searchParams.get('mode') === 'graphic';
-  const portfolioHome = '/v2';
+  const portfolioHome = '/';
   const homeHref = portfolioHome;
   const v2WebHref = portfolioHome;
   const v2GraphicHref = `${portfolioHome}?mode=graphic`;
