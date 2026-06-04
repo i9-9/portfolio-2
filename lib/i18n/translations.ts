@@ -46,10 +46,6 @@ export const translations = {
         title: "Audiovisual production",
         description: ""
       },
-      vinorodante: {
-        title: "Wine e‑commerce",
-        description: ""
-      },
       ursulabenavidez: {
         title: "Art director portfolio",
         description: ""
@@ -249,10 +245,6 @@ export const translations = {
       },
       heybristol: {
         title: "Productora audiovisual",
-        description: ""
-      },
-      vinorodante: {
-        title: "E‑commerce de vinos",
         description: ""
       },
       ursulabenavidez: {

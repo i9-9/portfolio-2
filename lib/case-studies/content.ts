@@ -63,38 +63,6 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       result: "Relación activa con mantenimiento y actualizaciones de temporada.",
     },
   },
-  vinorodante: {
-    en: {
-      headline: "Built an entire wine brand from a name and an idea.",
-      roles: ["Branding", "UX/UI design", "Development", "Creative direction"],
-      stack: ["Next.js", "Supabase", "Tailwind CSS"],
-      challenge: {
-        paragraphs: [
-          "No brand. No platform. No identity.",
-          "Just the idea of selling wine on a weekly subscription.",
-        ],
-      },
-      keyDecision:
-        "I didn't use Shopify or Tienda Nube. I built the full e-commerce in Next.js with Supabase — complete control over design, performance and business logic, no platform fees or constraints. The visual identity, subscription club system, and product architecture are all my own work, from scratch.",
-      result:
-        "A bespoke e-commerce with four subscription clubs, full catalog, and custom management system.",
-    },
-    es: {
-      headline: "Construí una marca de vinos completa desde un nombre y una idea.",
-      roles: ["Branding", "UX/UI", "Desarrollo", "Dirección creativa"],
-      stack: ["Next.js", "Supabase", "Tailwind CSS"],
-      challenge: {
-        paragraphs: [
-          "No había marca. No había plataforma. No había identidad.",
-          "Solo la idea de vender vinos con suscripción semanal.",
-        ],
-      },
-      keyDecision:
-        "No usé Shopify ni Tienda Nube. Construí el e-commerce completo en Next.js con Supabase — control total sobre diseño, performance y lógica de negocio, sin comisiones ni límites de plataforma. La identidad visual, el sistema de clubs de suscripción y la arquitectura de producto son trabajo propio de cero.",
-      result:
-        "Un e-commerce a medida con cuatro clubs de suscripción, catálogo completo y sistema de gestión propio.",
-    },
-  },
   ursulabenavidez: {
     en: {
       headline: "A portfolio that moves the way her work does.",

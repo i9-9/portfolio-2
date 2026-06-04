@@ -435,17 +435,8 @@ const PROJECT_ROWS = [
     marqueeEs: "Kostüme · ",
   },
   {
-    key: "vinorodante",
-    idx: 2,
-    preview: "/projects-v2/vinorodante.png",
-    metricEn: "",
-    metricEs: "",
-    marqueeEn: "Vino Rodante · ",
-    marqueeEs: "Vino Rodante · ",
-  },
-  {
     key: "ursulabenavidez",
-    idx: 3,
+    idx: 2,
     preview: "/projects-v2/ursulabenavidez.png",
     metricEn: "",
     metricEs: "",
@@ -454,7 +445,7 @@ const PROJECT_ROWS = [
   },
   {
     key: "templodetierra",
-    idx: 4,
+    idx: 3,
     preview: "/projects-v2/templodetierra.png",
     metricEn: "",
     metricEs: "",
@@ -463,7 +454,7 @@ const PROJECT_ROWS = [
   },
   {
     key: "desenfreno",
-    idx: 5,
+    idx: 4,
     preview: "/projects-v2/eldesenfreno.png",
     metricEn: "",
     metricEs: "",
@@ -472,7 +463,7 @@ const PROJECT_ROWS = [
   },
   {
     key: "grupofrali",
-    idx: 6,
+    idx: 5,
     preview: "/projects-v2/grupofrali.png",
     metricEn: "",
     metricEs: "",

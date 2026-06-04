@@ -6,7 +6,6 @@ export const CASE_STUDY_NAV_ORDER: CaseStudySlug[] = [
   "grupofrali",
   "kostume",
   "ursulabenavidez",
-  "vinorodante",
   "desenfreno",
   "templodetierra",
 ];

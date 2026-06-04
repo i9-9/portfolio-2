@@ -18,7 +18,6 @@ export interface CaseStudyLocale {
 export type CaseStudySlug =
   | "heybristol"
   | "kostume"
-  | "vinorodante"
   | "ursulabenavidez"
   | "templodetierra"
   | "desenfreno"

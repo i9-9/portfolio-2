@@ -54,7 +54,6 @@ const ProfileLayout = () => {
               <TabsList className="!grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-8 gap-y-2 gap-x-2 lg:gap-y-3 lg:gap-x-3 px-1 h-auto py-2">
                 <TabsTrigger value="kostume" className="font-helveticaNowDisplayBold px-4 lg:px-5">Kostüme</TabsTrigger>
                 <TabsTrigger value="heybristol" className="font-helveticaNowDisplayBold px-4 lg:px-5">Hey Bristol</TabsTrigger>
-                <TabsTrigger value="vinorodante" className="font-helveticaNowDisplayBold px-4 lg:px-5">Vino Rodante</TabsTrigger>
                 <TabsTrigger value="ursulabenavidez" className="font-helveticaNowDisplayBold px-4 lg:px-5">Ursula Benavidez</TabsTrigger>
                 <TabsTrigger value="templodetierra" className="font-helveticaNowDisplayBold px-4 lg:px-5">Templo de Tierra</TabsTrigger>
                 <TabsTrigger value="desenfreno" className="font-helveticaNowDisplayBold px-4 lg:px-5">El Desenfreno</TabsTrigger>
@@ -84,18 +83,6 @@ const ProfileLayout = () => {
                 </div>
               </TabsContent>
 
-              <TabsContent value="vinorodante" className="mt-0">
-                <div className="space-y-4">
-                  <h4 className="text-lg lg:text-xl font-helveticaNowDisplayBold">{t('work.vinorodante.title')}</h4>
-                  <p className="font-helveticaNowTextRegular">
-                    {t('work.vinorodante.description')}
-                  </p>
-                  <div className="pt-2">
-                    <AnimatedButton href={projects[2].anchor} />
-                  </div>
-                </div>
-              </TabsContent>
-
               <TabsContent value="ursulabenavidez" className="mt-0">
                 <div className="space-y-4">
                   <h4 className="text-lg lg:text-xl font-helveticaNowDisplayBold">{t('work.ursulabenavidez.title')}</h4>
@@ -103,7 +90,7 @@ const ProfileLayout = () => {
                     {t('work.ursulabenavidez.description')}
                   </p>
                   <div className="pt-2">
-                    <AnimatedButton href={projects[3].anchor} />
+                    <AnimatedButton href={projects[2].anchor} />
                   </div>
                 </div>
               </TabsContent>
@@ -115,7 +102,7 @@ const ProfileLayout = () => {
                     {t('work.templodetierra.description')}
                   </p>
                   <div className="pt-2">
-                    <AnimatedButton href={projects[4].anchor} />
+                    <AnimatedButton href={projects[3].anchor} />
                   </div>
                 </div>
               </TabsContent>
@@ -127,7 +114,7 @@ const ProfileLayout = () => {
                     {t('work.desenfreno.description')}
                   </p>
                   <div className="pt-2">
-                    <AnimatedButton href={projects[5].anchor} />
+                    <AnimatedButton href={projects[4].anchor} />
                   </div>
                 </div>
               </TabsContent>

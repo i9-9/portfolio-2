@@ -34,10 +34,6 @@ export const translations = {
         title: "Audiovisual Production",
         description: "A modern website for an audiovisual production company showcasing their creative work and services. Built with Next.js featuring dynamic content management and interactive design elements."
       },
-      vinorodante: {
-        title: "Wine E-commerce",
-        description: "An e-commerce platform for a boutique wine distributor, featuring a curated selection of wines. Built with Next.js and includes a subscription service and wine club management system. I handled the complete brand identity design."
-      },
       ursulabenavidez: {
         title: "Art Director Portfolio",
         description: "Portfolio website for art director and set designer Ursula Benavidez. Built with Next.js, showcasing her creative work with a clean, gallery-focused design that highlights her projects."
@@ -118,10 +114,6 @@ export const translations = {
       heybristol: {
         title: "Productora Audiovisual",
         description: "Un sitio web moderno para una productora audiovisual que muestra su trabajo creativo y servicios. Construido con Next.js con gestión de contenido dinámico y elementos de diseño interactivos."
-      },
-      vinorodante: {
-        title: "E-commerce de Vinos",
-        description: "Una plataforma de comercio electrónico para un distribuidor boutique de vinos, con una selección curada. Construida con Next.js e incluye servicio de suscripción y sistema de gestión de club de vinos. Me ocupé del diseño de identidad en su totalidad."
       },
       ursulabenavidez: {
         title: "Portfolio de Directora de Arte",

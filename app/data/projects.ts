@@ -1,7 +1,6 @@
 export type ProjectSlug =
   | "heybristol"
   | "kostume"
-  | "vinorodante"
   | "ursulabenavidez"
   | "templodetierra"
   | "desenfreno"
@@ -42,16 +41,6 @@ export const projects: Project[] = [
   },
   {
     id: 3,
-    slug: "vinorodante",
-    year: 2025,
-    name: "Vino Rodante",
-    anchor: "https://vinorodante.com",
-    image: "/projects-sofar/sofar-1.png",
-    previewImage: "/projects/vinorodante.png",
-    caseStudyHero: "/projects-v2/vinorodante.png",
-  },
-  {
-    id: 4,
     slug: "ursulabenavidez",
     year: 2025,
     name: "Ursula Benavidez",
@@ -61,7 +50,7 @@ export const projects: Project[] = [
     caseStudyHero: "/projects-v2/ursulabenavidez.png",
   },
   {
-    id: 5,
+    id: 4,
     slug: "templodetierra",
     year: 2024,
     name: "Templo de Tierra",
@@ -71,7 +60,7 @@ export const projects: Project[] = [
     caseStudyHero: "/projects-v2/templodetierra.png",
   },
   {
-    id: 6,
+    id: 5,
     slug: "desenfreno",
     year: 2026,
     name: "El Desenfreno",
@@ -81,7 +70,7 @@ export const projects: Project[] = [
     caseStudyHero: "/projects-v2/eldesenfreno.png",
   },
   {
-    id: 7,
+    id: 6,
     slug: "grupofrali",
     year: 2025,
     name: "Grupo Frali",

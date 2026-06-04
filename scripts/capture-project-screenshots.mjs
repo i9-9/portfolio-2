@@ -18,7 +18,6 @@ fs.mkdirSync(OUT_DIR, { recursive: true });
 const SITES = [
   ["heybristol",      "https://heybristol.com",              3000],
   ["kostume",         "https://www.kostumeweb.net/home/",    6000],
-  ["vinorodante",     "https://vinorodante.com",             5000],
   ["ursulabenavidez", "https://www.ursulabenavidez.com/",    5000],
   ["templodetierra",  "https://templodetierra.com",          5000],
   ["eldesenfreno",    "https://eldesenfreno.com",            5000],
