@@ -56,7 +56,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
       </div>
 
       <div className="grid-container py-16 lg:py-24">
-        <div className="col-span-12 lg:col-span-10 lg:col-start-2">
+        <div className="col-span-12">
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-helveticaNowTextRegular text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
             <span>{t("caseStudy.caseStudyLabel")}</span>
             <span className="text-muted-foreground/50" aria-hidden>
