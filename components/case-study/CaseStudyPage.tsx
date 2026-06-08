@@ -43,12 +43,13 @@ export function CaseStudyPage({ slug }: { slug: string }) {
         </div>
       </div>
 
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted lg:aspect-[21/9]">
+      <div className="w-full overflow-hidden bg-muted">
         <Image
           src={project.caseStudyHero}
           alt={`${project.name} — preview`}
-          fill
-          className="object-cover"
+          width={project.heroWidth}
+          height={project.heroHeight}
+          className="block h-auto w-full"
           sizes="100vw"
           priority
         />

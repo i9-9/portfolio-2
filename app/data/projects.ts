@@ -16,6 +16,9 @@ export interface Project {
   previewImage: string;
   /** Hero image for /work/[slug] case study */
   caseStudyHero: string;
+  /** Intrinsic pixel dimensions of caseStudyHero */
+  heroWidth: number;
+  heroHeight: number;
 }
 
 export const projects: Project[] = [
@@ -28,6 +31,8 @@ export const projects: Project[] = [
     image: "/projects-heybristol/heybristol_macbook_mockup.png",
     previewImage: "/projects/heybristol.png",
     caseStudyHero: "/projects-v2/heybristol.png",
+    heroWidth: 2880,
+    heroHeight: 1800,
   },
   {
     id: 2,
@@ -38,6 +43,8 @@ export const projects: Project[] = [
     image: "/projects-landing/kostume/jul:24/4 - Macbook mockup.png",
     previewImage: "/projects/kostume.png",
     caseStudyHero: "/projects-v2/kostume.png",
+    heroWidth: 3024,
+    heroHeight: 1650,
   },
   {
     id: 3,
@@ -48,6 +55,8 @@ export const projects: Project[] = [
     image: "/projects/ursulabenavidez.png",
     previewImage: "/projects/ursulabenavidez.png",
     caseStudyHero: "/projects-v2/ursulabenavidez.png",
+    heroWidth: 2880,
+    heroHeight: 1800,
   },
   {
     id: 4,
@@ -58,6 +67,8 @@ export const projects: Project[] = [
     image: "/projects/templodetierra.png",
     previewImage: "/projects/templodetierra.png",
     caseStudyHero: "/projects-v2/templodetierra.png",
+    heroWidth: 2880,
+    heroHeight: 1800,
   },
   {
     id: 5,
@@ -68,6 +79,8 @@ export const projects: Project[] = [
     image: "/projects-eldesenfreno/el_desenfreno_macbook_mockup.png",
     previewImage: "/projects/eldesenfreno.png",
     caseStudyHero: "/projects-v2/eldesenfreno.png",
+    heroWidth: 2880,
+    heroHeight: 1800,
   },
   {
     id: 6,
@@ -78,6 +91,8 @@ export const projects: Project[] = [
     image: "/projects-v2/grupofrali.png",
     previewImage: "/projects-v2/grupofrali.png",
     caseStudyHero: "/projects-v2/grupofrali.png",
+    heroWidth: 2880,
+    heroHeight: 1800,
   },
 ];
 
