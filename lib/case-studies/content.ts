@@ -3,190 +3,190 @@ import type { CaseStudyBundle, CaseStudySlug } from "./types";
 export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
   heybristol: {
     en: {
-      headline: "A film production studio. Built to perform at scale.",
+      headline: "Film production studio site. Built for heavy video and frequent content updates.",
       roles: ["Development", "CMS integration", "Performance"],
       stack: ["Next.js", "ISR", "Contentful", "Vimeo API", "Tailwind CSS"],
       challenge: {
         paragraphs: [
-          "Hey Bristol came in with the design done.",
-          "The problem was technical: heavy video, constantly changing content, and zero tolerance for the site breaking.",
+          "Design was done. Problem was implementation.",
+          "Heavy video files, content updates every week, and the site can't go down.",
         ],
       },
       keyDecision:
-        "I could have used a standard video player. Instead, I built custom controls aligned with the studio's identity — and connected everything to Vimeo via API so the content is real, not embeds. ISR ensures every Contentful update goes live without a redeploy.",
+        "Custom video player built from scratch to match their brand. Vimeo API integration pulls content directly—no embeds. ISR handles Contentful updates without redeploys.",
       result:
-        "The team manages directors and videos independently. The site runs with static-site performance.",
+        "Team updates directors and videos themselves. Site performance stayed fast.",
     },
     es: {
-      headline: "Una productora audiovisual. Construida para rendir a escala.",
+      headline: "Sitio para productora audiovisual. Para video pesado y actualizaciones constantes.",
       roles: ["Desarrollo", "Integración CMS", "Performance"],
       stack: ["Next.js", "ISR", "Contentful", "Vimeo API", "Tailwind CSS"],
       challenge: {
         paragraphs: [
-          "Hey Bristol llegó con el diseño resuelto.",
-          "El problema era técnico: video pesado, contenido cambiante, y cero tolerancia a que el sitio fallara.",
+          "El diseño estaba hecho. El problema era la implementación.",
+          "Archivos de video pesados, actualizaciones cada semana, y el sitio no puede caerse.",
         ],
       },
       keyDecision:
-        "Podría haber usado un player de video estándar. En cambio, construí controles custom alineados con la identidad de la productora — y conecté todo a Vimeo vía API para que el contenido sea real, no embeds. ISR garantiza que cada cambio en Contentful se refleja en el sitio sin redeploy.",
+        "Player de video custom desde cero para que coincida con su marca. Integración con API de Vimeo que trae el contenido directo—sin embeds. ISR maneja los updates de Contentful sin redeploys.",
       result:
-        "El equipo gestiona directores y videos de forma autónoma. El sitio corre con performance de sitio estático.",
+        "El equipo actualiza directores y videos por su cuenta. El performance del sitio se mantuvo rápido.",
     },
   },
   kostume: {
     en: {
-      headline: "Fashion brand that outgrew its platform. So we built a new layer.",
+      headline: "Fashion brand on Tienda Nube. Rebuilt the front-end, kept the checkout.",
       roles: ["UX/UI design", "Development", "E-commerce"],
       stack: ["Next.js", "Tailwind CSS", "Tienda Nube", "FTP", "CSS/JS"],
       challenge: {
         paragraphs: [
-          "Kostüme had a Tienda Nube store.",
-          "The platform constrained the design — and the design constrained the brand.",
+          "They had a Tienda Nube store. Platform limits were killing the design.",
+          "Needed more control without migrating the entire e-commerce.",
         ],
       },
       keyDecision:
-        "Phase 1: I accessed the Tienda Nube codebase via FTP. I designed and built the full experience from scratch. Phase 2: when the ceiling became clear, I proposed separating the layers. A Next.js landing as the brand's face, with the store running on a subdomain. The transaction still happens in Tienda Nube. Brand control is total.",
-      result: "Active relationship — ongoing maintenance and seasonal updates.",
+        "Phase 1: hacked into Tienda Nube via FTP and rebuilt everything. Phase 2: hit the platform ceiling. Proposed splitting: Next.js landing for the brand, subdomain for the store. Transactions still on Tienda Nube. Full design control.",
+      result: "Still working with them. Seasonal updates and ongoing maintenance.",
     },
     es: {
-      headline: "Una marca de moda que superó su plataforma. Entonces construimos otra capa.",
+      headline: "Marca de moda en Tienda Nube. Reconstruí el front-end, mantuve el checkout.",
       roles: ["UX/UI", "Desarrollo", "E-commerce"],
       stack: ["Next.js", "Tailwind CSS", "Tienda Nube", "FTP", "CSS/JS"],
       challenge: {
         paragraphs: [
-          "Kostüme tenía una tienda en Tienda Nube.",
-          "La plataforma limitaba el diseño — y el diseño limitaba la marca.",
+          "Tenían una tienda en Tienda Nube. Los límites de la plataforma mataban el diseño.",
+          "Necesitaban más control sin migrar todo el e-commerce.",
         ],
       },
       keyDecision:
-        "Fase 1: intervine el código base de Tienda Nube vía FTP. Diseñé y desarrollé la experiencia completa desde cero. Fase 2: cuando el techo quedó claro, propuse separar las capas. Una landing en Next.js como cara de la marca, con la tienda corriendo en un subdominio. La transacción sigue en Tienda Nube. El control de identidad es total.",
-      result: "Relación activa con mantenimiento y actualizaciones de temporada.",
+        "Fase 1: entré al código de Tienda Nube vía FTP y reconstruí todo. Fase 2: llegué al techo de la plataforma. Propuse dividir: landing en Next.js para la marca, subdominio para la tienda. Transacciones siguen en Tienda Nube. Control total del diseño.",
+      result: "Todavía trabajo con ellos. Actualizaciones de temporada y mantenimiento continuo.",
     },
   },
   ursulabenavidez: {
     en: {
-      headline: "A portfolio that moves the way her work does.",
+      headline: "Portfolio for a motion designer. Custom animations and autonomous CMS.",
       roles: ["Development", "Motion design", "Component design", "CMS integration"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Custom animations"],
       challenge: {
         paragraphs: [
-          "Ursula came in with a defined design direction.",
-          "The job was to bring it to life on the web — with animations that matched the tempo of her work, and a system she could update without relying on a developer.",
+          "She had design direction. Needed web implementation.",
+          "Animations had to match her work. She needed to update projects herself.",
         ],
       },
       keyDecision:
-        "I designed the landing component myself — where the client's visual direction and my implementation judgment merged. Every transition and movement was custom-designed and built. ISR with Contentful: she publishes new projects independently, with static-site performance.",
-      result: "Portfolio live. Autonomous content management since launch.",
+        "Designed and built the landing component from scratch. Every animation coded manually to match the pacing. ISR + Contentful so she can publish projects without me.",
+      result: "Site live. She's been managing content independently since launch.",
     },
     es: {
-      headline: "Un portfolio que se mueve como se mueve su trabajo.",
+      headline: "Portfolio para diseñadora de motion. Animaciones custom y CMS autónomo.",
       roles: ["Desarrollo", "Motion", "Diseño de componentes", "Integración CMS"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Animaciones custom"],
       challenge: {
         paragraphs: [
-          "Ursula llegó con una dirección de diseño definida.",
-          "El trabajo era hacerla cobrar vida en la web — con animaciones que reflejaran el tempo de su trabajo, y un sistema que ella pudiera actualizar sin depender de un dev.",
+          "Tenía dirección de diseño. Necesitaba implementación web.",
+          "Las animaciones tenían que coincidir con su trabajo. Necesitaba actualizar proyectos sola.",
         ],
       },
       keyDecision:
-        "Diseñé el componente de landing yo — donde la dirección visual del cliente y mi criterio de implementación se fusionaron. Cada transición y movimiento fue diseñado e implementado a medida. ISR con Contentful: ella publica proyectos nuevos de forma autónoma, con la performance de un sitio estático.",
-      result: "Portfolio live. Gestión autónoma de contenido desde el lanzamiento.",
+        "Diseñé y construí el componente de landing desde cero. Cada animación codificada manualmente para que coincida con el ritmo. ISR + Contentful para que pueda publicar proyectos sin mí.",
+      result: "Sitio live. Maneja el contenido de forma independiente desde el lanzamiento.",
     },
   },
   templodetierra: {
     en: {
-      headline: "Branding and web for a sustainable retreat. Built for a client in Uruguay.",
+      headline: "Branding and site for a retreat in Uruguay. Five temples, one brand.",
       roles: ["Branding", "UX/UI design", "Development"],
       stack: ["Next.js", "Tailwind CSS"],
       challenge: {
         paragraphs: [
-          "No brand, no digital presence.",
-          "The challenge: build an identity that balanced the ancestral and organic with a clear, functional booking experience.",
+          "No brand. No site.",
+          "Five temples with different personalities. Needed a unified identity and booking system.",
         ],
       },
       keyDecision:
-        "I started with identity — logo, palette, visual direction — before touching the web. The identity had to be flexible enough to work across five temples with distinct personalities, and consistent enough to speak as a single brand.",
-      result: "Live site. International client (Uruguay). Full delivery — branding and web.",
+        "Built the brand first. Logo, palette, visual system. Then the site. Identity had to flex across five locations but still feel like one brand.",
+      result: "Site launched. Full project: brand and web.",
     },
     es: {
-      headline: "Branding y web para un refugio sostenible. Para un cliente en Uruguay.",
+      headline: "Branding y sitio para un refugio en Uruguay. Cinco templos, una marca.",
       roles: ["Branding", "UX/UI", "Desarrollo"],
       stack: ["Next.js", "Tailwind CSS"],
       challenge: {
         paragraphs: [
-          "No había marca ni presencia digital.",
-          "El desafío: construir una identidad que equilibrara lo ancestral y orgánico con una experiencia de reserva clara y funcional.",
+          "Sin marca. Sin sitio.",
+          "Cinco templos con personalidades distintas. Necesitaban identidad unificada y sistema de reservas.",
         ],
       },
       keyDecision:
-        "Arranqué por la identidad — logo, paleta, dirección visual — antes de tocar la web. La identidad tuvo que ser lo suficientemente flexible para funcionar en cinco templos con personalidades distintas, y lo suficientemente consistente para hablar como una sola marca.",
-      result: "Sitio live. Cliente en Uruguay. Entrega integral — branding y web.",
+        "Construí primero la marca. Logo, paleta, sistema visual. Después el sitio. La identidad tenía que funcionar en cinco ubicaciones pero sentirse como una sola marca.",
+      result: "Sitio lanzado. Proyecto completo: marca y web.",
     },
   },
   desenfreno: {
     en: {
       headline:
-        "Editorial, blog and store — for a poetry publisher that lives between literature and music.",
+        "Poetry publisher site. Blog, store, and embedded audio previews.",
       roles: ["UX/UI design", "Development", "E-commerce", "CMS integration"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Bandcamp integration"],
       challenge: {
         paragraphs: [
-          "An independent poetry publisher that also releases sound compilations.",
-          "Needed three things working together: strong editorial identity, a blog, and a store to sell the catalog.",
+          "Independent publisher. Poetry books + sound compilations.",
+          "Needed editorial site, blog, and store in one place.",
         ],
       },
       keyDecision:
-        "The Bandcamp integration was the key decision: instead of sending visitors elsewhere to listen, sound release previews play directly inside the site. The blog runs on Contentful with ISR — the editorial team publishes without touching code.",
-      result: "Store, blog and editorial running as one system. Autonomous content management.",
+        "Bandcamp integration: audio previews play on the site instead of redirecting users. Blog on Contentful + ISR. They publish without touching code.",
+      result: "One system: store, blog, editorial. Content managed autonomously.",
     },
     es: {
       headline:
-        "Editorial, blog y tienda — para una editorial de poesía entre la literatura y la música.",
+        "Sitio para editorial de poesía. Blog, tienda, y previews de audio embebidos.",
       roles: ["UX/UI", "Desarrollo", "E-commerce", "Integración CMS"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Integración Bandcamp"],
       challenge: {
         paragraphs: [
-          "Una editorial independiente de poesía que también publica compilados sonoros.",
-          "Necesitaba tres cosas funcionando juntas: identidad editorial fuerte, blog propio, y tienda para vender el catálogo.",
+          "Editorial independiente. Libros de poesía + compilados sonoros.",
+          "Necesitaban sitio editorial, blog, y tienda en un solo lugar.",
         ],
       },
       keyDecision:
-        "La integración con Bandcamp fue la decisión clave: en vez de mandar a los visitantes afuera a escuchar, los previews de los lanzamientos sonoros corren directamente dentro del sitio. El blog corre sobre Contentful con ISR — la editorial publica sin tocar código.",
-      result: "Tienda, blog y editorial funcionando como un solo sistema. Gestión autónoma de contenido.",
+        "Integración con Bandcamp: los previews de audio corren en el sitio en vez de redirigir usuarios. Blog en Contentful + ISR. Publican sin tocar código.",
+      result: "Un sistema: tienda, blog, editorial. Contenido gestionado de forma autónoma.",
     },
   },
   grupofrali: {
     en: {
-      headline: "Pixel-perfect implementation for a high-end investment group.",
+      headline: "High-end investment group site. Pixel-perfect Figma implementation.",
       roles: ["Development", "Motion design", "CMS integration"],
       stack: ["Next.js", "Contentful", "Tailwind CSS", "Custom animations"],
       challenge: {
         paragraphs: [
-          "The design was high-end — Wohl Studio.",
-          "The job was to match it: pixel-perfect Figma implementation, animations that worked in production, and a CMS the team could actually use.",
+          "Design by Wohl Studio. High-end.",
+          "Needed pixel-perfect Figma match and animations that work in production.",
         ],
       },
       keyDecision:
-        "The critical point of any high-end design implementation is knowing when to adapt and when to be pixel-perfect. The animations were my own work — designed for the pace and weight of the client, implemented with developer judgment and design sensibility.",
-      result: "Live site. Faithful to the original design. Contentful CMS operational.",
+        "Knowing when to match the pixel and when to adapt. Built animations from scratch—designed for the client's tone, implemented with technical constraints in mind.",
+      result: "Site live. Design matched. CMS functional.",
       creditNote:
         "Design by Wohl Studio. This case study covers implementation.",
     },
     es: {
-      headline: "Implementación pixel-perfect para un grupo inversor de alto nivel.",
+      headline: "Sitio para grupo inversor. Implementación pixel-perfect de Figma.",
       roles: ["Desarrollo", "Motion", "Integración CMS"],
       stack: ["Next.js", "Contentful", "Tailwind CSS", "Animaciones custom"],
       challenge: {
         paragraphs: [
-          "El diseño era de alto nivel — Wohl Studio.",
-          "El trabajo era estar a la altura: implementación fiel al Figma, animaciones que funcionaran en producción, y un CMS que el equipo pudiera usar.",
+          "Diseño de Wohl Studio. Alto nivel.",
+          "Necesitaba match pixel-perfect con Figma y animaciones que funcionen en producción.",
         ],
       },
       keyDecision:
-        "El punto crítico de cualquier implementación de diseño de nivel es saber cuándo adaptar y cuándo ser fiel al pixel. Las animaciones fueron trabajo propio — diseñadas para el ritmo y la seriedad del cliente, implementadas con criterio de developer y sensibilidad de diseñador.",
-      result: "Sitio live. Implementación fiel al diseño original. CMS operativo con Contentful.",
+        "Saber cuándo igualar el pixel y cuándo adaptar. Construí las animaciones desde cero—diseñadas para el tono del cliente, implementadas con restricciones técnicas en mente.",
+      result: "Sitio live. Diseño igualado. CMS funcional.",
       creditNote:
-        "El diseño es de Wohl Studio. Este caso de estudio presenta la implementación.",
+        "Diseño de Wohl Studio. Este caso presenta la implementación.",
     },
   },
 };
