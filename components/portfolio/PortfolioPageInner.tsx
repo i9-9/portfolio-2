@@ -702,12 +702,12 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           }}
           className="relative z-30"
         >
-          <h1 className="font-helveticaNowDisplayBold text-name-hero leading-[0.95] tracking-[-0.02em]">
-            Ivan Nevares
+          <h1 className="font-helveticaNowDisplayBold text-name-hero leading-[0.95] tracking-[-0.02em] flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span>Ivan Nevares</span>
+            <span className="text-hero-subtitle font-helveticaNowTextRegular text-muted-foreground tracking-normal">
+              {t("hero.subtitle")}
+            </span>
           </h1>
-          <p className="mt-1 lg:mt-1.5 text-type-body font-helveticaNowTextRegular text-muted-foreground max-w-md">
-            {t("hero.subtitle")}
-          </p>
         </motion.div>
       </section>
 

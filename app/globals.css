@@ -84,6 +84,7 @@
     --type-nav-link: var(--type-0);          /* labels, UI, body */
     --type-name-nav: var(--type-1);          /* nav / splash name */
     --type-name-hero: calc(var(--type-name-nav) * var(--phi-4)); /* hero = name × φ⁴ */
+    --type-hero-subtitle: var(--type-name-nav); /* subtitle = name-nav (hero ÷ φ⁴) */
     --type-project-name: var(--type-2);      /* work row titles */
     --type-case-title: var(--type-3);        /* case study headline */
     --type-body: var(--type-0);
@@ -360,6 +361,10 @@ html {
 
   .text-name-hero {
     font-size: var(--type-name-hero);
+  }
+
+  .text-hero-subtitle {
+    font-size: var(--type-hero-subtitle);
   }
 
   .text-nav-link {
