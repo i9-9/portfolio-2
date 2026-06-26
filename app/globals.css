@@ -232,12 +232,18 @@
   padding-top: calc(var(--nav-height) + var(--hero-gap-nav-title));
 }
 
-/* Hero — full viewport band; rhythm via padding tokens */
+/* Hero — band below nav; halftone fills this box only */
 .hero-band {
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--nav-height) - var(--grid-row));
   padding-top: calc(var(--nav-height) + var(--hero-gap-nav-title));
-  padding-bottom: var(--hero-gap-subtitle-floor);
+  padding-bottom: calc(var(--space-unit) * 10);
   box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .hero-band {
+    padding-bottom: calc(var(--space-unit) * 14); /* 56px — former pb-14 */
+  }
 }
 
 /* Project Card Styles */
