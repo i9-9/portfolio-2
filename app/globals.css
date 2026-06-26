@@ -61,6 +61,34 @@
     --font-4xl: 2.25rem;     /* 36px */
     --font-5xl: 3rem;        /* 48px */
     --font-6xl: 4rem;        /* 64px */
+
+    /* Golden-ratio typographic scale (base = step 0, each step × φ) */
+    --phi: 1.6180339887;
+    --phi-2: 2.6180339887;
+    --phi-3: 4.2360679775;
+    --phi-4: 6.8541019663;
+    --phi-5: 11.0901699437;
+    --phi-6: 17.94427191;
+
+    --type-base: 0.875rem; /* step 0 — 14px */
+    --type-micro: calc(var(--type-base) / var(--phi));
+    --type-0: var(--type-base);
+    --type-1: calc(var(--type-base) * var(--phi));
+    --type-2: calc(var(--type-base) * var(--phi-2));
+    --type-3: calc(var(--type-base) * var(--phi-3));
+    --type-4: calc(var(--type-base) * var(--phi-4));
+    --type-5: calc(var(--type-base) * var(--phi-5));
+    --type-6: calc(var(--type-base) * var(--phi-6));
+
+    /* Semantic aliases — hierarchy preserved via φ steps */
+    --type-nav-link: var(--type-0);          /* labels, UI, body */
+    --type-name-nav: var(--type-1);          /* nav / splash name */
+    --type-name-hero: calc(var(--type-name-nav) * var(--phi-4)); /* hero = name × φ⁴ */
+    --type-project-name: var(--type-2);      /* work row titles */
+    --type-case-title: var(--type-3);        /* case study headline */
+    --type-body: var(--type-0);
+    --type-body-lg: var(--type-1);           /* emphasized body / result */
+    --type-display: var(--type-6);           /* splash counter */
     
     /* Line Heights */
     --leading-none: 1;
@@ -77,6 +105,12 @@
     --tracking-wide: 0.025em;
     --tracking-wider: 0.05em;
     --tracking-widest: 0.2em;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --type-base: 1rem; /* step 0 — 16px */
+    }
   }
  
   .dark {
@@ -318,6 +352,32 @@ html {
 
   .animate-marquee-smooth {
     animation: marquee-smooth 8s linear infinite;
+  }
+
+  .text-name-nav {
+    font-size: var(--type-name-nav);
+  }
+
+  .text-name-hero {
+    font-size: var(--type-name-hero);
+  }
+
+  .text-nav-link {
+    font-size: var(--type-nav-link);
+  }
+
+  .text-type-micro { font-size: var(--type-micro); }
+  .text-type-0 { font-size: var(--type-0); }
+  .text-type-1 { font-size: var(--type-1); }
+  .text-type-2 { font-size: var(--type-2); }
+  .text-type-3 { font-size: var(--type-3); }
+  .text-type-4 { font-size: var(--type-4); }
+  .text-type-project { font-size: var(--type-project-name); }
+  .text-type-case-title { font-size: var(--type-case-title); }
+  .text-type-body { font-size: var(--type-body); }
+  .text-type-body-lg { font-size: var(--type-body-lg); }
+  .text-type-display {
+    font-size: clamp(var(--type-4), 28vw, var(--type-display));
   }
 }
 

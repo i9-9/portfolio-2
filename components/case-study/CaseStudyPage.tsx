@@ -7,10 +7,12 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { getProjectBySlug } from "@/app/data/projects";
 import {
-  editorialMutedLabel,
-  editorialOutline,
-  editorialPrimary,
+  editorialNavMuted,
+  editorialNavOutline,
+  editorialNavPrimary,
+  editorialNavType,
 } from "@/lib/editorial-cta";
+import { cn } from "@/lib/utils";
 import {
   CASE_STUDIES,
   getNextCaseStudySlug,
@@ -35,7 +37,10 @@ export function CaseStudyPage({ slug }: { slug: string }) {
         <div className="col-span-12">
           <Link
             href="/#work"
-            className="inline-flex items-center gap-2 font-helveticaNowTextRegular text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
+            className={cn(
+              editorialNavType,
+              "inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground",
+            )}
           >
             <ArrowLeft className="size-3.5" aria-hidden />
             {t("caseStudy.back")}
@@ -57,7 +62,12 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
       <div className="grid-container py-16 lg:py-24">
         <div className="col-span-12">
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-helveticaNowTextRegular text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          <div
+            className={cn(
+              editorialNavType,
+              "flex flex-wrap items-baseline gap-x-3 gap-y-1 text-muted-foreground",
+            )}
+          >
             <span>{t("caseStudy.caseStudyLabel")}</span>
             <span className="text-muted-foreground/50" aria-hidden>
               ·
@@ -69,16 +79,16 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             <span>{project.name}</span>
           </div>
 
-          <h1 className="mt-6 max-w-4xl font-helveticaNowDisplayBold text-[clamp(1.75rem,4.5vw,2.75rem)] leading-[1.08] tracking-tight text-foreground">
+          <h1 className="mt-6 max-w-4xl font-helveticaNowDisplayBold text-type-case-title leading-[1.08] tracking-[-0.02em] text-foreground">
             {loc.headline}
           </h1>
 
-          <p className="mt-3 font-helveticaNowTextRegular text-sm text-muted-foreground lg:text-base">
+          <p className={cn(editorialNavType, "mt-3 text-muted-foreground")}>
             {cat}
           </p>
 
           {loc.creditNote ? (
-            <p className="mt-5 max-w-2xl font-helveticaNowTextRegular text-sm leading-[1.55] text-muted-foreground">
+            <p className="mt-5 max-w-2xl text-type-body font-helveticaNowTextRegular leading-[1.55] text-muted-foreground">
               {loc.creditNote}
             </p>
           ) : null}
@@ -88,7 +98,10 @@ export function CaseStudyPage({ slug }: { slug: string }) {
               {loc.roles.map((role) => (
                 <span
                   key={role}
-                  className="rounded-sm border border-border bg-muted/30 px-3 py-2 font-helveticaNowTextRegular text-[10px] uppercase tracking-[0.14em] text-foreground/90"
+                  className={cn(
+                    editorialNavType,
+                    "rounded-sm border border-border bg-muted/30 px-3 py-2 text-foreground/90",
+                  )}
                 >
                   {role}
                 </span>
@@ -101,7 +114,10 @@ export function CaseStudyPage({ slug }: { slug: string }) {
               {loc.stack.map((item) => (
                 <span
                   key={item}
-                  className="rounded-sm border border-border px-3 py-2 font-helveticaNowTextRegular text-xs tracking-wide text-muted-foreground"
+                  className={cn(
+                    editorialNavType,
+                    "rounded-sm border border-border px-3 py-2 text-muted-foreground",
+                  )}
                 >
                   {item}
                 </span>
@@ -115,13 +131,13 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             </CaseStudySection>
 
             <CaseStudySection title={t("caseStudy.keyDecision")}>
-              <p className="font-helveticaNowTextRegular text-base leading-[1.55] text-muted-foreground lg:text-lg">
+              <p className="text-type-body lg:text-type-body-lg font-helveticaNowTextRegular leading-[1.55] text-muted-foreground">
                 {loc.keyDecision}
               </p>
             </CaseStudySection>
 
             <CaseStudySection title={t("caseStudy.result")}>
-              <p className="font-helveticaNowDisplayBold text-lg leading-snug tracking-tight text-foreground lg:text-xl">
+              <p className="text-type-body-lg font-helveticaNowDisplayBold leading-snug tracking-[-0.02em] text-foreground">
                 {loc.result}
               </p>
             </CaseStudySection>
@@ -132,7 +148,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
               href={project.anchor}
               target="_blank"
               rel="noopener noreferrer"
-              className={editorialPrimary("group inline-flex w-fit")}
+              className={editorialNavPrimary("group w-fit")}
               aria-label={`${t("caseStudy.viewLiveSite")} — ${t("caseStudy.openExternal")}`}
             >
               {t("caseStudy.viewLiveSite")}
@@ -141,7 +157,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
             <Link
               href={nextHref}
-              className={editorialOutline("group inline-flex w-fit")}
+              className={editorialNavOutline("group w-fit")}
               aria-label={
                 nextProject
                   ? `${t("caseStudy.nextProject")}: ${nextProject.name}`
@@ -154,7 +170,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
             <Link
               href="/#contact"
-              className={editorialMutedLabel("inline-flex w-fit")}
+              className={editorialNavMuted("w-fit")}
             >
               {t("caseStudy.workWithMe")}
             </Link>
@@ -174,7 +190,12 @@ function CaseStudySection({
 }) {
   return (
     <section className="grid grid-cols-12 gap-4 border-b border-border py-10 lg:gap-6 lg:py-12">
-      <h2 className="col-span-12 font-helveticaNowTextRegular text-[10px] uppercase tracking-[0.22em] text-muted-foreground lg:col-span-3">
+      <h2
+        className={cn(
+          editorialNavType,
+          "text-type-2 col-span-12 text-foreground lg:col-span-3",
+        )}
+      >
         {title}
       </h2>
       <div className="col-span-12 lg:col-span-8 lg:col-start-5">{children}</div>
@@ -188,7 +209,7 @@ function TextBlock({ paragraphs }: { paragraphs: string[] }) {
       {paragraphs.map((paragraph) => (
         <p
           key={paragraph}
-          className="font-helveticaNowTextRegular text-base leading-[1.55] text-muted-foreground lg:text-lg"
+          className="text-type-body lg:text-type-body-lg font-helveticaNowTextRegular leading-[1.55] text-muted-foreground"
         >
           {paragraph}
         </p>

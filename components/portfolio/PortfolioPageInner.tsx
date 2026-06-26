@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  useState, lazy, Suspense, useRef, useEffect, useLayoutEffect, useCallback,
-} from "react";
+import { useState, lazy, Suspense, useRef, useEffect, useLayoutEffect } from "react";
 import dynamic from "next/dynamic";
 import {
   motion, AnimatePresence,
@@ -14,11 +12,16 @@ import { projects } from "@/app/data/projects";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import {
-  editorialMutedReadable,
-  editorialPrimary,
+  editorialFooterMuted,
+  editorialFooterPrimary,
+  editorialNavType,
 } from "@/lib/editorial-cta";
 import { Toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+import {
+  SPLASH_SESSION_KEY,
+  useSplashHandoff,
+} from "@/lib/splash/SplashHandoffContext";
 import {
   Mail, MessageSquare,
   ArrowRight,
@@ -83,17 +86,16 @@ const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
 /** Full-viewport exit — shorter on slow paths so the site feels responsive. */
 const SPLASH_EXIT_EASE = [0.76, 0, 0.24, 1] as const;
 
-const SPLASH_SESSION_KEY = "v2-splash-seen";
-
 const WOHL_STUDIO_URL = "https://wohl.co/";
 
 // --- PageReveal -----------------------------------------------------------
 // Editorial splash: counter 00 → 100 over a fixed beat, then waits briefly for
 // `document.fonts.ready` (capped) so the overlap hides webfont swap.
-function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
+function PageReveal() {
   const reduced = useReducedMotion();
-  const handoffRef = useRef(onHandoff);
-  handoffRef.current = onHandoff;
+  const { notifyHandoff } = useSplashHandoff();
+  const handoffRef = useRef(notifyHandoff);
+  handoffRef.current = notifyHandoff;
 
   const [done, setDone]   = useState(false);
   const [count, setCount] = useState(0);
@@ -177,22 +179,27 @@ function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
       {!done && (
         <motion.div
           className="fixed inset-0 z-[10000] bg-background flex flex-col select-none"
-          initial={{ y: 0 }}
-          exit={{ y: "-101%" }}
-          transition={{ duration: 0.48, ease: SPLASH_EXIT_EASE }}
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.55, ease: SPLASH_EXIT_EASE }}
         >
           {/* top metadata — asymmetric grid, Swiss style */}
-          <div className="grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12 pt-6 lg:pt-8 text-[10px] lg:text-xs font-helveticaNowTextRegular tracking-[0.2em] uppercase text-muted-foreground">
-            <div className="col-span-6 lg:col-span-3">Ivan Nevares</div>
-            <div className="hidden lg:block col-span-6">Graphic design · Websites</div>
-            <div className="col-span-6 lg:col-span-3 text-right">Portfolio · MMXXVI</div>
+          <div className="grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12 pt-6 lg:pt-8">
+            <div className="col-span-6 lg:col-span-3 text-name-nav font-helveticaNowDisplayBold tracking-[-0.02em] text-foreground">
+              Ivan Nevares
+            </div>
+            <div className={cn("hidden lg:block col-span-6", editorialNavType, "text-muted-foreground")}>
+              Graphic design · Websites
+            </div>
+            <div className={cn("col-span-6 lg:col-span-3 text-right", editorialNavType, "text-muted-foreground")}>
+              Portfolio · MMXXVI
+            </div>
           </div>
 
           {/* the counter — optical center, tabular nums for steady width */}
           <div className="flex-1 flex items-center justify-center px-4 lg:px-12">
             <span
-              className="font-helveticaNowDisplayBold leading-none tabular-nums tracking-tighter"
-              style={{ fontSize: "clamp(8rem, 28vw, 22rem)" }}
+              className="font-helveticaNowDisplayBold text-type-display leading-none tabular-nums tracking-[-0.02em]"
             >
               {String(count).padStart(3, "0")}
             </span>
@@ -206,10 +213,16 @@ function PageReveal({ onHandoff }: { onHandoff?: () => void }) {
                 style={{ width: `${count}%` }}
               />
             </div>
-            <div className="grid grid-cols-12 gap-4 lg:gap-6 text-[10px] lg:text-xs font-helveticaNowTextRegular tracking-[0.2em] uppercase text-muted-foreground">
-              <div className="col-span-6 lg:col-span-3">Buenos Aires · AR</div>
-              <div className="hidden lg:block col-span-6">{count < 100 ? "Loading" : "Fonts"}</div>
-              <div className="col-span-6 lg:col-span-3 text-right tabular-nums">{count}/100</div>
+            <div className="grid grid-cols-12 gap-4 lg:gap-6">
+              <div className={cn("col-span-6 lg:col-span-3", editorialNavType, "text-muted-foreground")}>
+                Buenos Aires · AR
+              </div>
+              <div className={cn("hidden lg:block col-span-6", editorialNavType, "text-muted-foreground")}>
+                {count < 100 ? "Loading" : "Fonts"}
+              </div>
+              <div className={cn("col-span-6 lg:col-span-3 text-right tabular-nums", editorialNavType, "text-muted-foreground")}>
+                {count}/100
+              </div>
             </div>
           </div>
         </motion.div>
@@ -534,7 +547,7 @@ function ProjectRow({
         onMouseMove={handleMouseMove}
         className="group relative flex flex-col -mx-4 px-4 transition-colors duration-500 hover:bg-foreground hover:text-background overflow-hidden lg:-mx-12 lg:px-12"
       >
-        <div className="relative flex items-center justify-between gap-4 py-5 lg:py-6">
+        <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-5 items-center py-5 lg:py-6 lg:grid-cols-12 lg:gap-x-6">
         {/* Editorial marquee — desktop: thin strip under row content (not tucked under title) */}
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 z-0 hidden h-8 motion-reduce:hidden lg:block overflow-hidden opacity-0 transition-opacity duration-500 [mask-image:linear-gradient(180deg,transparent_0%,#000_40%,#000_100%)] [-webkit-mask-image:linear-gradient(180deg,transparent_0%,#000_40%,#000_100%)] group-hover:opacity-100"
@@ -542,41 +555,39 @@ function ProjectRow({
         >
           <div className="flex h-full items-end pb-1">
             <div className="work-row-marquee-track">
-              <span className="inline-block whitespace-nowrap pr-12 text-[9px] font-helveticaNowTextRegular uppercase tracking-[0.22em] text-background/40">
+              <span className="inline-block whitespace-nowrap pr-12 text-type-micro font-helveticaNowTextRegular uppercase tracking-[0.22em] text-background/40">
                 {marqueeLine}
               </span>
-              <span className="inline-block whitespace-nowrap pr-12 text-[9px] font-helveticaNowTextRegular uppercase tracking-[0.22em] text-background/40">
+              <span className="inline-block whitespace-nowrap pr-12 text-type-micro font-helveticaNowTextRegular uppercase tracking-[0.22em] text-background/40">
                 {marqueeLine}
               </span>
             </div>
           </div>
         </div>
 
-        {/* left: index + name + category */}
-        <div className="relative z-10 flex items-center gap-5 lg:gap-8 min-w-0">
-          <span className="text-xs font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 transition-colors duration-500 w-6 flex-shrink-0 tabular-nums">
-            <NumberScramble value={index} inView={inView} />
-          </span>
-          <div className="min-w-0">
-            <motion.p
-              className="font-helveticaNowDisplayBold text-xl lg:text-3xl transition-colors duration-500"
-              animate={{ x: hovered ? 12 : 0 }}
-              transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-            >
-              {name}
-            </motion.p>
-            <motion.p
-              className="text-xs font-helveticaNowTextRegular text-muted-foreground mt-0.5 group-hover:text-background/50 transition-colors duration-500"
-              animate={{ x: hovered ? 12 : 0 }}
-              transition={{ duration: 0.6, delay: 0.04, ease: EASE_OUT_EXPO }}
-            >
-              {category}
-            </motion.p>
-          </div>
+        <span className="relative z-10 text-type-micro font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 transition-colors duration-500 w-6 flex-shrink-0 tabular-nums lg:col-start-1">
+          <NumberScramble value={index} inView={inView} />
+        </span>
+
+        <div className="relative z-10 min-w-0 lg:col-start-3 lg:col-span-6">
+          <motion.p
+            className="font-helveticaNowDisplayBold text-type-project transition-colors duration-500"
+            animate={{ x: hovered ? 12 : 0 }}
+            transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+          >
+            {name}
+          </motion.p>
+          <motion.p
+            className="text-type-0 font-helveticaNowTextRegular text-muted-foreground mt-0.5 group-hover:text-background/50 transition-colors duration-500"
+            animate={{ x: hovered ? 12 : 0 }}
+            transition={{ duration: 0.6, delay: 0.04, ease: EASE_OUT_EXPO }}
+          >
+            {category}
+          </motion.p>
         </div>
 
         {/* right: metric (absolute, on hover) + year (fixed col) + arrow */}
-        <div className="relative z-10 flex items-center gap-6 flex-shrink-0">
+        <div className="relative z-10 flex items-center gap-6 flex-shrink-0 justify-self-end lg:col-start-10 lg:col-span-3">
           {metric ? (
             <motion.span
               initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
@@ -584,12 +595,12 @@ function ProjectRow({
                 ? { opacity: 1, x: 0, filter: "blur(0px)" }
                 : { opacity: 0, x: -10, filter: "blur(4px)" }}
               transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
-              className="hidden lg:block absolute right-full mr-6 text-xs font-helveticaNowTextRegular text-background/70 whitespace-nowrap"
+              className="hidden lg:block absolute right-full mr-6 text-type-0 font-helveticaNowTextRegular text-background/70 whitespace-nowrap"
             >
               {metric}
             </motion.span>
           ) : null}
-          <span className="hidden lg:block text-xs font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 tabular-nums transition-colors duration-500 w-10 text-right">
+          <span className="hidden lg:block text-type-0 font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 tabular-nums transition-colors duration-500 w-10 text-right">
             {year}
           </span>
           <motion.span
@@ -635,11 +646,8 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
   const showGraphicDesktopHero = v2Mode === "graphic";
   const heroReduced = useReducedMotion();
-  const [splashHandoff, setSplashHandoff] = useState(false);
-  const onSplashHandoff = useCallback(() => {
-    setSplashHandoff(true);
-  }, []);
-  /** Hero motion is synced to splash lift (same frame as setDone), not fixed mount delays */
+  const { handoff: splashHandoff } = useSplashHandoff();
+  /** Hero focus fade is synced to splash handoff (same frame as setDone), not fixed mount delays */
   const heroLive = splashHandoff || !!heroReduced;
 
   const workRef    = useRef(null);
@@ -668,70 +676,38 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
   return (
     <div className="min-h-screen bg-background lg:cursor-none relative">
-      <PageReveal onHandoff={onSplashHandoff} />
+      <PageReveal />
       <ScrollProgress />
       <CustomCursor />
 
-      {/* -- HERO — halftone (landing / v2 web) or draggable graphic “desktop” (v2 graphic) */}
-      <section className="relative isolate min-h-[calc(100vh-6rem)] flex flex-col justify-end overflow-hidden px-4 lg:px-12 pb-10 lg:pb-14 pt-24">
+      {/* -- HERO — halftone (landing / v2 web) or draggable graphic "desktop" (v2 graphic) */}
+      <section className="relative isolate min-h-[calc(100vh-6rem)] flex flex-col overflow-hidden px-4 lg:px-12 pb-10 lg:pb-14 pt-24">
         {showGraphicDesktopHero ? (
           <GraphicDesktopHero />
         ) : (
           <HeroHalftoneP5 className="pointer-events-none z-0" />
         )}
         <motion.div
-          initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
+          initial={{ opacity: 0, filter: "blur(14px)" }}
           animate={
             heroLive
-              ? { opacity: 1, y: 0, filter: "blur(0px)" }
-              : { opacity: 0, y: 18, filter: "blur(8px)" }
+              ? { opacity: 1, filter: "blur(0px)" }
+              : { opacity: 0, filter: "blur(14px)" }
           }
-          transition={{ duration: 0.95, delay: heroLive ? 0.06 : 0, ease: EASE_OUT_EXPO }}
-          className={cn(
-            "relative z-30 w-full max-w-[18rem] sm:max-w-[20rem] space-y-2.5 rounded-[22px]",
-            "border border-border/50 bg-background/55 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)]",
-            "backdrop-blur-2xl backdrop-saturate-150",
-            "ring-1 ring-inset ring-white/50 dark:border-white/[0.09] dark:bg-background/45 dark:shadow-[0_12px_48px_-16px_rgba(0,0,0,0.65)] dark:ring-inset dark:ring-white/[0.07]",
-            "p-4 sm:p-[1.125rem]",
-          )}
+          transition={{
+            delay: heroLive ? 0.06 : 0,
+            ease: EASE_OUT_EXPO,
+            opacity: { duration: 0.85 },
+            filter: { duration: 1.15 },
+          }}
+          className="relative z-30"
         >
-          <div
-            className="inline-flex overflow-hidden rounded-[10px] border border-foreground/12 bg-foreground/[0.04] text-[7px] sm:text-[7.5px] font-helveticaNowTextRegular uppercase tracking-[0.18em] text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.45)] dark:border-white/[0.12] dark:bg-white/[0.04] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
-            aria-hidden
-          >
-            <div
-              className="flex items-center px-1.5 py-1 sm:px-2 sm:py-1 border-r border-foreground/12 tabular-nums dark:border-white/10"
-            >
-              {t("hero.stampGd")}
-            </div>
-            <div
-              className="flex items-center px-1.5 py-1 sm:px-2 sm:py-1 tabular-nums"
-            >
-              {t("hero.stampDev")}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <p className="font-helveticaNowDisplayBold text-[clamp(1.35rem,4vw,1.9rem)] leading-[0.98] tracking-tight">
-              {t("hero.stampName")}
-            </p>
-            <p className="font-helveticaNowDisplayBold text-[11px] sm:text-xs leading-[0.95] tracking-tight text-foreground/88 hyphens-none">
-              {t("hero.blurb")}
-              <Asterisk
-                className="inline-block align-top w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1 mt-0.5 text-muted-foreground opacity-80"
-                strokeWidth={1.25}
-                aria-hidden
-              />
-            </p>
-          </div>
-
-          <a
-            href={showGraphicDesktopHero ? "#about" : "#work"}
-            className="group inline-flex items-center gap-1.5 pt-0.5 text-[9px] font-helveticaNowTextRegular uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {showGraphicDesktopHero ? t("about.title") : t("hero.stampWorkLink")}
-            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 ease-out group-hover:rotate-45" />
-          </a>
+          <h1 className="font-helveticaNowDisplayBold text-name-hero leading-[0.95] tracking-[-0.02em]">
+            Ivan Nevares
+          </h1>
+          <p className="mt-1 lg:mt-1.5 text-type-body font-helveticaNowTextRegular text-muted-foreground max-w-md">
+            {t("hero.subtitle")}
+          </p>
         </motion.div>
       </section>
 
@@ -745,7 +721,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           initial={{ opacity: 0 }}
           animate={workInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
-          className="text-xs font-helveticaNowTextRegular tracking-[0.2em] uppercase text-muted-foreground mb-6"
+          className={cn(editorialNavType, "mb-6 text-foreground")}
         >
           {t("work.title")}
         </motion.p>
@@ -779,13 +755,13 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
           animate={aboutInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
           transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
-          className="lg:col-span-2 text-xs font-helveticaNowTextRegular tracking-[0.2em] uppercase text-muted-foreground self-start pt-1"
+          className={cn(editorialNavType, "lg:col-span-2 self-start text-foreground")}
         >
           {t("about.title")}
         </motion.p>
 
         <motion.p
-          className="lg:col-span-6 font-helveticaNowTextRegular text-muted-foreground leading-relaxed"
+          className="lg:col-span-6 text-type-body font-helveticaNowTextRegular text-muted-foreground leading-relaxed"
           initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
           animate={aboutInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
           transition={{ duration: 0.9, delay: 0.15, ease: EASE_OUT_EXPO }}
@@ -839,11 +815,11 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             transition={{ duration: 0.75, delay: 0.08, ease: EASE_OUT_EXPO }}
             className="mb-10 flex flex-wrap items-center gap-x-5 gap-y-3"
           >
-            <p className="max-w-[min(100%,42rem)] text-[10px] font-helveticaNowDisplayBold uppercase leading-relaxed tracking-[0.14em] text-foreground">
+            <p className={cn(editorialNavType, "max-w-[min(100%,42rem)] text-foreground")}>
               {t("contact.kicker")}
             </p>
             <span className="hidden h-px min-w-[3rem] flex-1 bg-foreground/25 sm:block" aria-hidden />
-            <p className="text-[10px] font-helveticaNowTextRegular tabular-nums tracking-[0.22em] text-muted-foreground">
+            <p className={cn(editorialNavType, "tabular-nums text-muted-foreground")}>
               {t("contact.stamp")}
             </p>
           </motion.div>
@@ -856,25 +832,25 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 : { opacity: 0, y: 16, filter: "blur(6px)" }
             }
             transition={{ duration: 0.9, delay: 0.32, ease: EASE_OUT_EXPO }}
-            className="flex flex-col flex-wrap gap-3 sm:flex-row sm:items-center"
+            className="grid grid-cols-12 gap-4 lg:gap-6"
           >
-            <Magnetic strength={0.2}>
+            <Magnetic strength={0.2} className="col-span-12 lg:col-span-2">
               <button
                 type="button"
                 onClick={copyEmail}
-                className={editorialMutedReadable("justify-start text-left")}
+                className={editorialFooterMuted()}
               >
-                <Mail className="w-4 h-4" aria-hidden />
+                <Mail className="w-4 h-4 shrink-0" aria-hidden />
                 ivannevares9@gmail.com
               </button>
             </Magnetic>
-            <Magnetic strength={0.2}>
+            <Magnetic strength={0.2} className="col-span-12 lg:col-span-2">
               <button
                 type="button"
                 onClick={() => setIsContactOpen(true)}
-                className={editorialPrimary("inline-flex items-center gap-2", "compact")}
+                className={editorialFooterPrimary()}
               >
-                <MessageSquare className="w-4 h-4" aria-hidden />
+                <MessageSquare className="w-4 h-4 shrink-0" aria-hidden />
                 {isEn ? "Send a message" : "Enviar mensaje"}
               </button>
             </Magnetic>
@@ -888,10 +864,10 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           className="relative z-[1] mt-12"
           aria-label={t("contact.socialNav")}
         >
-          <p className="mb-4 text-[10px] font-helveticaNowTextRegular uppercase tracking-[0.22em] text-muted-foreground">
+          <p className={cn(editorialNavType, "mb-4 text-foreground")}>
             {t("contact.elsewhere")}
           </p>
-          <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 font-helveticaNowTextRegular text-sm text-muted-foreground">
+          <div className="grid grid-cols-12 gap-4 lg:gap-6 font-helveticaNowTextRegular text-type-0 text-muted-foreground">
             {(
               [
                 { href: "https://github.com/i9-9", label: "GitHub" },
@@ -900,12 +876,16 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 { href: "https://dribbble.com/i9i9", label: "Dribbble" },
               ] as const
             ).map(({ href, label }) => (
-              <Magnetic key={href} strength={0.22}>
+              <Magnetic
+                key={href}
+                strength={0.22}
+                className="col-span-6 lg:col-span-1"
+              >
                 <a
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1 tracking-[0.06em] transition-colors duration-300 hover:text-foreground"
+                  className="group inline-flex w-full items-center gap-1 tracking-[0.06em] transition-colors duration-300 hover:text-foreground"
                 >
                   {label}
                   <ArrowRight className="size-3.5 shrink-0 opacity-60 transition-all duration-300 group-hover:rotate-45 group-hover:opacity-100" aria-hidden />
@@ -922,12 +902,12 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           className="relative z-[1] mt-16 -mx-4 bg-[#DFFF4D] text-neutral-950 lg:-mx-12"
         >
           {heroReduced ? (
-            <p className="px-4 py-2.5 text-center font-helveticaNowTextRegular text-[8px] uppercase leading-relaxed tracking-[0.3em]">
+            <p className="px-4 py-2.5 text-center font-helveticaNowTextRegular text-type-micro normal-case leading-relaxed tracking-[-0.02em]">
               {t("contact.marquee")}
             </p>
           ) : (
             <div className="contact-cta-marquee-viewport py-2" aria-hidden>
-              <div className="contact-cta-marquee-track font-helveticaNowTextRegular text-[7px] uppercase leading-none tracking-[0.32em] sm:text-[8px]">
+              <div className="contact-cta-marquee-track font-helveticaNowTextRegular text-type-micro normal-case leading-none tracking-[-0.02em]">
                 {([0, 1] as const).map((key) => (
                   <span key={key} className="inline-flex shrink-0 items-center whitespace-nowrap pr-14 sm:pr-20">
                     {t("contact.marquee")}

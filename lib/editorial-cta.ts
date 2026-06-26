@@ -16,6 +16,11 @@ const padCompact = "px-5 py-3";
 
 const label = "uppercase tracking-[0.12em]";
 
+/** Nav + contact footer — Display Bold, normal case, shared scale. */
+export const editorialNavType = cn(
+  "font-helveticaNowDisplayBold normal-case tracking-[-0.02em] text-nav-link",
+);
+
 type EditorialPad = "comfortable" | "compact";
 
 function pad(size: EditorialPad) {
@@ -42,6 +47,71 @@ export function editorialOutline(className?: string, size: EditorialPad = "comfo
 export function editorialMuted(className?: string, size: EditorialPad = "comfortable") {
   return cn(
     shell,
+    pad(size),
+    "border border-border bg-background text-foreground hover:bg-accent",
+    className,
+  );
+}
+
+/** Contact footer pair — shared layout/size for mail + message buttons. */
+export const contactFooterButtonStructure = cn(
+  "flex h-11 w-full items-center justify-start gap-2 text-left",
+  editorialNavType,
+);
+
+/** Muted outline — nav editorial style (contact footer mail). */
+export function editorialFooterMuted(className?: string) {
+  return cn(
+    radius,
+    padCompact,
+    contactFooterButtonStructure,
+    "border border-border bg-background text-foreground transition-colors duration-300 active:scale-[0.98] hover:bg-accent",
+    className,
+  );
+}
+
+/** Solid fill — nav editorial style (contact footer message). */
+export function editorialFooterPrimary(className?: string) {
+  return cn(
+    radius,
+    padCompact,
+    contactFooterButtonStructure,
+    "border border-transparent bg-foreground text-background transition-colors duration-300 active:scale-[0.98] hover:bg-foreground/90",
+    className,
+  );
+}
+
+const editorialButtonBase = cn(
+  "inline-flex items-center justify-center gap-2",
+  editorialNavType,
+  radius,
+  "transition-colors duration-300 active:scale-[0.98]",
+);
+
+/** Solid CTA — nav editorial style (case study, inline actions). */
+export function editorialNavPrimary(className?: string, size: EditorialPad = "comfortable") {
+  return cn(
+    editorialButtonBase,
+    pad(size),
+    "border border-transparent bg-foreground text-background hover:bg-foreground/90",
+    className,
+  );
+}
+
+/** Outline CTA — nav editorial style. */
+export function editorialNavOutline(className?: string, size: EditorialPad = "comfortable") {
+  return cn(
+    editorialButtonBase,
+    pad(size),
+    "border border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background",
+    className,
+  );
+}
+
+/** Muted outline CTA — nav editorial style. */
+export function editorialNavMuted(className?: string, size: EditorialPad = "compact") {
+  return cn(
+    editorialButtonBase,
     pad(size),
     "border border-border bg-background text-foreground hover:bg-accent",
     className,

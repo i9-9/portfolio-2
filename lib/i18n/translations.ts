@@ -18,7 +18,7 @@ export const translations = {
     },
     hero: {
       title: "Design & Systems",
-      subtitle: "",
+      subtitle: "Graphic Design & Front End Development",
       blurb:
         "Identity, editorial and interfaces—work where the grid, type and production meet.",
       stampGd: "Graphic design",
@@ -219,7 +219,7 @@ export const translations = {
     },
     hero: {
       title: "Diseño & Sistemas",
-      subtitle: "",
+      subtitle: "Diseño Gráfico & Desarrollo Front End",
       blurb:
         "Identidad, editorial e interfaces—trabajo donde la grilla, la tipografía y la producción se encuentran.",
       stampGd: "Diseño gráfico",

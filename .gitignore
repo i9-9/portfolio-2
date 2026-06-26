@@ -30,3 +30,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# generated portfolio recordings
+/public/recordings/portfolio-fullscreen.*

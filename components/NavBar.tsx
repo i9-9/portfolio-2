@@ -3,10 +3,11 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { useGrid } from '@/lib/grid/GridContext';
+import { useSplashHandoff } from '@/lib/splash/SplashHandoffContext';
 import {
   Sheet,
   SheetContent,
@@ -15,9 +16,80 @@ import {
 } from '@/components/ui/custom-sheet';
 import { HamburgerMenu } from './ui/hamburger-menu';
 import { cn } from '@/lib/utils';
+import { editorialNavType } from '@/lib/editorial-cta';
 
 /** CV link temporarily hidden from navbar */
 const NAV_SHOW_CV = false;
+
+const NAV_ENTER_EASE = [0.22, 1, 0.36, 1] as const;
+
+const navLabel = cn(
+  editorialNavType,
+  "transition-colors duration-300 whitespace-nowrap",
+);
+
+function navLinkClass(active: boolean, isMobile = false) {
+  return cn(
+    navLabel,
+    isMobile && "py-2 min-h-[44px] px-2 flex items-center",
+    active
+      ? "text-foreground"
+      : "text-muted-foreground hover:text-foreground",
+  );
+}
+
+function NavSeparator({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn("mx-2.5 lg:mx-3 text-nav-link text-muted-foreground/35 select-none", className)}
+      aria-hidden
+    >
+      ·
+    </span>
+  );
+}
+
+function LanguageToggle({ isMobile = false }: { isMobile?: boolean }) {
+  const { language, setLanguage } = useLanguage();
+
+  const shellClass = cn(
+    "inline-flex items-center",
+    isMobile && "py-2 min-h-[44px] px-2",
+  );
+
+  const activeClass = cn(navLabel, "text-nav-link text-foreground");
+  const inactiveClass = cn(
+    navLabel,
+    "text-nav-link text-muted-foreground hover:text-foreground transition-colors duration-300",
+    isMobile && "min-h-[44px] inline-flex items-center",
+  );
+
+  return (
+    <span className={shellClass} role="group" aria-label="Language">
+      {language === "en" ? (
+        <span aria-current="true" className={activeClass}>
+          En
+        </span>
+      ) : (
+        <button type="button" onClick={() => setLanguage("en")} className={inactiveClass}>
+          En
+        </button>
+      )}
+      <span className="mx-1.5 text-nav-link text-muted-foreground/35 select-none" aria-hidden>
+        ·
+      </span>
+      {language === "es" ? (
+        <span aria-current="true" className={activeClass}>
+          Es
+        </span>
+      ) : (
+        <button type="button" onClick={() => setLanguage("es")} className={inactiveClass}>
+          Es
+        </button>
+      )}
+    </span>
+  );
+}
 
 export function NavBar() {
   return (
@@ -30,21 +102,26 @@ export function NavBar() {
 function NavBarFallback() {
   return (
     <header
-      className="fixed top-0 left-0 right-0 bg-nav/80 backdrop-blur-sm z-[100] min-h-[48px] lg:min-h-[40px]"
+      className="fixed top-0 left-0 right-0 z-[100] min-h-[56px] lg:min-h-[52px] bg-nav/80 backdrop-blur-sm border-b border-border/60"
       aria-hidden
     />
   );
 }
 
 function NavBarInner() {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, t } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { isGridVisible, toggleGrid } = useGrid();
+  const { handoff: splashHandoff } = useSplashHandoff();
+  const reducedMotion = useReducedMotion();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  const waitsForSplash = pathname === '/';
+  const navLive = !waitsForSplash || splashHandoff || !!reducedMotion;
 
   /** Avoid hydration mismatch: pathname from usePathname can differ SSR vs first client paint for shared layout. */
   const isV2 =
@@ -59,10 +136,6 @@ function NavBarInner() {
   const v2GraphicHref = `${portfolioHome}?mode=graphic`;
   const v2WebActive =
     mounted && (pathname === '/' || pathname === '/v2') && !v2Graphic;
-
-  const toggleLanguage = () => {
-    setLanguage(language === 'en' ? 'es' : 'en');
-  };
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -94,40 +167,44 @@ function NavBarInner() {
   };
 
   const NavItems = ({ isMobile = false }: { isMobile?: boolean }) => {
-    const v2NavLinks = isV2 ? (
-      <>
-        <li>
+    type NavEntry = { key: string; node: React.ReactNode; active?: boolean };
+
+    const entries: NavEntry[] = [];
+
+    if (isV2) {
+      entries.push({
+        key: 'web',
+        active: v2WebActive,
+        node: (
           <Link
             href={v2WebHref}
             className={cn(
-              'tracking-[0.2em] uppercase transition-colors whitespace-nowrap',
-              isMobile
-                ? 'text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 flex items-center transition-opacity'
-                : 'text-[9px] py-1 px-2',
-              v2WebActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+              navLinkClass(v2WebActive, isMobile),
+              isMobile && "text-xl min-h-[52px]",
             )}
           >
             {t('work.filterWeb')}
           </Link>
-        </li>
-        <li>
+        ),
+      });
+      entries.push({
+        key: 'graphic',
+        active: v2Graphic,
+        node: (
           <Link
             href={v2GraphicHref}
             className={cn(
-              'tracking-[0.2em] uppercase transition-colors whitespace-nowrap',
-              isMobile
-                ? 'text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 flex items-center transition-opacity'
-                : 'text-[9px] py-1 px-2',
-              v2Graphic ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+              navLinkClass(v2Graphic, isMobile),
+              isMobile && "text-xl min-h-[52px]",
             )}
           >
             {t('work.filterGraphic')}
           </Link>
-        </li>
-      </>
-    ) : null;
+        ),
+      });
+    }
 
-    const items = [
+    const utilityItems = [
       ...(NAV_SHOW_CV
         ? [
             {
@@ -136,7 +213,7 @@ function NavBarInner() {
                 <a
                   href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
                   download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-                  className="text-xs tracking-[0.2em] uppercase transition-opacity whitespace-nowrap text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 flex items-center"
+                  className={cn(navLinkClass(false, true), "text-foreground hover:opacity-90")}
                 >
                   {t('nav.cv')}
                 </a>
@@ -144,16 +221,16 @@ function NavBarInner() {
                 <div className="relative group">
                   <button
                     type="button"
-                    className="text-[9px] tracking-[0.2em] uppercase transition-colors whitespace-nowrap py-1 px-2 text-muted-foreground hover:text-foreground"
+                    className={navLinkClass(false, false)}
                   >
                     {t('nav.cv')}
                   </button>
-                  <div className="absolute top-full right-0 mt-1 w-32 bg-popover border border-border rounded-md shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="absolute top-full right-0 mt-2 w-36 border border-border bg-background shadow-[0_8px_24px_-8px_rgba(0,0,0,0.12)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 dark:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.55)]">
                     <div className="py-1">
                       <a
                         href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
                         download={`CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
-                        className="block px-3 py-1.5 text-[8px] tracking-[0.2em] uppercase text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                        className="block px-3 py-2 text-[9px] font-helveticaNowTextRegular normal-case text-foreground hover:bg-accent transition-colors"
                       >
                         {t('nav.cvDropdown.download')}
                       </a>
@@ -161,7 +238,7 @@ function NavBarInner() {
                         href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block px-3 py-1.5 text-[8px] tracking-[0.2em] uppercase text-popover-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                        className="block px-3 py-2 text-[9px] font-helveticaNowTextRegular normal-case text-foreground hover:bg-accent transition-colors"
                       >
                         {t('nav.cvDropdown.view')}
                       </a>
@@ -177,10 +254,7 @@ function NavBarInner() {
         element: (
           <button
             onClick={toggleTheme}
-            className={cn(
-              "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 transition-opacity" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
-            )}
+            className={navLinkClass(false, isMobile)}
           >
             {t(`nav.theme.${theme}`)}
           </button>
@@ -188,28 +262,14 @@ function NavBarInner() {
       },
       {
         id: 'language',
-        element: (
-          <button
-            onClick={toggleLanguage}
-            className={cn(
-              "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 transition-opacity" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2"
-            )}
-          >
-            {t('nav.language')}
-          </button>
-        ),
+        element: <LanguageToggle isMobile={isMobile} />,
       },
       {
         id: 'grid',
         element: (
           <button
             onClick={toggleGrid}
-            className={cn(
-              "tracking-[0.2em] uppercase transition-colors whitespace-nowrap",
-              isMobile ? "text-xs text-foreground hover:opacity-90 py-2 min-h-[44px] px-2 transition-opacity" : "text-[9px] text-muted-foreground hover:text-foreground py-1 px-2",
-              isGridVisible && "text-foreground"
-            )}
+            className={navLinkClass(isGridVisible, isMobile)}
           >
             Grid
           </button>
@@ -217,57 +277,26 @@ function NavBarInner() {
       },
     ];
 
-    const listContent = (
-      <>
-        {v2NavLinks}
-        {items.map((item) => (
-          <li key={item.id}>
-            {item.element}
-          </li>
-        ))}
-      </>
-    );
+    utilityItems.forEach((item) => {
+      entries.push({ key: item.id, node: item.element, active: item.id === 'grid' && isGridVisible });
+    });
+
+    const utilityStart = isV2 ? 2 : 0;
 
     if (isMobile) {
       return (
         <motion.ul
-          className={cn("flex flex-col gap-6")}
+          className="flex flex-col gap-1 border-t border-border pt-8"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          {isV2 ? (
-            <>
-              <motion.li variants={itemVariants}>
-                <Link
-                  href={v2WebHref}
-                  className={cn(
-                    'text-xs tracking-[0.2em] uppercase transition-opacity whitespace-nowrap py-2 min-h-[44px] px-2 flex items-center',
-                    v2WebActive ? 'text-foreground' : 'text-foreground/80',
-                  )}
-                >
-                  {t('work.filterWeb')}
-                </Link>
-              </motion.li>
-              <motion.li variants={itemVariants}>
-                <Link
-                  href={v2GraphicHref}
-                  className={cn(
-                    'text-xs tracking-[0.2em] uppercase transition-opacity whitespace-nowrap py-2 min-h-[44px] px-2 flex items-center',
-                    v2Graphic ? 'text-foreground' : 'text-foreground/80',
-                  )}
-                >
-                  {t('work.filterGraphic')}
-                </Link>
-              </motion.li>
-            </>
-          ) : null}
-          {items.map((item) => (
-            <motion.li
-              key={item.id}
-              variants={itemVariants}
-            >
-              {item.element}
+          {entries.map((entry, i) => (
+            <motion.li key={entry.key} variants={itemVariants}>
+              {i === utilityStart && utilityStart > 0 ? (
+                <div className="my-4 h-px w-full bg-border" aria-hidden />
+              ) : null}
+              {entry.node}
             </motion.li>
           ))}
         </motion.ul>
@@ -275,52 +304,76 @@ function NavBarInner() {
     }
 
     return (
-      <ul className="flex flex-row gap-6 -mr-2">
-        {listContent}
+      <ul className="flex flex-row items-center -mr-1">
+        {entries.map((entry, i) => (
+          <li key={entry.key} className="flex items-center">
+            {i > 0 ? <NavSeparator /> : null}
+            {entry.node}
+          </li>
+        ))}
       </ul>
     );
   };
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 bg-nav/80 backdrop-blur-sm z-[100]">
-        <div className="w-full grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12">
-          {/* Logo - 6 columns on mobile, auto on desktop */}
-          <div className="col-span-6 flex items-center h-[48px] lg:h-[40px]">
+      <motion.header
+        className="fixed top-0 left-0 right-0 z-[100] bg-nav/80 backdrop-blur-sm border-b border-border/60"
+        initial={{ y: "-100%" }}
+        animate={navLive ? { y: 0 } : { y: "-100%" }}
+        transition={
+          reducedMotion
+            ? { duration: 0 }
+            : { duration: 0.72, delay: navLive ? 0.1 : 0, ease: NAV_ENTER_EASE }
+        }
+      >
+        <div className="w-full grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12 h-[56px] lg:h-[52px] items-center">
+          <div className="col-span-6 lg:col-span-3 flex items-center min-w-0">
             <a
               href={homeHref}
-              className="text-xs md:text-[9px] tracking-[0.2em] uppercase flex items-center text-foreground/90 hover:text-foreground py-2 md:py-0"
+              className="text-name-nav tracking-[-0.02em] font-helveticaNowDisplayBold flex items-center text-foreground hover:text-foreground/80 transition-colors duration-300 py-2 md:py-0 truncate"
             >
               Ivan Nevares
             </a>
           </div>
 
-          {/* Navigation - 3 columns starting at column 10 (aligned with sidebar) */}
           <nav
-            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end h-[48px] lg:h-[40px]"
+            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end min-w-0"
+            aria-label={t('nav.mobileMenuTitle')}
           >
-            {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center">
               <NavItems />
             </div>
-            
-            {/* Mobile Menu */}
-            <div className="lg:hidden">
+
+            <div className="lg:hidden flex items-center gap-3">
+              <span className={cn(navLabel, "text-nav-link text-muted-foreground")}>
+                Menu
+              </span>
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="p-3 flex items-center -mr-1 min-h-[44px] min-w-[44px] justify-center">
+                  <button
+                    className="flex items-center justify-center min-h-[44px] min-w-[44px] -mr-2"
+                    aria-label={t('nav.mobileMenuTitle')}
+                  >
                     <HamburgerMenu isOpen={isMobileMenuOpen} />
                   </button>
                 </SheetTrigger>
                 <SheetContent
-                  className="w-full h-[100vh] sm:max-w-none border-b border-border/80 bg-background mt-[48px] p-0"
+                  className="w-full h-[100dvh] sm:max-w-none border-0 bg-background mt-[56px] p-0"
                   side="top"
                 >
                   <SheetTitle className="sr-only">{t('nav.mobileMenuTitle')}</SheetTitle>
-                  <div className="w-full h-full">
-                    <div className="grid grid-cols-12 px-4 lg:px-12 pt-24">
-                      <div className="col-span-6">
+                  <div className="flex h-full flex-col px-4 lg:px-12">
+                    <div className="grid grid-cols-12 gap-4 lg:gap-6 pt-10 pb-6">
+                      <div className="col-span-12 lg:col-span-6">
                         <NavItems isMobile={true} />
+                      </div>
+                    </div>
+
+                    <div className="mt-auto border-t border-border px-0 py-6">
+                      <div className="grid grid-cols-12 gap-4 lg:gap-6 text-[10px] font-helveticaNowTextRegular normal-case tracking-normal text-muted-foreground">
+                        <div className="col-span-6">Buenos Aires · AR</div>
+                        <div className="col-span-6 text-right tabular-nums">{t('contact.stamp')}</div>
                       </div>
                     </div>
                   </div>
@@ -329,7 +382,7 @@ function NavBarInner() {
             </div>
           </nav>
         </div>
-      </header>
+      </motion.header>
     </>
   );
 }
