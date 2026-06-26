@@ -35,7 +35,7 @@ const ProfileLayout = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="grid-container pt-24 pb-24">
+      <div className="grid-container pt-nav-2 pb-24">
         {/* Main Content - 6 columns */}
         <div className="col-span-12 lg:col-span-6 lg:col-start-1 mb-16 lg:mb-0">
           {/* Hero */}

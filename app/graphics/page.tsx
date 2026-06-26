@@ -6,7 +6,7 @@ import { GraphicsGallery } from "@/components/GraphicsGallery";
 const GraphicsPage = () => {
   return (
     <div className="min-h-screen bg-background">
-      <div className="grid-container pb-16 pt-[120px]">
+      <div className="grid-container pb-16 pt-nav-2">
         <div className="col-span-12">
           <GraphicsGallery />
         </div>

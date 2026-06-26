@@ -22,7 +22,7 @@ export const translations = {
       blurb:
         "Identity, editorial and interfaces—work where the grid, type and production meet.",
       stampGd: "Graphic design",
-      stampDev: "Websites",
+      stampDev: "Front End Development",
       stampName: "Ivan Nevares",
       stampWorkLink: "Selected work",
     },
@@ -74,12 +74,12 @@ export const translations = {
       mailCopied: "Mail copied to clipboard",
       elsewhere: "Elsewhere",
       socialNav: "Social & profiles",
-      kicker: "Graphic design · Websites · Buenos Aires, Argentina",
+      kicker: "Graphic design · Front End Development · Buenos Aires, Argentina",
       stamp: "MMXXVI · BUE",
       blurbWohl: "Wohl Studio",
       blurbTail: " · UBA",
       marquee:
-        "Graphic design · Websites · ivannevares9@gmail.com · ",
+        "Graphic design · Front End Development · ivannevares9@gmail.com · ",
     },
     form: {
       title: "Contact Form",
@@ -223,7 +223,7 @@ export const translations = {
       blurb:
         "Identidad, editorial e interfaces—trabajo donde la grilla, la tipografía y la producción se encuentran.",
       stampGd: "Diseño gráfico",
-      stampDev: "Sitios web",
+      stampDev: "Desarrollo Front End",
       stampName: "Ivan Nevares",
       stampWorkLink: "Ver proyectos",
     },
@@ -275,12 +275,12 @@ export const translations = {
       mailCopied: "Mail copiado al portapapeles",
       elsewhere: "También en",
       socialNav: "Redes y perfiles",
-      kicker: "Diseño gráfico · Sitios web · Buenos Aires, Argentina",
+      kicker: "Diseño gráfico · Desarrollo Front End · Buenos Aires, Argentina",
       stamp: "MMXXVI · BUE",
       blurbWohl: "Wohl Studio",
       blurbTail: " · UBA",
       marquee:
-        "Diseño gráfico · Sitios web · ivannevares9@gmail.com · ",
+        "Diseño gráfico · Desarrollo Front End · ivannevares9@gmail.com · ",
     },
     form: {
       title: "Formulario de Contacto",

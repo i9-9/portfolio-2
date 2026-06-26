@@ -183,15 +183,14 @@ function PageReveal() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.55, ease: SPLASH_EXIT_EASE }}
         >
-          {/* top metadata — asymmetric grid, Swiss style */}
-          <div className="grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12 pt-6 lg:pt-8">
-            <div className="col-span-6 lg:col-span-3 text-name-nav font-helveticaNowDisplayBold tracking-[-0.02em] text-foreground">
-              Ivan Nevares
+          {/* top metadata — row 1, same band as nav */}
+          <div className="nav-bar-inner h-[var(--grid-row)] shrink-0">
+            <div className="col-span-6 lg:col-span-3 min-w-0">
+              <div className="text-name-nav leading-none font-helveticaNowDisplayBold tracking-[-0.02em] text-foreground optical-edge-start">
+                Ivan Nevares
+              </div>
             </div>
-            <div className={cn("hidden lg:block col-span-6", editorialNavType, "text-muted-foreground")}>
-              Graphic design · Websites
-            </div>
-            <div className={cn("col-span-6 lg:col-span-3 text-right", editorialNavType, "text-muted-foreground")}>
+            <div className={cn("col-span-6 lg:col-span-3 lg:col-start-10 text-right leading-none", editorialNavType, "text-muted-foreground")}>
               Portfolio · MMXXVI
             </div>
           </div>
@@ -681,7 +680,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       <CustomCursor />
 
       {/* -- HERO — halftone (landing / v2 web) or draggable graphic "desktop" (v2 graphic) */}
-      <section className="relative isolate min-h-[calc(100vh-6rem)] flex flex-col overflow-hidden px-4 lg:px-12 pb-10 lg:pb-14 pt-24">
+      <section className="hero-band relative isolate flex flex-col overflow-hidden px-4 lg:px-12">
         {showGraphicDesktopHero ? (
           <GraphicDesktopHero />
         ) : (
@@ -702,9 +701,9 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           }}
           className="relative z-30"
         >
-          <h1 className="font-helveticaNowDisplayBold text-name-hero leading-[0.95] tracking-[-0.02em] flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span>Ivan Nevares</span>
-            <span className="text-hero-subtitle font-helveticaNowTextRegular text-muted-foreground tracking-normal">
+          <h1 className="hero-title-stack font-helveticaNowDisplayBold text-name-hero tracking-[-0.02em]">
+            <span className="hero-name optical-edge-start">Ivan Nevares</span>
+            <span className="text-hero-subtitle font-helveticaNowTextRegular text-muted-foreground tracking-normal leading-none">
               {t("hero.subtitle")}
             </span>
           </h1>

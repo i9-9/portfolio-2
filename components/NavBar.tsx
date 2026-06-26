@@ -23,9 +23,13 @@ const NAV_SHOW_CV = false;
 
 const NAV_ENTER_EASE = [0.22, 1, 0.36, 1] as const;
 
+/** Shared shell — divider lives in `.nav-shell` CSS, not Tailwind border classes */
+const NAV_SHELL_CLASS =
+  "fixed top-0 left-0 right-0 z-[100] nav-shell bg-nav/80 backdrop-blur-sm";
+
 const navLabel = cn(
   editorialNavType,
-  "transition-colors duration-300 whitespace-nowrap",
+  "leading-none transition-colors duration-300 whitespace-nowrap",
 );
 
 function navLinkClass(active: boolean, isMobile = false) {
@@ -53,8 +57,8 @@ function LanguageToggle({ isMobile = false }: { isMobile?: boolean }) {
   const { language, setLanguage } = useLanguage();
 
   const shellClass = cn(
-    "inline-flex items-center",
-    isMobile && "py-2 min-h-[44px] px-2",
+    "inline-flex items-baseline",
+    isMobile && "items-center py-2 min-h-[44px] px-2",
   );
 
   const activeClass = cn(navLabel, "text-nav-link text-foreground");
@@ -101,10 +105,7 @@ export function NavBar() {
 
 function NavBarFallback() {
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-[100] min-h-[56px] lg:min-h-[52px] bg-nav/80 backdrop-blur-sm border-b border-border/60"
-      aria-hidden
-    />
+    <header className={NAV_SHELL_CLASS} aria-hidden />
   );
 }
 
@@ -304,9 +305,12 @@ function NavBarInner() {
     }
 
     return (
-      <ul className="flex flex-row items-center -mr-1">
+      <ul className="flex flex-row items-baseline">
         {entries.map((entry, i) => (
-          <li key={entry.key} className="flex items-center">
+          <li
+            key={entry.key}
+            className={cn("flex items-center", i === entries.length - 1 && "optical-edge-end")}
+          >
             {i > 0 ? <NavSeparator /> : null}
             {entry.node}
           </li>
@@ -318,8 +322,8 @@ function NavBarInner() {
   return (
     <>
       <motion.header
-        className="fixed top-0 left-0 right-0 z-[100] bg-nav/80 backdrop-blur-sm border-b border-border/60"
-        initial={{ y: "-100%" }}
+        className={NAV_SHELL_CLASS}
+        initial={false}
         animate={navLive ? { y: 0 } : { y: "-100%" }}
         transition={
           reducedMotion
@@ -327,21 +331,21 @@ function NavBarInner() {
             : { duration: 0.72, delay: navLive ? 0.1 : 0, ease: NAV_ENTER_EASE }
         }
       >
-        <div className="w-full grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12 h-[56px] lg:h-[52px] items-center">
-          <div className="col-span-6 lg:col-span-3 flex items-center min-w-0">
+        <div className="nav-bar-inner">
+          <div className="col-span-6 lg:col-span-3 min-w-0">
             <a
               href={homeHref}
-              className="text-name-nav tracking-[-0.02em] font-helveticaNowDisplayBold flex items-center text-foreground hover:text-foreground/80 transition-colors duration-300 py-2 md:py-0 truncate"
+              className="optical-edge-start text-name-nav leading-none tracking-[-0.02em] font-helveticaNowDisplayBold text-foreground hover:text-foreground/80 transition-colors duration-300 truncate"
             >
               Ivan Nevares
             </a>
           </div>
 
           <nav
-            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex items-center justify-end min-w-0"
+            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end min-w-0"
             aria-label={t('nav.mobileMenuTitle')}
           >
-            <div className="hidden lg:flex items-center">
+            <div className="hidden lg:block">
               <NavItems />
             </div>
 
@@ -352,14 +356,14 @@ function NavBarInner() {
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <button
-                    className="flex items-center justify-center min-h-[44px] min-w-[44px] -mr-2"
+                    className="flex items-center justify-center size-11 -mr-2"
                     aria-label={t('nav.mobileMenuTitle')}
                   >
                     <HamburgerMenu isOpen={isMobileMenuOpen} />
                   </button>
                 </SheetTrigger>
                 <SheetContent
-                  className="w-full h-[100dvh] sm:max-w-none border-0 bg-background mt-[56px] p-0"
+                  className="w-full h-[100dvh] sm:max-w-none border-0 bg-background mt-[var(--nav-height)] p-0"
                   side="top"
                 >
                   <SheetTitle className="sr-only">{t('nav.mobileMenuTitle')}</SheetTitle>

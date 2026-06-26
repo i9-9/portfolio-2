@@ -32,7 +32,7 @@ export default function ContentfulGuidePage() {
 
   return (
     <div className="min-h-screen bg-background font-sans text-foreground antialiased">
-      <div className="grid-container pb-16 pt-[120px] lg:pb-24">
+      <div className="grid-container pb-16 pt-nav-2 lg:pb-24">
         <article
           className="col-span-12 grid w-full grid-cols-12 gap-x-4 gap-y-10 lg:gap-x-6 lg:gap-y-12"
           lang={language}

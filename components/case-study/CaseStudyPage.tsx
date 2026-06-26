@@ -33,7 +33,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
   return (
     <article className="min-h-screen bg-background text-foreground">
-      <div className="grid-container pt-24 pb-6 lg:pt-28">
+      <div className="grid-container pt-nav-2 pb-6">
         <div className="col-span-12">
           <Link
             href="/#work"

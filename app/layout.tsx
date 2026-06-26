@@ -18,22 +18,22 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'Ivan Nevares — graphic design & websites',
+  title: 'Ivan Nevares — graphic design & front end development',
   description:
-    'Graphic design and websites. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
+    'Graphic design and front end development. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
   keywords: [
     'Ivan Nevares',
     'graphic design',
-    'websites',
+    'front end development',
     'Wohl Studio',
     'Buenos Aires',
     'Portfolio',
   ],
   authors: [{ name: 'Ivan Nevares' }],
   openGraph: {
-    title: 'Ivan Nevares — graphic design & websites',
+    title: 'Ivan Nevares — graphic design & front end development',
     description:
-      'Graphic design and websites. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
+      'Graphic design and front end development. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
     url: 'https://ivannevares.com',
     siteName: 'Ivan Nevares Portfolio',
     locale: 'en_US',
