@@ -79,7 +79,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             <span>{project.name}</span>
           </div>
 
-          <h1 className="mt-6 max-w-4xl font-helveticaNowDisplayBold text-type-case-title leading-[1.08] tracking-[-0.02em] text-foreground">
+          <h1 className="mt-6 w-full max-w-none font-helveticaNowTextRegular text-type-body-lg leading-[1.55] tracking-normal text-foreground text-pretty">
             {loc.headline}
           </h1>
 
@@ -190,12 +190,7 @@ function CaseStudySection({
 }) {
   return (
     <section className="grid grid-cols-12 gap-4 border-b border-border py-10 lg:gap-6 lg:py-12">
-      <h2
-        className={cn(
-          editorialNavType,
-          "text-type-2 col-span-12 text-foreground lg:col-span-3",
-        )}
-      >
+      <h2 className="case-study-section-heading col-span-12 lg:col-span-3">
         {title}
       </h2>
       <div className="col-span-12 lg:col-span-8 lg:col-start-5">{children}</div>
