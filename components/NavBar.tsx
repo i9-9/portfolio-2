@@ -12,7 +12,6 @@ import {
   Sheet,
   SheetContent,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/custom-sheet';
 import { HamburgerMenu } from './ui/hamburger-menu';
 import { cn } from '@/lib/utils';
@@ -35,7 +34,8 @@ const navLabel = cn(
 function navLinkClass(active: boolean, isMobile = false) {
   return cn(
     navLabel,
-    isMobile && "py-2 min-h-[44px] px-2 flex items-center",
+    isMobile &&
+      "flex w-full min-h-[44px] items-center py-3 optical-edge-start",
     active
       ? "text-foreground"
       : "text-muted-foreground hover:text-foreground",
@@ -58,7 +58,7 @@ function LanguageToggle({ isMobile = false }: { isMobile?: boolean }) {
 
   const shellClass = cn(
     "inline-flex items-baseline",
-    isMobile && "items-center py-2 min-h-[44px] px-2",
+    isMobile && "flex w-full min-h-[44px] items-center py-3 optical-edge-start",
   );
 
   const activeClass = cn(navLabel, "text-nav-link text-foreground");
@@ -121,6 +121,10 @@ function NavBarInner() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname, searchParams]);
+
   const waitsForSplash = pathname === '/';
   const navLive = !waitsForSplash || splashHandoff || !!reducedMotion;
 
@@ -167,7 +171,13 @@ function NavBarInner() {
     },
   };
 
-  const NavItems = ({ isMobile = false }: { isMobile?: boolean }) => {
+  const NavItems = ({
+    isMobile = false,
+    onMobileClose,
+  }: {
+    isMobile?: boolean;
+    onMobileClose?: () => void;
+  }) => {
     type NavEntry = { key: string; node: React.ReactNode; active?: boolean };
 
     const entries: NavEntry[] = [];
@@ -179,6 +189,7 @@ function NavBarInner() {
         node: (
           <Link
             href={v2WebHref}
+            onClick={() => onMobileClose?.()}
             className={cn(
               navLinkClass(v2WebActive, isMobile),
               isMobile && "text-xl min-h-[52px]",
@@ -194,6 +205,7 @@ function NavBarInner() {
         node: (
           <Link
             href={v2GraphicHref}
+            onClick={() => onMobileClose?.()}
             className={cn(
               navLinkClass(v2Graphic, isMobile),
               isMobile && "text-xl min-h-[52px]",
@@ -324,7 +336,9 @@ function NavBarInner() {
       <motion.header
         className={cn(
           NAV_SHELL_BASE,
-          isMobileMenuOpen ? "bg-background" : "bg-nav/80 backdrop-blur-sm",
+          isMobileMenuOpen
+            ? "z-[110] bg-background pointer-events-auto"
+            : "bg-nav/80 backdrop-blur-sm",
         )}
         initial={false}
         animate={navLive ? { y: 0 } : { y: "-100%" }}
@@ -357,31 +371,35 @@ function NavBarInner() {
                 Menu
               </span>
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <button
-                    className="flex items-center justify-center size-11 -mr-2"
-                    aria-label={t('nav.mobileMenuTitle')}
-                  >
-                    <HamburgerMenu isOpen={isMobileMenuOpen} />
-                  </button>
-                </SheetTrigger>
+                <button
+                  type="button"
+                  onClick={() => setIsMobileMenuOpen((open) => !open)}
+                  className="flex items-center justify-center size-11 -mr-2"
+                  aria-label={t('nav.mobileMenuTitle')}
+                  aria-expanded={isMobileMenuOpen}
+                >
+                  <HamburgerMenu isOpen={isMobileMenuOpen} />
+                </button>
                 <SheetContent
-                  className="inset-x-0 top-0 h-[100dvh] w-full sm:max-w-none border-0 bg-background p-0 pt-[var(--nav-height)] shadow-none"
-                  overlayClassName="bg-background"
+                  className="inset-x-0 top-[var(--nav-height)] h-[calc(100dvh-var(--nav-height))] w-full sm:max-w-none border-0 bg-background p-0 shadow-none z-[90]"
+                  overlayClassName="inset-x-0 top-[var(--nav-height)] bottom-0 bg-background"
                   side="top"
                 >
                   <SheetTitle className="sr-only">{t('nav.mobileMenuTitle')}</SheetTitle>
-                  <div className="flex h-full flex-col px-4 lg:px-12">
-                    <div className="grid grid-cols-12 gap-4 lg:gap-6 pt-10 pb-6">
-                      <div className="col-span-12 lg:col-span-6">
-                        <NavItems isMobile={true} />
+                  <div className="flex h-full flex-col">
+                    <div className="grid-container flex-1 pt-10 pb-6">
+                      <div className="col-span-12">
+                        <NavItems
+                          isMobile={true}
+                          onMobileClose={() => setIsMobileMenuOpen(false)}
+                        />
                       </div>
                     </div>
 
-                    <div className="mt-auto border-t border-border px-0 py-6">
-                      <div className="grid grid-cols-12 gap-4 lg:gap-6 text-[10px] font-helveticaNowTextRegular normal-case tracking-normal text-muted-foreground">
-                        <div className="col-span-6">Buenos Aires · AR</div>
-                        <div className="col-span-6 text-right tabular-nums">{t('contact.stamp')}</div>
+                    <div className="grid-container border-t border-border py-6 text-[10px] font-helveticaNowTextRegular normal-case tracking-normal text-muted-foreground">
+                      <div className="col-span-6 optical-edge-start">Buenos Aires · AR</div>
+                      <div className="col-span-6 text-right tabular-nums optical-edge-end">
+                        {t('contact.stamp')}
                       </div>
                     </div>
                   </div>

@@ -102,6 +102,7 @@ function PageReveal() {
 
   // Skip splash before first paint when reduced motion or already seen this session.
   useLayoutEffect(() => {
+    if (reduced === null) return;
     let skipSession = false;
     try {
       skipSession =
@@ -117,7 +118,9 @@ function PageReveal() {
   }, [reduced]);
 
   useEffect(() => {
-    if (reduced) return;
+    // Framer returns `null` until the client reads prefers-reduced-motion.
+    // Starting before that resolves re-runs this effect and resets the counter.
+    if (reduced !== false) return;
 
     let skipSession = false;
     try {

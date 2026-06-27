@@ -27,6 +27,7 @@ export function SplashHandoffProvider({ children }: { children: ReactNode }) {
   const [handoff, setHandoff] = useState(false);
 
   useLayoutEffect(() => {
+    if (reduced === null) return;
     if (reduced) {
       setHandoff(true);
       return;
