@@ -745,7 +745,10 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             opacity: { duration: 0.85 },
             filter: { duration: 1.15 },
           }}
-          className="relative z-30"
+          className={cn(
+            "relative z-30",
+            showGraphicDesktopHero && "pointer-events-none",
+          )}
         >
           <h1 className="hero-title-stack font-helveticaNowDisplayBold text-name-hero tracking-[-0.02em]">
             <span className="hero-name optical-edge-start">Ivan Nevares</span>

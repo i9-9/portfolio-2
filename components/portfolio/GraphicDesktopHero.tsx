@@ -346,12 +346,11 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
       {blockViewer}
       <div
         className={cn(
-          "pointer-events-auto absolute inset-0 z-0 overflow-hidden",
+          "pointer-events-auto absolute inset-0 z-10 overflow-hidden",
           "bg-[linear-gradient(165deg,rgb(245_245_245/0.9)_0%,rgb(235_235_235/0.95)_40%,rgb(228_228_228/1)_100%)]",
           "dark:bg-[linear-gradient(165deg,rgb(24_24_24/1)_0%,rgb(28_28_28/1)_45%,rgb(32_32_32/1)_100%)]",
           className,
         )}
-        aria-hidden
       >
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.35] dark:opacity-[0.2]"
