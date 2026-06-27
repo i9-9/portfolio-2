@@ -98,7 +98,7 @@
     --hero-gap-title-subtitle: var(--space-3);
     --hero-gap-subtitle-floor: calc(var(--grid-row) * 2);
     --type-project-name: var(--type-2);      /* work row titles */
-    --type-case-title: var(--type-5);        /* case study headline */
+    --type-case-title: var(--type-3);        /* case study headline — one φ above sections */
     --type-case-section: var(--type-2);      /* Desafío, Decisión clave, Resultado */
     --type-body: var(--type-0);
     --type-body-lg: var(--type-1);           /* emphasized body / result */

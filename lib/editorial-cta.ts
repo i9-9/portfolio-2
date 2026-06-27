@@ -55,7 +55,7 @@ export function editorialMuted(className?: string, size: EditorialPad = "comfort
 
 /** Contact footer pair — shared layout/size for mail + message buttons. */
 export const contactFooterButtonStructure = cn(
-  "flex h-11 w-full items-center justify-start gap-2 text-left",
+  "flex h-11 w-full min-w-0 max-w-full items-center justify-start gap-2 overflow-hidden text-left sm:w-auto",
   editorialNavType,
 );
 

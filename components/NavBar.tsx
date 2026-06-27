@@ -24,8 +24,8 @@ const NAV_SHOW_CV = false;
 const NAV_ENTER_EASE = [0.22, 1, 0.36, 1] as const;
 
 /** Shared shell — divider lives in `.nav-shell` CSS, not Tailwind border classes */
-const NAV_SHELL_CLASS =
-  "fixed top-0 left-0 right-0 z-[100] nav-shell bg-nav/80 backdrop-blur-sm";
+const NAV_SHELL_BASE = "fixed top-0 left-0 right-0 z-[100] nav-shell";
+const NAV_SHELL_CLASS = cn(NAV_SHELL_BASE, "bg-nav/80 backdrop-blur-sm");
 
 const navLabel = cn(
   editorialNavType,
@@ -322,7 +322,10 @@ function NavBarInner() {
   return (
     <>
       <motion.header
-        className={NAV_SHELL_CLASS}
+        className={cn(
+          NAV_SHELL_BASE,
+          isMobileMenuOpen ? "bg-background" : "bg-nav/80 backdrop-blur-sm",
+        )}
         initial={false}
         animate={navLive ? { y: 0 } : { y: "-100%" }}
         transition={
@@ -363,7 +366,8 @@ function NavBarInner() {
                   </button>
                 </SheetTrigger>
                 <SheetContent
-                  className="w-full h-[100dvh] sm:max-w-none border-0 bg-background mt-[var(--nav-height)] p-0"
+                  className="inset-x-0 top-0 h-[100dvh] w-full sm:max-w-none border-0 bg-background p-0 pt-[var(--nav-height)] shadow-none"
+                  overlayClassName="bg-background"
                   side="top"
                 >
                   <SheetTitle className="sr-only">{t('nav.mobileMenuTitle')}</SheetTitle>

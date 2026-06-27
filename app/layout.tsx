@@ -18,6 +18,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://inevares.com'),
   title: 'Ivan Nevares — graphic design & front end development',
   description:
     'Graphic design and front end development. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     title: 'Ivan Nevares — graphic design & front end development',
     description:
       'Graphic design and front end development. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
-    url: 'https://ivannevares.com',
+    url: 'https://inevares.com',
     siteName: 'Ivan Nevares Portfolio',
     locale: 'en_US',
     type: 'website',

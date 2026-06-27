@@ -874,19 +874,20 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 : { opacity: 0, y: 16, filter: "blur(6px)" }
             }
             transition={{ duration: 0.9, delay: 0.32, ease: EASE_OUT_EXPO }}
-            className="grid grid-cols-12 gap-4 lg:gap-6"
+            className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
           >
-            <Magnetic strength={0.2} className="col-span-12 lg:col-span-2">
+            <Magnetic strength={0.2} className="min-w-0 w-full sm:w-auto sm:max-w-full">
               <button
                 type="button"
                 onClick={copyEmail}
                 className={editorialFooterMuted()}
+                title="ivannevares9@gmail.com"
               >
                 <Mail className="w-4 h-4 shrink-0" aria-hidden />
-                ivannevares9@gmail.com
+                <span className="truncate">ivannevares9@gmail.com</span>
               </button>
             </Magnetic>
-            <Magnetic strength={0.2} className="col-span-12 lg:col-span-2">
+            <Magnetic strength={0.2} className="w-full sm:w-auto sm:max-w-full">
               <button
                 type="button"
                 onClick={() => setIsContactOpen(true)}

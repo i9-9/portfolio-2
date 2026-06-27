@@ -79,7 +79,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             <span>{project.name}</span>
           </div>
 
-          <h1 className="mt-6 w-full max-w-none font-helveticaNowTextRegular text-type-body-lg leading-[1.55] tracking-normal text-foreground text-pretty">
+          <h1 className="mt-6 w-full font-helveticaNowDisplayBold text-type-case-title leading-[1.1] tracking-[-0.02em] text-foreground">
             {loc.headline}
           </h1>
 

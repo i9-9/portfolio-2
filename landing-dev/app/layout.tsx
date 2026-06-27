@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Ivan Nevares - UX/UI Designer & Front-End Developer',
     description: 'Portfolio of Ivan Nevares, a UX/UI Designer and Front-End Developer based in Buenos Aires, Argentina. Specializing in creating unique digital experiences.',
-    url: 'https://ivannevares.com',
+    url: 'https://inevares.com',
     siteName: 'Ivan Nevares Portfolio',
     locale: 'en_US',
     type: 'website',

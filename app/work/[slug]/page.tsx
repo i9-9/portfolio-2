@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { projects, getProjectBySlug } from "@/app/data/projects";
-import { CASE_STUDIES, isCaseStudySlug } from "@/lib/case-studies";
+import { isCaseStudySlug } from "@/lib/case-studies";
 import { CaseStudyPage } from "@/components/case-study/CaseStudyPage";
+import { CaseStudyJsonLd } from "@/components/seo/CaseStudyJsonLd";
+import { buildCaseStudyMetadata } from "@/lib/seo/case-study";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -18,16 +20,7 @@ export async function generateMetadata({
   if (!project || !isCaseStudySlug(slug)) {
     return { title: "Work" };
   }
-  const metaDescription =
-    CASE_STUDIES[slug].en.headline || `${project.name} — case study`;
-  return {
-    title: `${project.name} — Case study · Ivan Nevares`,
-    description: metaDescription,
-    openGraph: {
-      title: `${project.name} — Case study`,
-      description: metaDescription,
-    },
-  };
+  return buildCaseStudyMetadata(project, slug);
 }
 
 export default async function WorkCaseStudyRoute({
@@ -36,8 +29,15 @@ export default async function WorkCaseStudyRoute({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  if (!getProjectBySlug(slug) || !isCaseStudySlug(slug)) {
+  const project = getProjectBySlug(slug);
+  if (!project || !isCaseStudySlug(slug)) {
     notFound();
   }
-  return <CaseStudyPage slug={slug} />;
+
+  return (
+    <>
+      <CaseStudyJsonLd project={project} slug={slug} />
+      <CaseStudyPage slug={slug} />
+    </>
+  );
 }
