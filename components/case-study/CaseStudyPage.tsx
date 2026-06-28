@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
@@ -21,6 +20,7 @@ import {
   getNextCaseStudySlug,
   type CaseStudySlug,
 } from "@/lib/case-studies";
+import { CaseStudyHeroImage } from "@/components/case-study/CaseStudyHeroImage";
 
 export function CaseStudyPage({ slug }: { slug: string }) {
   const { language, t } = useLanguage();
@@ -48,14 +48,9 @@ export function CaseStudyPage({ slug }: { slug: string }) {
     >
       {/* Hero — full screenshot below nav; -mt-px tucks under nav hairline divider */}
       <div className="relative mt-[var(--nav-height)] w-full overflow-hidden leading-[0]">
-        <Image
-          src={project.caseStudyHero}
+        <CaseStudyHeroImage
+          project={project}
           alt={`${project.name} — preview`}
-          width={project.heroWidth}
-          height={project.heroHeight}
-          className="relative -mt-px block h-auto w-full"
-          sizes="100vw"
-          priority
         />
 
         <div className="absolute inset-x-0 top-0 z-10">

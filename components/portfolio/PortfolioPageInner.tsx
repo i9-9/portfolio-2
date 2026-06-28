@@ -8,7 +8,8 @@ import {
   useScroll, useInView, useReducedMotion,
 } from "framer-motion";
 import Image from "next/image";
-import { projects } from "@/app/data/projects";
+import { getProjectBySlug, projects } from "@/app/data/projects";
+import { getProjectPreview } from "@/lib/projects/screenshot";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import {
@@ -22,6 +23,13 @@ import {
   SPLASH_SESSION_KEY,
   useSplashHandoff,
 } from "@/lib/splash/SplashHandoffContext";
+import { EASE_CINEMATIC, EASE_OUT_EXPO } from "@/lib/motion/easing";
+import {
+  heroRevealIndex,
+  SplashClipReveal,
+  SPLASH_NAV_ITEMS_LG,
+  SPLASH_NAV_ITEMS_SM,
+} from "@/lib/motion/clip-reveal";
 import { useProjectTransition } from "@/lib/transitions/ProjectTransitionContext";
 import type { ProjectSlug } from "@/app/data/projects";
 import {
@@ -83,10 +91,7 @@ const ContactFormModal = dynamic(
 
 export type V2ContentMode = "web" | "graphic";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
-const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
-/** Full-viewport exit — shorter on slow paths so the site feels responsive. */
-const SPLASH_EXIT_EASE = [0.76, 0, 0.24, 1] as const;
+const SPLASH_EXIT_MS = 950;
 
 const WOHL_STUDIO_URL = "https://wohl.co/";
 
@@ -197,7 +202,7 @@ function PageReveal() {
           className="fixed inset-0 z-[10000] bg-background select-none"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.55, ease: SPLASH_EXIT_EASE }}
+          transition={{ duration: SPLASH_EXIT_MS / 1000, ease: EASE_CINEMATIC }}
           role="status"
           aria-label="Loading"
         >
@@ -452,7 +457,6 @@ const PROJECT_ROWS = [
   {
     key: "heybristol",
     idx: 0,
-    preview: "/projects-v2/heybristol.png",
     metricEn: "",
     metricEs: "",
     marqueeEn: "Hey Bristol · ",
@@ -461,7 +465,6 @@ const PROJECT_ROWS = [
   {
     key: "kostume",
     idx: 1,
-    preview: "/projects-v2/kostume.png",
     metricEn: "",
     metricEs: "",
     marqueeEn: "Kostüme · ",
@@ -470,7 +473,6 @@ const PROJECT_ROWS = [
   {
     key: "ursulabenavidez",
     idx: 2,
-    preview: "/projects-v2/ursulabenavidez.png",
     metricEn: "",
     metricEs: "",
     marqueeEn: "Ursula Benavidez · ",
@@ -479,7 +481,6 @@ const PROJECT_ROWS = [
   {
     key: "templodetierra",
     idx: 3,
-    preview: "/projects-v2/templodetierra.png",
     metricEn: "",
     metricEs: "",
     marqueeEn: "Templo de Tierra · ",
@@ -488,7 +489,6 @@ const PROJECT_ROWS = [
   {
     key: "desenfreno",
     idx: 4,
-    preview: "/projects-v2/eldesenfreno.png",
     metricEn: "",
     metricEs: "",
     marqueeEn: "El Desenfreno · ",
@@ -497,7 +497,6 @@ const PROJECT_ROWS = [
   {
     key: "grupofrali",
     idx: 5,
-    preview: "/projects-v2/grupofrali.png",
     metricEn: "",
     metricEs: "",
     marqueeEn: "Grupo Frali · ",
@@ -513,7 +512,6 @@ function ProjectRow({
   metric,
   year,
   slug,
-  previewImage,
   marqueeLine,
   delay,
   inView,
@@ -524,11 +522,12 @@ function ProjectRow({
   metric: string;
   year: number;
   slug: string;
-  previewImage: string;
   marqueeLine: string;
   delay: number;
   inView: boolean;
 }) {
+  const project = getProjectBySlug(slug);
+  const desktopPreview = project?.previewImage ?? "";
   const [hovered, setHovered] = useState(false);
   const { navigateToProject } = useProjectTransition();
 
@@ -557,7 +556,8 @@ function ProjectRow({
     }
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
-    navigateToProject(slug as ProjectSlug, previewImage, {
+    const preview = project ? getProjectPreview(project) : "";
+    navigateToProject(slug as ProjectSlug, preview, {
       x: rect.left,
       y: rect.top,
       width: rect.width,
@@ -570,11 +570,9 @@ function ProjectRow({
       <motion.a
         href={`/work/${slug}`}
         onClick={handleNavigate}
-        initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
-        animate={inView
-          ? { opacity: 1, y: 0, filter: "blur(0px)" }
-          : { opacity: 0, y: 24, filter: "blur(6px)" }}
-        transition={{ duration: 0.85, delay, ease: EASE_OUT_EXPO }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 1.05, delay, ease: EASE_OUT_EXPO }}
         onHoverStart={() => setHovered(true)}
         onHoverEnd={() => {
           setHovered(false);
@@ -668,7 +666,7 @@ function ProjectRow({
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.32, ease: EASE_OUT_EXPO }}
           >
-            <Image src={previewImage} alt={name} fill className="object-cover" sizes="384px" />
+            <Image src={desktopPreview} alt={name} fill className="object-cover" sizes="384px" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -690,8 +688,18 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const showGraphicDesktopHero = v2Mode === "graphic";
   const heroReduced = useReducedMotion();
   const { handoff: splashHandoff } = useSplashHandoff();
-  /** Hero focus fade is synced to splash handoff (same frame as setDone), not fixed mount delays */
   const heroLive = splashHandoff || !!heroReduced;
+
+  const [isLgNav, setIsLgNav] = useState(true);
+  useLayoutEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsLgNav(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const splashNavItemCount = isLgNav ? SPLASH_NAV_ITEMS_LG : SPLASH_NAV_ITEMS_SM;
 
   const workRef    = useRef(null);
   const aboutRef   = useRef(null);
@@ -730,31 +738,31 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         ) : (
           <HeroHalftoneP5 className="pointer-events-none z-0" />
         )}
-        <motion.div
-          initial={{ opacity: 0, filter: "blur(14px)" }}
-          animate={
-            heroLive
-              ? { opacity: 1, filter: "blur(0px)" }
-              : { opacity: 0, filter: "blur(14px)" }
-          }
-          transition={{
-            delay: heroLive ? 0.06 : 0,
-            ease: EASE_OUT_EXPO,
-            opacity: { duration: 0.85 },
-            filter: { duration: 1.15 },
-          }}
+        <div
           className={cn(
             "relative z-30",
             showGraphicDesktopHero && "pointer-events-none",
           )}
         >
           <h1 className="hero-title-stack font-helveticaNowDisplayBold text-name-hero tracking-[-0.02em]">
-            <span className="hero-name optical-edge-start">Ivan Nevares</span>
-            <span className="text-hero-subtitle font-helveticaNowTextRegular text-muted-foreground tracking-normal leading-none">
-              {t("hero.subtitle")}
-            </span>
+            <SplashClipReveal
+              live={heroLive}
+              index={heroRevealIndex(splashNavItemCount, 0)}
+              reduced={heroReduced}
+            >
+              <span className="hero-name optical-edge-start">Ivan Nevares</span>
+            </SplashClipReveal>
+            <SplashClipReveal
+              live={heroLive}
+              index={heroRevealIndex(splashNavItemCount, 1)}
+              reduced={heroReduced}
+            >
+              <span className="text-hero-subtitle block font-helveticaNowTextRegular text-muted-foreground tracking-normal leading-none">
+                {t("hero.subtitle")}
+              </span>
+            </SplashClipReveal>
           </h1>
-        </motion.div>
+        </div>
       </section>
 
       {/* separator 1 */}
@@ -766,14 +774,14 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         <motion.p
           initial={{ opacity: 0 }}
           animate={workInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.5, ease: EASE }}
+          transition={{ duration: 0.85, ease: EASE_OUT_EXPO }}
           className={cn(editorialNavType, "mb-6 text-foreground")}
         >
           {t("work.title")}
         </motion.p>
 
         <div className="divide-y divide-border">
-          {PROJECT_ROWS.map(({ key, idx, preview, metricEn, metricEs, marqueeEn, marqueeEs }, i) => (
+          {PROJECT_ROWS.map(({ key, idx, metricEn, metricEs, marqueeEn, marqueeEs }, i) => (
             <ProjectRow
               key={key}
               slug={key}
@@ -782,9 +790,8 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
               category={t(`work.${key}.title` as Parameters<typeof t>[0])}
               metric={isEn ? metricEn : metricEs}
               year={projects[idx].year}
-              previewImage={preview}
               marqueeLine={isEn ? marqueeEn : marqueeEs}
-              delay={i * 0.07}
+              delay={i * 0.06}
               inView={workInView}
             />
           ))}
@@ -798,9 +805,9 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       {/* -- ABOUT -------------------------------------------------------- */}
       <section id="about" ref={aboutRef} className="px-4 lg:px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12">
         <motion.p
-          initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
-          animate={aboutInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={aboutInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, ease: EASE_OUT_EXPO }}
           className={cn(editorialNavType, "lg:col-span-2 self-start text-foreground")}
         >
           {t("about.title")}
@@ -808,9 +815,9 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
         <motion.p
           className="lg:col-span-6 text-type-body font-helveticaNowTextRegular text-muted-foreground leading-relaxed"
-          initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
-          animate={aboutInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 0.9, delay: 0.15, ease: EASE_OUT_EXPO }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={aboutInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.1, delay: 0.12, ease: EASE_OUT_EXPO }}
         >
           {t("about.p1")}
           <a
@@ -825,9 +832,9 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
-          animate={aboutInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 0.9, delay: 0.35, ease: EASE_OUT_EXPO }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={aboutInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.1, delay: 0.24, ease: EASE_OUT_EXPO }}
           className="lg:col-span-3 lg:col-start-10"
         >
           <Suspense fallback={<div className="w-full aspect-square bg-muted/50 rounded-lg animate-pulse" />}>
@@ -852,13 +859,11 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
         <div className="relative z-[1]">
           <motion.div
-            initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+            initial={{ opacity: 0, y: 16 }}
             animate={
-              contactInView
-                ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                : { opacity: 0, y: 10, filter: "blur(6px)" }
+              contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
             }
-            transition={{ duration: 0.75, delay: 0.08, ease: EASE_OUT_EXPO }}
+            transition={{ duration: 1, delay: 0.08, ease: EASE_OUT_EXPO }}
             className="mb-10 flex flex-wrap items-center gap-x-5 gap-y-3"
           >
             <p className={cn(editorialNavType, "max-w-[min(100%,42rem)] text-foreground")}>
@@ -871,13 +876,11 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
+            initial={{ opacity: 0, y: 20 }}
             animate={
-              contactInView
-                ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                : { opacity: 0, y: 16, filter: "blur(6px)" }
+              contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
             }
-            transition={{ duration: 0.9, delay: 0.32, ease: EASE_OUT_EXPO }}
+            transition={{ duration: 1.05, delay: 0.2, ease: EASE_OUT_EXPO }}
             className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
           >
             <Magnetic strength={0.2} className="min-w-0 w-full sm:w-auto sm:max-w-full">
@@ -905,9 +908,9 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         </div>
 
         <motion.nav
-          initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
-          animate={contactInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 0.85, delay: 0.58, ease: EASE_OUT_EXPO }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={contactInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, delay: 0.32, ease: EASE_OUT_EXPO }}
           className="relative z-[1] mt-12"
           aria-label={t("contact.socialNav")}
         >
@@ -945,7 +948,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={contactInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.75, delay: 0.7, ease: EASE_OUT_EXPO }}
+          transition={{ duration: 1, delay: 0.44, ease: EASE_OUT_EXPO }}
           className="relative z-[1] mt-16 -mx-4 bg-[#DFFF4D] text-neutral-950 lg:-mx-6"
         >
           {heroReduced ? (

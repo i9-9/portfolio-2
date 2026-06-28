@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { useGrid } from '@/lib/grid/GridContext';
@@ -16,12 +16,20 @@ import {
 import { HamburgerMenu } from './ui/hamburger-menu';
 import { cn } from '@/lib/utils';
 import { editorialNavType } from '@/lib/editorial-cta';
+import { EASE_OUT_EXPO } from '@/lib/motion/easing';
+import {
+  ClipRevealItem,
+  clipRevealContainerVariants,
+  clipRevealItemVariants,
+  clipRevealShellVariants,
+  CLIP_REVEAL_STAGGER,
+  SplashClipReveal,
+} from '@/lib/motion/clip-reveal';
 
 /** CV link temporarily hidden from navbar */
 const NAV_SHOW_CV = false;
 
-const NAV_ENTER_EASE = [0.22, 1, 0.36, 1] as const;
-const NAV_LINE_DURATION = 0.75;
+const NAV_LINE_DURATION = 0.95;
 
 /** Shared shell — divider lives in `.nav-shell` CSS, not Tailwind border classes */
 const NAV_SHELL_BASE = "fixed top-0 left-0 right-0 z-[100] nav-shell";
@@ -39,8 +47,7 @@ function navLinkClass(active: boolean, isMobile = false) {
   return cn(
     navLabel,
     navInteractiveFocus,
-    isMobile &&
-      "flex w-full min-h-[44px] items-center py-3 optical-edge-start",
+    isMobile && "flex w-full min-h-[44px] items-center py-3",
     active
       ? "text-foreground"
       : "text-muted-foreground hover:text-foreground",
@@ -58,34 +65,12 @@ function NavSeparator({ className }: { className?: string }) {
   );
 }
 
-function MobileNavRevealItem({
-  children,
-  shellVariants,
-  revealVariants,
-  className,
-  role,
-}: {
-  children: React.ReactNode;
-  shellVariants: Variants;
-  revealVariants: Variants;
-  className?: string;
-  role?: React.AriaRole;
-}) {
-  return (
-    <motion.div role={role} className={cn("overflow-hidden", className)} variants={shellVariants}>
-      <motion.div className="block w-full" variants={revealVariants}>
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-}
-
 function LanguageToggle({ isMobile = false }: { isMobile?: boolean }) {
   const { language, setLanguage } = useLanguage();
 
   const shellClass = cn(
     "inline-flex items-baseline",
-    isMobile && "flex w-full min-h-[44px] items-center py-3 optical-edge-start",
+    isMobile && "flex w-full min-h-[44px] items-center py-3",
   );
 
   const activeClass = cn(navLabel, "text-nav-link text-foreground");
@@ -154,7 +139,6 @@ function NavBarInner() {
   }, [pathname, searchParams]);
 
   const waitsForSplash = pathname === '/';
-  const navLive = !waitsForSplash || splashHandoff || !!reducedMotion;
 
   /** Avoid hydration mismatch: pathname from usePathname can differ SSR vs first client paint for shared layout. */
   const isV2 =
@@ -174,16 +158,7 @@ function NavBarInner() {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.05,
-      },
-    },
-  };
+  const containerVariants = clipRevealContainerVariants(0.05);
 
   const lineVariants = {
     hidden: { scaleX: reducedMotion ? 1 : 0 },
@@ -191,33 +166,25 @@ function NavBarInner() {
       scaleX: 1,
       transition: {
         duration: reducedMotion ? 0 : NAV_LINE_DURATION,
-        ease: NAV_ENTER_EASE,
+        ease: EASE_OUT_EXPO,
       },
     },
   };
 
-  const itemShellVariants: Variants = {
-    hidden: {},
-    visible: {},
-  };
+  const itemShellVariants = clipRevealShellVariants;
+  const itemRevealVariants = clipRevealItemVariants(!!reducedMotion);
 
-  const itemRevealVariants: Variants = {
-    hidden: { y: reducedMotion ? "0%" : "100%" },
-    visible: {
-      y: "0%",
-      transition: {
-        duration: reducedMotion ? 0 : 0.55,
-        ease: NAV_ENTER_EASE,
-      },
-    },
-  };
+  const splashRevealActive = waitsForSplash;
+  const splashRevealLive = !waitsForSplash || splashHandoff;
 
   const NavItems = ({
     isMobile = false,
     onMobileClose,
+    revealIndexOffset = 1,
   }: {
     isMobile?: boolean;
     onMobileClose?: () => void;
+    revealIndexOffset?: number;
   }) => {
     type NavEntry = { key: string; node: React.ReactNode; active?: boolean };
 
@@ -359,21 +326,21 @@ function NavBarInner() {
           );
         }
         mobileChildren.push(
-          <MobileNavRevealItem
+          <ClipRevealItem
             key={entry.key}
             role="listitem"
             shellVariants={itemShellVariants}
             revealVariants={itemRevealVariants}
           >
             {entry.node}
-          </MobileNavRevealItem>,
+          </ClipRevealItem>,
         );
       });
 
       return (
         <motion.div
           role="list"
-          className="flex flex-col gap-1 pt-8"
+          className="flex flex-col gap-1 pt-8 optical-edge-start"
           variants={containerVariants}
           initial="hidden"
           animate={isMobileMenuOpen ? "visible" : "hidden"}
@@ -391,7 +358,14 @@ function NavBarInner() {
             className={cn("flex items-center", i === entries.length - 1 && "optical-edge-end")}
           >
             {i > 0 ? <NavSeparator /> : null}
-            {entry.node}
+            <SplashClipReveal
+              live={splashRevealLive}
+              index={revealIndexOffset + i}
+              reduced={reducedMotion}
+              active={splashRevealActive}
+            >
+              {entry.node}
+            </SplashClipReveal>
           </li>
         ))}
       </ul>
@@ -401,123 +375,127 @@ function NavBarInner() {
   const mobileEntryCount = (isV2 ? 2 : 0) + 3 + (NAV_SHOW_CV ? 1 : 0);
   const mobileFooterStartDelay = reducedMotion
     ? 0
-    : 0.05 + (1 + (isV2 ? 1 : 0) + mobileEntryCount) * 0.1;
+    : 0.05 + (1 + (isV2 ? 1 : 0) + mobileEntryCount) * CLIP_REVEAL_STAGGER;
 
-  const footerContainerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: mobileFooterStartDelay,
-        staggerChildren: 0.1,
-      },
-    },
-  };
+  const footerContainerVariants = clipRevealContainerVariants(mobileFooterStartDelay);
 
   return (
     <>
-      <motion.header
+      <header
         className={cn(
           NAV_SHELL_BASE,
           isMobileMenuOpen
             ? "z-[110] bg-background pointer-events-auto"
             : "bg-nav/80 backdrop-blur-sm",
         )}
-        initial={false}
-        animate={navLive ? { y: 0 } : { y: "-100%" }}
-        transition={
-          reducedMotion
-            ? { duration: 0 }
-            : { duration: 0.72, delay: navLive ? 0.1 : 0, ease: NAV_ENTER_EASE }
-        }
       >
         <div className="nav-bar-inner">
-          <div className="col-span-6 lg:col-span-3 min-w-0">
+          <SplashClipReveal
+            live={splashRevealLive}
+            index={0}
+            reduced={reducedMotion}
+            active={splashRevealActive}
+            className="col-span-6 lg:col-span-3"
+          >
             <a
               href={homeHref}
               className="optical-edge-start text-name-nav leading-none tracking-[-0.02em] font-helveticaNowDisplayBold text-foreground hover:text-foreground/80 transition-colors duration-300 truncate"
             >
               Ivan Nevares
             </a>
-          </div>
+          </SplashClipReveal>
 
           <nav
             className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end min-w-0"
             aria-label={t('nav.mobileMenuTitle')}
           >
             <div className="hidden lg:block">
-              <NavItems />
+              <NavItems revealIndexOffset={1} />
             </div>
 
             <div className="lg:hidden flex items-center gap-3">
-              <span className={cn(navLabel, "text-nav-link text-muted-foreground")}>
-                Menu
-              </span>
-              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <button
-                  type="button"
-                  onClick={() => setIsMobileMenuOpen((open) => !open)}
-                  className={cn(
-                    "flex items-center justify-center size-11 -mr-2",
-                    navInteractiveFocus,
-                  )}
-                  aria-label={t('nav.mobileMenuTitle')}
-                  aria-expanded={isMobileMenuOpen}
-                >
-                  <HamburgerMenu isOpen={isMobileMenuOpen} />
-                </button>
-                <SheetContent
-                  className="inset-x-0 top-[var(--nav-height)] h-[calc(100dvh-var(--nav-height))] w-full sm:max-w-none border-0 bg-background p-0 shadow-none z-[90]"
-                  overlayClassName="inset-x-0 top-[var(--nav-height)] bottom-0 bg-background"
-                  side="top"
-                  onOpenAutoFocus={(e) => e.preventDefault()}
-                >
-                  <SheetTitle className="sr-only">{t('nav.mobileMenuTitle')}</SheetTitle>
-                  <div className="flex h-full flex-col">
-                    <div className="grid-container flex-1 pt-10 pb-6">
-                      <div className="col-span-12">
-                        <NavItems
-                          isMobile={true}
-                          onMobileClose={() => setIsMobileMenuOpen(false)}
-                        />
+              <SplashClipReveal
+                live={splashRevealLive}
+                index={1}
+                reduced={reducedMotion}
+                active={splashRevealActive}
+              >
+                <span className={cn(navLabel, "text-nav-link text-muted-foreground")}>
+                  Menu
+                </span>
+              </SplashClipReveal>
+              <SplashClipReveal
+                live={splashRevealLive}
+                index={2}
+                reduced={reducedMotion}
+                active={splashRevealActive}
+              >
+                <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileMenuOpen((open) => !open)}
+                    className={cn(
+                      "flex items-center justify-center size-11 -mr-2",
+                      navInteractiveFocus,
+                    )}
+                    aria-label={t('nav.mobileMenuTitle')}
+                    aria-expanded={isMobileMenuOpen}
+                  >
+                    <HamburgerMenu isOpen={isMobileMenuOpen} />
+                  </button>
+                  <SheetContent
+                    className="inset-x-0 top-[var(--nav-height)] h-[calc(100dvh-var(--nav-height))] w-full sm:max-w-none border-0 bg-background p-0 shadow-none z-[90]"
+                    overlayClassName="inset-x-0 top-[var(--nav-height)] bottom-0 bg-background"
+                    side="top"
+                    onOpenAutoFocus={(e) => e.preventDefault()}
+                  >
+                    <SheetTitle className="sr-only">{t('nav.mobileMenuTitle')}</SheetTitle>
+                    <div className="flex h-full flex-col">
+                      <div className="grid-container flex-1 pt-10 pb-6">
+                        <div className="col-span-12">
+                          <NavItems
+                            isMobile={true}
+                            onMobileClose={() => setIsMobileMenuOpen(false)}
+                          />
+                        </div>
                       </div>
-                    </div>
 
-                    <motion.div
-                      className="grid-container relative py-6 text-[10px] font-helveticaNowTextRegular normal-case tracking-normal text-muted-foreground"
-                      variants={footerContainerVariants}
-                      initial="hidden"
-                      animate={isMobileMenuOpen ? "visible" : "hidden"}
-                    >
                       <motion.div
-                        className="absolute inset-x-0 top-0 h-px origin-left bg-border"
-                        variants={lineVariants}
-                        aria-hidden
-                      />
-                      <MobileNavRevealItem
-                        className="col-span-6"
-                        shellVariants={itemShellVariants}
-                        revealVariants={itemRevealVariants}
+                        className="grid-container relative py-6 text-[10px] font-helveticaNowTextRegular normal-case tracking-normal text-muted-foreground"
+                        variants={footerContainerVariants}
+                        initial="hidden"
+                        animate={isMobileMenuOpen ? "visible" : "hidden"}
                       >
-                        <span className="optical-edge-start">Buenos Aires · AR</span>
-                      </MobileNavRevealItem>
-                      <MobileNavRevealItem
-                        className="col-span-6"
-                        shellVariants={itemShellVariants}
-                        revealVariants={itemRevealVariants}
-                      >
-                        <span className="block text-right tabular-nums optical-edge-end">
-                          {t('contact.stamp')}
-                        </span>
-                      </MobileNavRevealItem>
-                    </motion.div>
-                  </div>
-                </SheetContent>
-              </Sheet>
+                        <motion.div
+                          className="absolute inset-x-0 top-0 h-px origin-left bg-border"
+                          variants={lineVariants}
+                          aria-hidden
+                        />
+                        <ClipRevealItem
+                          className="col-span-6 optical-edge-start"
+                          shellVariants={itemShellVariants}
+                          revealVariants={itemRevealVariants}
+                        >
+                          <span>Buenos Aires · AR</span>
+                        </ClipRevealItem>
+                        <ClipRevealItem
+                          className="col-span-6 optical-edge-end"
+                          shellVariants={itemShellVariants}
+                          revealVariants={itemRevealVariants}
+                        >
+                          <span className="block text-right tabular-nums">
+                            {t('contact.stamp')}
+                          </span>
+                        </ClipRevealItem>
+                      </motion.div>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </SplashClipReveal>
             </div>
           </nav>
         </div>
-      </motion.header>
+      </header>
     </>
   );
 }
