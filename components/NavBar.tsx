@@ -32,9 +32,13 @@ const navLabel = cn(
   "leading-none transition-colors duration-300 whitespace-nowrap",
 );
 
+const navInteractiveFocus =
+  "outline-none focus:outline-none [-webkit-tap-highlight-color:transparent]";
+
 function navLinkClass(active: boolean, isMobile = false) {
   return cn(
     navLabel,
+    navInteractiveFocus,
     isMobile &&
       "flex w-full min-h-[44px] items-center py-3 optical-edge-start",
     active
@@ -87,6 +91,7 @@ function LanguageToggle({ isMobile = false }: { isMobile?: boolean }) {
   const activeClass = cn(navLabel, "text-nav-link text-foreground");
   const inactiveClass = cn(
     navLabel,
+    navInteractiveFocus,
     "text-nav-link text-muted-foreground hover:text-foreground transition-colors duration-300",
     isMobile && "min-h-[44px] inline-flex items-center",
   );
@@ -452,7 +457,10 @@ function NavBarInner() {
                 <button
                   type="button"
                   onClick={() => setIsMobileMenuOpen((open) => !open)}
-                  className="flex items-center justify-center size-11 -mr-2"
+                  className={cn(
+                    "flex items-center justify-center size-11 -mr-2",
+                    navInteractiveFocus,
+                  )}
                   aria-label={t('nav.mobileMenuTitle')}
                   aria-expanded={isMobileMenuOpen}
                 >
@@ -462,6 +470,7 @@ function NavBarInner() {
                   className="inset-x-0 top-[var(--nav-height)] h-[calc(100dvh-var(--nav-height))] w-full sm:max-w-none border-0 bg-background p-0 shadow-none z-[90]"
                   overlayClassName="inset-x-0 top-[var(--nav-height)] bottom-0 bg-background"
                   side="top"
+                  onOpenAutoFocus={(e) => e.preventDefault()}
                 >
                   <SheetTitle className="sr-only">{t('nav.mobileMenuTitle')}</SheetTitle>
                   <div className="flex h-full flex-col">
