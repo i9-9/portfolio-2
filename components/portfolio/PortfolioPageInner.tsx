@@ -22,6 +22,8 @@ import {
   SPLASH_SESSION_KEY,
   useSplashHandoff,
 } from "@/lib/splash/SplashHandoffContext";
+import { useProjectTransition } from "@/lib/transitions/ProjectTransitionContext";
+import type { ProjectSlug } from "@/app/data/projects";
 import {
   Mail, MessageSquare,
   ArrowRight,
@@ -88,17 +90,45 @@ const SPLASH_EXIT_EASE = [0.76, 0, 0.24, 1] as const;
 
 const WOHL_STUDIO_URL = "https://wohl.co/";
 
+const SPLASH_LOAD_MS = 1400;
+const SPLASH_LINE_COUNT = 14;
+const SPLASH_LINE_GAP = "calc(var(--grid-row) / 4)";
+
+function LinesLoader() {
+  return (
+    <div
+      className="absolute inset-0 flex flex-col justify-center px-4 lg:px-6"
+      style={{ gap: SPLASH_LINE_GAP }}
+      aria-hidden
+    >
+      {Array.from({ length: SPLASH_LINE_COUNT }, (_, i) => (
+        <div key={i} className="relative h-px w-full overflow-hidden bg-border/50">
+          <motion.div
+            className="absolute inset-y-0 w-[22%] bg-foreground"
+            initial={{ x: "-100%" }}
+            animate={{ x: "560%" }}
+            transition={{
+              duration: 1.25,
+              repeat: Infinity,
+              delay: i * 0.065,
+              ease: [0.45, 0, 0.15, 1],
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // --- PageReveal -----------------------------------------------------------
-// Editorial splash: counter 00 → 100 over a fixed beat, then waits briefly for
-// `document.fonts.ready` (capped) so the overlap hides webfont swap.
+// Loader: horizontal lines sweep left → right, then waits for fonts (capped).
 function PageReveal() {
   const reduced = useReducedMotion();
   const { notifyHandoff } = useSplashHandoff();
   const handoffRef = useRef(notifyHandoff);
   handoffRef.current = notifyHandoff;
 
-  const [done, setDone]   = useState(false);
-  const [count, setCount] = useState(0);
+  const [done, setDone] = useState(false);
 
   // Skip splash before first paint when reduced motion or already seen this session.
   useLayoutEffect(() => {
@@ -112,14 +142,11 @@ function PageReveal() {
       skipSession = false;
     }
     if (!reduced && !skipSession) return;
-    setCount(100);
     handoffRef.current?.();
     setDone(true);
   }, [reduced]);
 
   useEffect(() => {
-    // Framer returns `null` until the client reads prefers-reduced-motion.
-    // Starting before that resolves re-runs this effect and resets the counter.
     if (reduced !== false) return;
 
     let skipSession = false;
@@ -136,11 +163,7 @@ function PageReveal() {
         : Promise.resolve(undefined);
 
     const FONT_WAIT_CAP_MS = 1400;
-
-    const start = performance.now();
-    const duration = 720;
-    let raf = 0;
-    let holdTimer: ReturnType<typeof setTimeout> | undefined;
+    let loadTimer: ReturnType<typeof setTimeout> | undefined;
     let cancelled = false;
 
     const finishSplash = () => {
@@ -154,26 +177,16 @@ function PageReveal() {
       setDone(true);
     };
 
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
-      const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-      setCount(Math.round(eased * 100));
-      if (t < 1) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        holdTimer = setTimeout(() => {
-          const cap = new Promise<void>((r) => {
-            setTimeout(r, FONT_WAIT_CAP_MS);
-          });
-          void Promise.race([fontsP, cap]).finally(finishSplash);
-        }, 90);
-      }
-    };
-    raf = requestAnimationFrame(tick);
+    loadTimer = setTimeout(() => {
+      const cap = new Promise<void>((r) => {
+        setTimeout(r, FONT_WAIT_CAP_MS);
+      });
+      void Promise.race([fontsP, cap]).finally(finishSplash);
+    }, SPLASH_LOAD_MS);
+
     return () => {
       cancelled = true;
-      cancelAnimationFrame(raf);
-      if (holdTimer !== undefined) clearTimeout(holdTimer);
+      if (loadTimer !== undefined) clearTimeout(loadTimer);
     };
   }, [reduced]);
 
@@ -181,52 +194,14 @@ function PageReveal() {
     <AnimatePresence>
       {!done && (
         <motion.div
-          className="fixed inset-0 z-[10000] bg-background flex flex-col select-none"
+          className="fixed inset-0 z-[10000] bg-background select-none"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.55, ease: SPLASH_EXIT_EASE }}
+          role="status"
+          aria-label="Loading"
         >
-          {/* top metadata — row 1, same band as nav */}
-          <div className="nav-bar-inner h-[var(--grid-row)] shrink-0">
-            <div className="col-span-6 lg:col-span-3 min-w-0">
-              <div className="text-name-nav leading-none font-helveticaNowDisplayBold tracking-[-0.02em] text-foreground optical-edge-start">
-                Ivan Nevares
-              </div>
-            </div>
-            <div className={cn("col-span-6 lg:col-span-3 lg:col-start-10 text-right leading-none", editorialNavType, "text-muted-foreground")}>
-              Portfolio · MMXXVI
-            </div>
-          </div>
-
-          {/* the counter — optical center, tabular nums for steady width */}
-          <div className="flex-1 flex items-center justify-center px-4 lg:px-6">
-            <span
-              className="font-helveticaNowDisplayBold text-type-display leading-none tabular-nums tracking-[-0.02em]"
-            >
-              {String(count).padStart(3, "0")}
-            </span>
-          </div>
-
-          {/* bottom rule + progress + footer label */}
-          <div className="px-4 lg:px-6 pb-6 lg:pb-8">
-            <div className="relative w-full h-px bg-border mb-3 lg:mb-4 overflow-hidden">
-              <div
-                className="absolute inset-y-0 left-0 bg-foreground"
-                style={{ width: `${count}%` }}
-              />
-            </div>
-            <div className="grid grid-cols-12 gap-4 lg:gap-6">
-              <div className={cn("col-span-6 lg:col-span-3", editorialNavType, "text-muted-foreground")}>
-                Buenos Aires · AR
-              </div>
-              <div className={cn("hidden lg:block col-span-6", editorialNavType, "text-muted-foreground")}>
-                {count < 100 ? "Loading" : "Fonts"}
-              </div>
-              <div className={cn("col-span-6 lg:col-span-3 text-right tabular-nums", editorialNavType, "text-muted-foreground")}>
-                {count}/100
-              </div>
-            </div>
-          </div>
+          <LinesLoader />
         </motion.div>
       )}
     </AnimatePresence>
@@ -555,6 +530,7 @@ function ProjectRow({
   inView: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
+  const { navigateToProject } = useProjectTransition();
 
   const PREVIEW_OFF = -9_999;
   const pvX = useMotionValue(PREVIEW_OFF);
@@ -569,10 +545,31 @@ function ProjectRow({
     seedPreview(e.clientX, e.clientY);
   };
 
+  const handleNavigate = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey ||
+      e.button !== 0
+    ) {
+      return;
+    }
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    navigateToProject(slug as ProjectSlug, previewImage, {
+      x: rect.left,
+      y: rect.top,
+      width: rect.width,
+      height: rect.height,
+    });
+  };
+
   return (
     <>
       <motion.a
         href={`/work/${slug}`}
+        onClick={handleNavigate}
         initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
         animate={inView
           ? { opacity: 1, y: 0, filter: "blur(0px)" }
@@ -592,7 +589,7 @@ function ProjectRow({
         onMouseMove={handleMouseMove}
         className="group relative flex flex-col -mx-4 px-4 transition-colors duration-500 hover:bg-foreground hover:text-background overflow-hidden lg:-mx-6 lg:px-6"
       >
-        <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-5 items-center py-5 lg:py-6 lg:grid-cols-12 lg:gap-x-6">
+        <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-5 py-5 lg:py-6 lg:grid-cols-12 lg:gap-x-6">
         {/* Editorial marquee — desktop: thin strip under row content (not tucked under title) */}
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 z-0 hidden h-8 motion-reduce:hidden lg:block overflow-hidden opacity-0 transition-opacity duration-500 [mask-image:linear-gradient(180deg,transparent_0%,#000_40%,#000_100%)] [-webkit-mask-image:linear-gradient(180deg,transparent_0%,#000_40%,#000_100%)] group-hover:opacity-100"
@@ -610,29 +607,30 @@ function ProjectRow({
           </div>
         </div>
 
-        <span className="relative z-10 text-type-micro font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 transition-colors duration-500 w-6 flex-shrink-0 tabular-nums lg:col-start-1">
-          <NumberScramble value={index} inView={inView} />
+        <span className="relative z-10 col-start-1 row-start-1 flex h-[1em] w-6 shrink-0 items-center self-start text-type-project leading-none lg:col-start-1">
+          <span className="text-type-micro font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 transition-colors duration-500 tabular-nums">
+            <NumberScramble value={index} inView={inView} />
+          </span>
         </span>
 
-        <div className="relative z-10 min-w-0 lg:col-start-3 lg:col-span-6">
-          <motion.p
-            className="font-helveticaNowDisplayBold text-type-project transition-colors duration-500"
-            animate={{ x: hovered ? 12 : 0 }}
-            transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          >
-            {name}
-          </motion.p>
-          <motion.p
-            className="text-type-0 font-helveticaNowTextRegular text-muted-foreground mt-0.5 group-hover:text-background/50 transition-colors duration-500"
-            animate={{ x: hovered ? 12 : 0 }}
-            transition={{ duration: 0.6, delay: 0.04, ease: EASE_OUT_EXPO }}
-          >
-            {category}
-          </motion.p>
-        </div>
+        <motion.p
+          className="relative z-10 col-start-2 row-start-1 self-start min-w-0 font-helveticaNowDisplayBold text-type-project leading-none transition-colors duration-500 lg:col-start-3 lg:col-span-6"
+          animate={{ x: hovered ? 12 : 0 }}
+          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+        >
+          {name}
+        </motion.p>
+
+        <motion.p
+          className="relative z-10 col-start-2 row-start-2 min-w-0 text-type-0 font-helveticaNowTextRegular text-muted-foreground mt-0.5 group-hover:text-background/50 transition-colors duration-500 lg:col-start-3 lg:col-span-6"
+          animate={{ x: hovered ? 12 : 0 }}
+          transition={{ duration: 0.6, delay: 0.04, ease: EASE_OUT_EXPO }}
+        >
+          {category}
+        </motion.p>
 
         {/* right: metric (absolute, on hover) + year (fixed col) + arrow */}
-        <div className="relative z-10 flex items-center gap-6 flex-shrink-0 justify-self-end lg:col-start-10 lg:col-span-3">
+        <div className="relative z-10 col-start-3 row-start-1 row-span-2 flex items-center gap-6 flex-shrink-0 justify-self-end self-center lg:col-start-10 lg:col-span-3">
           {metric ? (
             <motion.span
               initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}

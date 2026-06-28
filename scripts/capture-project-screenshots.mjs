@@ -9,6 +9,7 @@ import { chromium } from "playwright";
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR  = path.resolve(__dirname, "..", "public", "projects-v2");
@@ -24,6 +25,33 @@ const SITES = [
   ["grupofrali",      "https://www.grupofrali.com/",        8000],
 ];
 
+/** Drop uniform 1px artifact rows Playwright sometimes captures at the top. */
+function trimScreenshotTop(file) {
+  execSync(
+    `python3 -c "
+from PIL import Image
+path = ${JSON.stringify(file)}
+im = Image.open(path)
+w, h = im.size
+crop = 0
+for y in range(min(12, h - 1)):
+    row = [im.getpixel((x, y))[:3] for x in range(w)]
+    if len(set(row)) <= 4:
+        below = [im.getpixel((x, y + 1))[:3] for x in range(w)]
+        avg = tuple(sum(p[i] for p in row) // w for i in range(3))
+        avg_b = tuple(sum(p[i] for p in below) // w for i in range(3))
+        if sum(abs(avg[i] - avg_b[i]) for i in range(3)) > 40:
+            crop = y + 1
+            continue
+    break
+if crop:
+    im.crop((0, crop, w, h)).save(path)
+    print(f'  trimmed {crop}px top artifact')
+"`,
+    { stdio: "inherit" },
+  );
+}
+
 (async () => {
   const browser = await chromium.launch();
   const context = await browser.newContext({
@@ -36,6 +64,12 @@ const SITES = [
 
   for (const [name, url, waitMs = 4000] of SITES) {
     const page = await context.newPage();
+    await page.addInitScript(() => {
+      const style = document.createElement("style");
+      style.textContent =
+        "*, *::before, *::after { animation: none !important; transition: none !important; }";
+      document.documentElement.appendChild(style);
+    });
     console.log(`→ ${name}: ${url}`);
     try {
       await page.goto(url, { waitUntil: "networkidle", timeout: 30_000 });
@@ -69,7 +103,8 @@ const SITES = [
     }
 
     const file = path.join(OUT_DIR, `${name}.png`);
-    await page.screenshot({ path: file, fullPage: false });
+    await page.screenshot({ path: file, fullPage: false, animations: "disabled" });
+    trimScreenshotTop(file);
     const { size } = fs.statSync(file);
     console.log(`  saved ${file} (${(size / 1024).toFixed(0)}kb)`);
     await page.close();

@@ -13,7 +13,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
         ],
       },
       keyDecision:
-        "Custom video player built from scratch to match their brand. Vimeo API integration pulls content directly—no embeds. ISR handles Contentful updates without redeploys.",
+        "I built the video player from scratch to match their brand. I integrated the Vimeo API to pull content directly—no embeds. I set up ISR so Contentful updates sync without redeploys.",
       result:
         "Team updates directors and videos themselves. Site performance stayed fast.",
     },
@@ -28,7 +28,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
         ],
       },
       keyDecision:
-        "Player de video custom desde cero para que coincida con su marca. Integración con API de Vimeo que trae el contenido directo—sin embeds. ISR maneja los updates de Contentful sin redeploys.",
+        "Construí el player de video desde cero para que coincida con su marca. Integré la API de Vimeo para traer el contenido directo—sin embeds. Configuré ISR para que los updates de Contentful entren sin redeploys.",
       result:
         "El equipo actualiza directores y videos por su cuenta. El performance del sitio se mantuvo rápido.",
     },
@@ -65,7 +65,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
   },
   ursulabenavidez: {
     en: {
-      headline: "Portfolio for a motion designer. Custom animations and autonomous CMS.",
+      headline: "Portfolio for an art director. Custom animations and autonomous CMS.",
       roles: ["Development", "Motion design", "Component design", "CMS integration"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Custom animations"],
       challenge: {
@@ -79,7 +79,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       result: "Site live. She's been managing content independently since launch.",
     },
     es: {
-      headline: "Portfolio para diseñadora de motion. Animaciones custom y CMS autónomo.",
+      headline: "Portfolio para directora de arte. Animaciones custom y CMS autónomo.",
       roles: ["Desarrollo", "Motion", "Diseño de componentes", "Integración CMS"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Animaciones custom"],
       challenge: {
@@ -136,7 +136,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
         ],
       },
       keyDecision:
-        "Bandcamp integration: audio previews play on the site instead of redirecting users. Blog on Contentful + ISR. They publish without touching code.",
+        "I integrated Bandcamp so audio previews play on the site instead of redirecting users. I built the blog on Contentful with ISR so they can publish without touching code.",
       result: "One system: store, blog, editorial. Content managed autonomously.",
     },
     es: {
@@ -151,7 +151,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
         ],
       },
       keyDecision:
-        "Integración con Bandcamp: los previews de audio corren en el sitio en vez de redirigir usuarios. Blog en Contentful + ISR. Publican sin tocar código.",
+        "Integré Bandcamp para que los previews de audio corran en el sitio en vez de redirigir usuarios. Monté el blog en Contentful con ISR para que publiquen sin tocar código.",
       result: "Un sistema: tienda, blog, editorial. Contenido gestionado de forma autónoma.",
     },
   },

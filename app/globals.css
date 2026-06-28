@@ -41,6 +41,7 @@
     --space-12: calc(var(--space-unit) * 12);  /* 48px */
     --space-16: calc(var(--space-unit) * 16);  /* 64px — horizontal grid module */
     --grid-row: var(--space-16);
+    --grid-spec-margin: calc(var(--space-unit) * 20); /* 80px — specbook annotation */
     --nav-height: var(--grid-row);
     --space-24: calc(var(--space-unit) * 24);  /* 96px */
     --space-32: calc(var(--space-unit) * 32);  /* 128px */
@@ -103,6 +104,10 @@
     --type-body: var(--type-0);
     --type-body-lg: var(--type-1);           /* emphasized body / result */
     --type-display: var(--type-6);           /* splash counter */
+
+    /* Grid overlay specbook — φ steps below micro */
+    --type-grid-label: calc(var(--type-micro) / var(--phi));
+    --type-grid-num: calc(var(--type-grid-label) / var(--phi));
     
     /* Line Heights */
     --leading-none: 1;
@@ -451,6 +456,8 @@ html {
   }
 
   .text-type-micro { font-size: var(--type-micro); }
+  .text-type-grid-label { font-size: var(--type-grid-label); }
+  .text-type-grid-num { font-size: var(--type-grid-num); }
   .text-type-0 { font-size: var(--type-0); }
   .text-type-1 { font-size: var(--type-1); }
   .text-type-2 { font-size: var(--type-2); }

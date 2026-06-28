@@ -68,7 +68,7 @@ export const projects: Project[] = [
     previewImage: "/projects/templodetierra.png",
     caseStudyHero: "/projects-v2/templodetierra.png",
     heroWidth: 2880,
-    heroHeight: 1800,
+    heroHeight: 1799,
   },
   {
     id: 5,
@@ -80,7 +80,7 @@ export const projects: Project[] = [
     previewImage: "/projects/eldesenfreno.png",
     caseStudyHero: "/projects-v2/eldesenfreno.png",
     heroWidth: 2880,
-    heroHeight: 1800,
+    heroHeight: 1792,
   },
   {
     id: 6,

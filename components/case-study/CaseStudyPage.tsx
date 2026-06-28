@@ -4,8 +4,11 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { getProjectBySlug } from "@/app/data/projects";
+import { useProjectTransition } from "@/lib/transitions/ProjectTransitionContext";
+import { TRANSITION_EASE } from "@/lib/transitions/config";
 import {
   editorialNavMuted,
   editorialNavOutline,
@@ -21,9 +24,14 @@ import {
 
 export function CaseStudyPage({ slug }: { slug: string }) {
   const { language, t } = useLanguage();
+  const { phase } = useProjectTransition();
+  const reducedMotion = useReducedMotion();
   const project = getProjectBySlug(slug);
   const study = CASE_STUDIES[slug as CaseStudySlug];
   if (!project || !study) return null;
+
+  const entering = phase === "enter";
+  const pageLive = reducedMotion || phase === "idle" || entering;
 
   const loc = language === "en" ? study.en : study.es;
   const cat = t(`work.${slug}.title` as Parameters<typeof t>[0]);
@@ -32,32 +40,40 @@ export function CaseStudyPage({ slug }: { slug: string }) {
   const nextHref = nextSlug ? `/work/${nextSlug}` : "/#work";
 
   return (
-    <article className="min-h-screen bg-background text-foreground">
-      <div className="grid-container pt-nav-2 pb-6">
-        <div className="col-span-12">
-          <Link
-            href="/#work"
-            className={cn(
-              editorialNavType,
-              "inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground",
-            )}
-          >
-            <ArrowLeft className="size-3.5" aria-hidden />
-            {t("caseStudy.back")}
-          </Link>
-        </div>
-      </div>
-
-      <div className="w-full overflow-hidden bg-muted">
+    <motion.article
+      className="min-h-screen bg-background text-foreground"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: pageLive ? 1 : 0 }}
+      transition={{ duration: entering ? 0.45 : 0, ease: TRANSITION_EASE, delay: entering ? 0.12 : 0 }}
+    >
+      {/* Hero — full screenshot below nav; -mt-px tucks under nav hairline divider */}
+      <div className="relative mt-[var(--nav-height)] w-full overflow-hidden leading-[0]">
         <Image
           src={project.caseStudyHero}
           alt={`${project.name} — preview`}
           width={project.heroWidth}
           height={project.heroHeight}
-          className="block h-auto w-full"
+          className="relative -mt-px block h-auto w-full"
           sizes="100vw"
           priority
         />
+
+        <div className="absolute inset-x-0 top-0 z-10">
+          <div className="grid-container py-4 lg:py-5">
+            <div className="col-span-12">
+              <Link
+                href="/#work"
+                className={cn(
+                  editorialNavType,
+                  "inline-flex items-center gap-2 rounded-sm bg-background/80 px-3 py-2 text-foreground backdrop-blur-sm transition-colors hover:bg-background",
+                )}
+              >
+                <ArrowLeft className="size-3.5" aria-hidden />
+                {t("caseStudy.back")}
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid-container py-16 lg:py-24">
@@ -177,7 +193,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           </div>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
