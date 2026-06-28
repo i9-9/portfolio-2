@@ -1,10 +1,8 @@
 "use client";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
-
-const TOGGLE_EASE = [0.22, 1, 0.36, 1] as const;
-const TOGGLE_DURATION = 0.55;
+import { EASE_OUT_EXPO, MOBILE_MENU_TOGGLE_DURATION } from "@/lib/motion/easing";
 
 interface HamburgerMenuProps {
   isOpen: boolean;
@@ -48,18 +46,9 @@ function XLines({ className }: { className?: string }) {
   );
 }
 
-const maskRevealVariants = {
-  initial: (opening: boolean) => ({
-    y: opening ? "100%" : "-100%",
-  }),
-  animate: {
-    y: "0%",
-    transition: { duration: TOGGLE_DURATION, ease: TOGGLE_EASE },
-  },
-  exit: (opening: boolean) => ({
-    y: opening ? "-100%" : "100%",
-    transition: { duration: TOGGLE_DURATION, ease: TOGGLE_EASE },
-  }),
+const toggleTransition = {
+  duration: MOBILE_MENU_TOGGLE_DURATION,
+  ease: EASE_OUT_EXPO,
 };
 
 export function HamburgerMenu({ isOpen }: HamburgerMenuProps) {
@@ -76,24 +65,37 @@ export function HamburgerMenu({ isOpen }: HamburgerMenuProps) {
   }
 
   return (
-    <div className="relative flex size-7 items-center justify-center" aria-hidden>
-      <div className="relative size-6 overflow-hidden">
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.div
-            key={isOpen ? "x" : "menu"}
-            custom={isOpen}
-            variants={maskRevealVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className={cn(
-              "absolute inset-0",
-              isOpen ? "text-foreground" : "text-foreground/90",
-            )}
-          >
-            {isOpen ? <XLines /> : <MenuLines />}
-          </motion.div>
-        </AnimatePresence>
+    <div
+      className="relative flex size-7 items-center justify-center [perspective:600px]"
+      aria-hidden
+    >
+      <div className="relative size-6 [transform-style:preserve-3d]">
+        <motion.div
+          className={cn(
+            "absolute inset-0 [backface-visibility:hidden] [transform-origin:center_center]",
+            !isOpen ? "text-foreground/90" : "text-foreground",
+          )}
+          animate={{
+            rotateX: isOpen ? 90 : 0,
+            opacity: isOpen ? 0 : 1,
+            z: 0.01,
+          }}
+          transition={toggleTransition}
+        >
+          <MenuLines />
+        </motion.div>
+        <motion.div
+          className="absolute inset-0 text-foreground [backface-visibility:hidden] [transform-origin:center_center]"
+          initial={false}
+          animate={{
+            rotateX: isOpen ? 0 : -90,
+            opacity: isOpen ? 1 : 0,
+            z: 0.01,
+          }}
+          transition={toggleTransition}
+        >
+          <XLines />
+        </motion.div>
       </div>
     </div>
   );

@@ -124,6 +124,11 @@
     --tracking-wide: 0.025em;
     --tracking-wider: 0.05em;
     --tracking-widest: 0.2em;
+
+    /* Mobile menu motion — keep in sync with lib/motion/easing.ts */
+    --mobile-menu-panel-open-duration: 2.1s;
+    --mobile-menu-panel-close-duration: 1.45s;
+    --mobile-menu-ease: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @media (min-width: 768px) {
@@ -154,6 +159,53 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
     --nav: 0 0% 10%;
+  }
+
+  /** Mobile menu — always inverted vs site theme (dark site → light menu). */
+  html.dark .mobile-menu-inverted {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 12%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 12%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 12%;
+    --primary: 0 0% 12%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 12%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 94%;
+    --accent-foreground: 0 0% 12%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 12%;
+    --nav: 0 0% 96%;
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--background));
+  }
+
+  html:not(.dark) .mobile-menu-inverted {
+    --background: 0 0% 8%;
+    --foreground: 0 0% 94%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 94%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 94%;
+    --primary: 0 0% 94%;
+    --primary-foreground: 0 0% 12%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 94%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 94%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --nav: 0 0% 10%;
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--background));
   }
 }
 
@@ -834,6 +886,41 @@ html {
 
     .contact-cta-marquee-track:hover {
       animation-duration: unset;
+    }
+  }
+
+  /** LIVEUP-style mobile menu — clip-path reveal with --ease-out-expo */
+  @keyframes mobile-menu-clip-in {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes mobile-menu-clip-out {
+    from {
+      clip-path: inset(0);
+    }
+    to {
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+
+  .mobile-menu-panel[data-state="open"] {
+    animation: mobile-menu-clip-in var(--mobile-menu-panel-open-duration) var(--mobile-menu-ease) forwards;
+  }
+
+  .mobile-menu-panel[data-state="closed"] {
+    animation: mobile-menu-clip-out var(--mobile-menu-panel-close-duration) var(--mobile-menu-ease) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu-panel[data-state="open"],
+    .mobile-menu-panel[data-state="closed"] {
+      animation: none;
+      clip-path: inset(0);
     }
   }
 

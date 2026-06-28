@@ -8,6 +8,11 @@ export const CLIP_REVEAL_DURATION = 0.72;
 export const CLIP_REVEAL_STAGGER = 0.06;
 export const CLIP_REVEAL_BASE_DELAY = 0.12;
 
+/** LIVEUP mobile nav links — stagger after panel reveal. */
+export const MOBILE_MENU_ITEM_STAGGER = 0.1;
+export const MOBILE_MENU_ITEM_DURATION = 1.5;
+export const MOBILE_MENU_ITEM_BASE_DELAY = 0.1;
+
 /** Logo + 5 links on v2 home (desktop bar). */
 export const SPLASH_NAV_ITEMS_LG = 6;
 /** Logo + Menu label + hamburger (mobile bar). */
@@ -36,6 +41,36 @@ export function clipRevealItemVariants(reduced: boolean): Variants {
       transition: {
         duration: reduced ? 0 : CLIP_REVEAL_DURATION,
         ease: EASE_OUT_EXPO,
+      },
+    },
+  };
+}
+
+/** Bottom clip — LIVEUP mobile menu link reveal direction. */
+export function mobileMenuItemVariants(reduced: boolean): Variants {
+  return {
+    hidden: {
+      clipPath: reduced ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)",
+    },
+    visible: {
+      clipPath: "inset(0% 0% 0% 0%)",
+      transition: {
+        duration: reduced ? 0 : MOBILE_MENU_ITEM_DURATION,
+        ease: EASE_OUT_EXPO,
+      },
+    },
+  };
+}
+
+export function mobileMenuContainerVariants(
+  delayChildren = MOBILE_MENU_ITEM_BASE_DELAY,
+): Variants {
+  return {
+    hidden: {},
+    visible: {
+      transition: {
+        delayChildren,
+        staggerChildren: MOBILE_MENU_ITEM_STAGGER,
       },
     },
   };

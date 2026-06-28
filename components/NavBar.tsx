@@ -16,24 +16,63 @@ import {
 import { HamburgerMenu } from './ui/hamburger-menu';
 import { cn } from '@/lib/utils';
 import { editorialNavType } from '@/lib/editorial-cta';
-import { EASE_OUT_EXPO } from '@/lib/motion/easing';
+import { EASE_CINEMATIC, EASE_OUT_EXPO, MOBILE_MENU_CONTENT_DELAY, MOBILE_MENU_NAME_COLOR_DELAY, MOBILE_MENU_NAME_COLOR_DURATION, MOBILE_MENU_PANEL_CLOSE_DURATION } from '@/lib/motion/easing';
 import {
   ClipRevealItem,
-  clipRevealContainerVariants,
-  clipRevealItemVariants,
   clipRevealShellVariants,
-  CLIP_REVEAL_STAGGER,
+  mobileMenuContainerVariants,
+  mobileMenuItemVariants,
+  MOBILE_MENU_ITEM_STAGGER,
   SplashClipReveal,
 } from '@/lib/motion/clip-reveal';
 
 /** CV link temporarily hidden from navbar */
 const NAV_SHOW_CV = false;
 
-const NAV_LINE_DURATION = 0.95;
+const NAV_LINE_DURATION = MOBILE_MENU_PANEL_CLOSE_DURATION;
+
+const NAV_NAME_COLORS = {
+  dark: { closed: "hsl(0 0% 94%)", open: "hsl(0 0% 0%)" },
+  light: { closed: "hsl(0 0% 12%)", open: "hsl(0 0% 100%)" },
+} as const;
+
+function NavNameLink({
+  href,
+  isMenuOpen,
+  theme,
+}: {
+  href: string;
+  isMenuOpen: boolean;
+  theme: "light" | "dark";
+}) {
+  const colors = NAV_NAME_COLORS[theme];
+  const target = isMenuOpen ? colors.open : colors.closed;
+
+  return (
+    <motion.a
+      href={href}
+      className="optical-edge-start text-name-nav leading-none tracking-[-0.02em] font-helveticaNowDisplayBold truncate"
+      animate={{ color: target }}
+      transition={{
+        duration: MOBILE_MENU_NAME_COLOR_DURATION,
+        delay: isMenuOpen ? MOBILE_MENU_NAME_COLOR_DELAY : 0,
+        ease: isMenuOpen ? EASE_CINEMATIC : EASE_OUT_EXPO,
+      }}
+      whileHover={
+        !isMenuOpen
+          ? { color: theme === "dark" ? "hsl(0 0% 94% / 0.8)" : "hsl(0 0% 12% / 0.8)" }
+          : undefined
+      }
+    >
+      Ivan Nevares
+    </motion.a>
+  );
+}
 
 /** Shared shell — divider lives in `.nav-shell` CSS, not Tailwind border classes */
 const NAV_SHELL_BASE = "fixed top-0 left-0 right-0 z-[100] nav-shell";
 const NAV_SHELL_CLASS = cn(NAV_SHELL_BASE, "bg-nav/80 backdrop-blur-sm");
+const MOBILE_MENU_INVERTED = "mobile-menu-inverted text-foreground";
 
 const navLabel = cn(
   editorialNavType,
@@ -158,8 +197,6 @@ function NavBarInner() {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const containerVariants = clipRevealContainerVariants(0.05);
-
   const lineVariants = {
     hidden: { scaleX: reducedMotion ? 1 : 0 },
     visible: {
@@ -172,7 +209,10 @@ function NavBarInner() {
   };
 
   const itemShellVariants = clipRevealShellVariants;
-  const itemRevealVariants = clipRevealItemVariants(!!reducedMotion);
+  const mobileItemRevealVariants = mobileMenuItemVariants(!!reducedMotion);
+  const mobileContainerVariants = mobileMenuContainerVariants(
+    reducedMotion ? 0 : MOBILE_MENU_CONTENT_DELAY,
+  );
 
   const splashRevealActive = waitsForSplash;
   const splashRevealLive = !waitsForSplash || splashHandoff;
@@ -330,7 +370,7 @@ function NavBarInner() {
             key={entry.key}
             role="listitem"
             shellVariants={itemShellVariants}
-            revealVariants={itemRevealVariants}
+            revealVariants={mobileItemRevealVariants}
           >
             {entry.node}
           </ClipRevealItem>,
@@ -341,7 +381,7 @@ function NavBarInner() {
         <motion.div
           role="list"
           className="flex flex-col gap-1 pt-8 optical-edge-start"
-          variants={containerVariants}
+          variants={mobileContainerVariants}
           initial="hidden"
           animate={isMobileMenuOpen ? "visible" : "hidden"}
         >
@@ -375,18 +415,23 @@ function NavBarInner() {
   const mobileEntryCount = (isV2 ? 2 : 0) + 3 + (NAV_SHOW_CV ? 1 : 0);
   const mobileFooterStartDelay = reducedMotion
     ? 0
-    : 0.05 + (1 + (isV2 ? 1 : 0) + mobileEntryCount) * CLIP_REVEAL_STAGGER;
+    : MOBILE_MENU_CONTENT_DELAY +
+      (1 + (isV2 ? 1 : 0) + mobileEntryCount) * MOBILE_MENU_ITEM_STAGGER;
 
-  const footerContainerVariants = clipRevealContainerVariants(mobileFooterStartDelay);
+  const footerContainerVariants = mobileMenuContainerVariants(mobileFooterStartDelay);
 
   return (
     <>
       <header
         className={cn(
           NAV_SHELL_BASE,
+          "max-lg:transition-[background-color,box-shadow] max-lg:ease-[cubic-bezier(0.16,1,0.3,1)]",
           isMobileMenuOpen
-            ? "z-[110] bg-background pointer-events-auto"
-            : "bg-nav/80 backdrop-blur-sm",
+            ? cn(
+                "z-[110] bg-background pointer-events-auto max-lg:duration-[var(--mobile-menu-panel-open-duration)]",
+                MOBILE_MENU_INVERTED,
+              )
+            : "bg-nav/80 backdrop-blur-sm max-lg:duration-[var(--mobile-menu-panel-close-duration)]",
         )}
       >
         <div className="nav-bar-inner">
@@ -397,12 +442,11 @@ function NavBarInner() {
             active={splashRevealActive}
             className="col-span-6 lg:col-span-3"
           >
-            <a
+            <NavNameLink
               href={homeHref}
-              className="optical-edge-start text-name-nav leading-none tracking-[-0.02em] font-helveticaNowDisplayBold text-foreground hover:text-foreground/80 transition-colors duration-300 truncate"
-            >
-              Ivan Nevares
-            </a>
+              isMenuOpen={isMobileMenuOpen}
+              theme={theme}
+            />
           </SplashClipReveal>
 
           <nav
@@ -444,8 +488,15 @@ function NavBarInner() {
                     <HamburgerMenu isOpen={isMobileMenuOpen} />
                   </button>
                   <SheetContent
-                    className="inset-x-0 top-[var(--nav-height)] h-[calc(100dvh-var(--nav-height))] w-full sm:max-w-none border-0 bg-background p-0 shadow-none z-[90]"
-                    overlayClassName="inset-x-0 top-[var(--nav-height)] bottom-0 bg-background"
+                    motion="clip"
+                    className={cn(
+                      MOBILE_MENU_INVERTED,
+                      "inset-x-0 top-[var(--nav-height)] h-[calc(100dvh-var(--nav-height))] w-full sm:max-w-none bg-background p-0 z-[90]",
+                    )}
+                    overlayClassName={cn(
+                      MOBILE_MENU_INVERTED,
+                      "inset-x-0 top-[var(--nav-height)] bottom-0 bg-background",
+                    )}
                     side="top"
                     onOpenAutoFocus={(e) => e.preventDefault()}
                   >
@@ -474,14 +525,14 @@ function NavBarInner() {
                         <ClipRevealItem
                           className="col-span-6 optical-edge-start"
                           shellVariants={itemShellVariants}
-                          revealVariants={itemRevealVariants}
+                          revealVariants={mobileItemRevealVariants}
                         >
                           <span>Buenos Aires · AR</span>
                         </ClipRevealItem>
                         <ClipRevealItem
                           className="col-span-6 optical-edge-end"
                           shellVariants={itemShellVariants}
-                          revealVariants={itemRevealVariants}
+                          revealVariants={mobileItemRevealVariants}
                         >
                           <span className="block text-right tabular-nums">
                             {t('contact.stamp')}
