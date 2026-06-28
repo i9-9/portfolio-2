@@ -199,7 +199,7 @@ function PageReveal() {
           </div>
 
           {/* the counter — optical center, tabular nums for steady width */}
-          <div className="flex-1 flex items-center justify-center px-4 lg:px-12">
+          <div className="flex-1 flex items-center justify-center px-4 lg:px-6">
             <span
               className="font-helveticaNowDisplayBold text-type-display leading-none tabular-nums tracking-[-0.02em]"
             >
@@ -208,7 +208,7 @@ function PageReveal() {
           </div>
 
           {/* bottom rule + progress + footer label */}
-          <div className="px-4 lg:px-12 pb-6 lg:pb-8">
+          <div className="px-4 lg:px-6 pb-6 lg:pb-8">
             <div className="relative w-full h-px bg-border mb-3 lg:mb-4 overflow-hidden">
               <div
                 className="absolute inset-y-0 left-0 bg-foreground"
@@ -590,7 +590,7 @@ function ProjectRow({
           }
         }}
         onMouseMove={handleMouseMove}
-        className="group relative flex flex-col -mx-4 px-4 transition-colors duration-500 hover:bg-foreground hover:text-background overflow-hidden lg:-mx-12 lg:px-12"
+        className="group relative flex flex-col -mx-4 px-4 transition-colors duration-500 hover:bg-foreground hover:text-background overflow-hidden lg:-mx-6 lg:px-6"
       >
         <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-5 items-center py-5 lg:py-6 lg:grid-cols-12 lg:gap-x-6">
         {/* Editorial marquee — desktop: thin strip under row content (not tucked under title) */}
@@ -726,7 +726,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       <CustomCursor />
 
       {/* -- HERO — halftone (landing / v2 web) or draggable graphic "desktop" (v2 graphic) */}
-      <section className="hero-band relative isolate flex flex-col overflow-hidden px-4 lg:px-12">
+      <section className="hero-band relative isolate flex flex-col overflow-hidden px-4 lg:px-6">
         {showGraphicDesktopHero ? (
           <GraphicDesktopHero />
         ) : (
@@ -764,7 +764,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
       {/* -- WORK --------------------------------------------------------- */}
       {(v2Mode === "web") ? (
-      <section id="work" ref={workRef} className="px-4 lg:px-12 py-20">
+      <section id="work" ref={workRef} className="px-4 lg:px-6 py-20">
         <motion.p
           initial={{ opacity: 0 }}
           animate={workInView ? { opacity: 1 } : { opacity: 0 }}
@@ -798,7 +798,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       <div ref={sep2Ref}><AnimatedLine inView={sep2InView} /></div>
 
       {/* -- ABOUT -------------------------------------------------------- */}
-      <section id="about" ref={aboutRef} className="px-4 lg:px-12 py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12">
+      <section id="about" ref={aboutRef} className="px-4 lg:px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12">
         <motion.p
           initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
           animate={aboutInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
@@ -845,7 +845,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       <section
         id="contact"
         ref={contactRef}
-        className="relative overflow-hidden px-4 py-16 pb-14 lg:px-12 lg:py-20 lg:pb-16"
+        className="relative overflow-hidden px-4 py-16 pb-14 lg:px-6 lg:py-20 lg:pb-16"
       >
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.17] [background-image:radial-gradient(circle_at_center,rgb(128_128_128/0.35)_1px,transparent_1px)] [background-size:13px_13px] dark:opacity-[0.12] dark:[background-image:radial-gradient(circle_at_center,rgb(255_255_255/0.12)_1px,transparent_1px)]"
@@ -948,7 +948,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           initial={{ opacity: 0, y: 8 }}
           animate={contactInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.75, delay: 0.7, ease: EASE_OUT_EXPO }}
-          className="relative z-[1] mt-16 -mx-4 bg-[#DFFF4D] text-neutral-950 lg:-mx-12"
+          className="relative z-[1] mt-16 -mx-4 bg-[#DFFF4D] text-neutral-950 lg:-mx-6"
         >
           {heroReduced ? (
             <p className="px-4 py-2.5 text-center font-helveticaNowTextRegular text-type-micro normal-case leading-relaxed tracking-[-0.02em]">

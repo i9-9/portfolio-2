@@ -25,7 +25,7 @@ export function GridOverlay({ isVisible }: GridOverlayProps) {
       />
 
       {/* Vertical columns */}
-      <div className="w-full h-full px-4 lg:px-12">
+      <div className="w-full h-full px-4 lg:px-6">
         <div className="grid grid-cols-12 gap-4 lg:gap-6 h-full">
           {Array.from({ length: 12 }).map((_, i) => (
             <div

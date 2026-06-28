@@ -202,7 +202,7 @@
 
 /* Grid System */
 .grid-container {
-  @apply w-full grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-12;
+  @apply w-full grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-6;
 }
 
 /* Nav — exactly one grid module; divider on bottom edge without shrinking the band */

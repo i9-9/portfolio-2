@@ -83,6 +83,16 @@ function mouseAtProgress(layout, width, height, progress, rowPhase) {
   };
 }
 
+/** Disable Lenis + drive scroll on a timer (rAF can stall in headless record). */
+async function prepareNativeScroll(page) {
+  await page.evaluate(() => {
+    document.documentElement.classList.remove("lenis", "lenis-smooth");
+    document.documentElement.style.height = "auto";
+    document.body.style.height = "auto";
+    document.body.style.overflow = "visible";
+  });
+}
+
 /** rAF scroll in the page (60fps) + Playwright mouse in parallel. */
 async function runScroll(page, layout, width, height, scrollMs) {
   const scrollPromise = page.evaluate(
@@ -90,13 +100,13 @@ async function runScroll(page, layout, width, height, scrollMs) {
       new Promise((resolve) => {
         const ease = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
         const t0 = performance.now();
-        const step = (now) => {
-          const t = Math.min(1, (now - t0) / duration);
+        const tick = () => {
+          const t = Math.min(1, (performance.now() - t0) / duration);
           window.scrollTo(0, maxScroll * ease(t));
-          if (t < 1) requestAnimationFrame(step);
-          else resolve();
+          if (t < 1) window.setTimeout(tick, 1000 / 60);
+          else resolve(undefined);
         };
-        requestAnimationFrame(step);
+        tick();
       }),
     { duration: scrollMs, maxScroll: layout.maxScroll },
   );
@@ -244,6 +254,7 @@ async function readLayout(page) {
     `  journey: hero ${HERO_HOLD_MS / 1000}s → scroll ${SCROLL_MS / 1000}s (${layout.rows.length} rows)…`,
   );
 
+  await prepareNativeScroll(page);
   await page.mouse.move(VIEWPORT_W * 0.5, VIEWPORT_H * 0.42);
   await journey(page, VIEWPORT_W, VIEWPORT_H, layout, HERO_HOLD_MS, SCROLL_MS);
   await page.waitForTimeout(HOLD_BOTTOM_MS);

@@ -21,6 +21,7 @@ import { editorialNavType } from '@/lib/editorial-cta';
 const NAV_SHOW_CV = false;
 
 const NAV_ENTER_EASE = [0.22, 1, 0.36, 1] as const;
+const NAV_LINE_DURATION = 0.75;
 
 /** Shared shell — divider lives in `.nav-shell` CSS, not Tailwind border classes */
 const NAV_SHELL_BASE = "fixed top-0 left-0 right-0 z-[100] nav-shell";
@@ -50,6 +51,28 @@ function NavSeparator({ className }: { className?: string }) {
     >
       ·
     </span>
+  );
+}
+
+function MobileNavRevealItem({
+  children,
+  shellVariants,
+  revealVariants,
+  className,
+  role,
+}: {
+  children: React.ReactNode;
+  shellVariants: { hidden: object; visible: object };
+  revealVariants: { hidden: object; visible: object };
+  className?: string;
+  role?: React.AriaRole;
+}) {
+  return (
+    <motion.div role={role} className={cn("overflow-hidden", className)} variants={shellVariants}>
+      <motion.div className="block w-full" variants={revealVariants}>
+        {children}
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -151,22 +174,35 @@ function NavBarInner() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
+        staggerChildren: 0.1,
+        delayChildren: 0.05,
       },
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: -10, x: -10 },
+  const lineVariants = {
+    hidden: { scaleX: reducedMotion ? 1 : 0 },
     visible: {
-      opacity: 1,
-      y: 0,
-      x: 0,
+      scaleX: 1,
       transition: {
-        type: "spring" as const,
-        stiffness: 100,
-        damping: 12,
+        duration: reducedMotion ? 0 : NAV_LINE_DURATION,
+        ease: NAV_ENTER_EASE,
+      },
+    },
+  };
+
+  const itemShellVariants = {
+    hidden: {},
+    visible: {},
+  };
+
+  const itemRevealVariants = {
+    hidden: { y: reducedMotion ? "0%" : "100%" },
+    visible: {
+      y: "0%",
+      transition: {
+        duration: reducedMotion ? 0 : 0.55,
+        ease: NAV_ENTER_EASE,
       },
     },
   };
@@ -297,22 +333,48 @@ function NavBarInner() {
     const utilityStart = isV2 ? 2 : 0;
 
     if (isMobile) {
+      const mobileChildren: React.ReactNode[] = [
+        <motion.div
+          key="menu-line-top"
+          className="h-px w-full origin-left bg-border"
+          variants={lineVariants}
+          aria-hidden
+        />,
+      ];
+
+      entries.forEach((entry, i) => {
+        if (i === utilityStart && utilityStart > 0) {
+          mobileChildren.push(
+            <motion.div
+              key="menu-line-divider"
+              className="my-4 h-px w-full origin-left bg-border"
+              variants={lineVariants}
+              aria-hidden
+            />,
+          );
+        }
+        mobileChildren.push(
+          <MobileNavRevealItem
+            key={entry.key}
+            role="listitem"
+            shellVariants={itemShellVariants}
+            revealVariants={itemRevealVariants}
+          >
+            {entry.node}
+          </MobileNavRevealItem>,
+        );
+      });
+
       return (
-        <motion.ul
-          className="flex flex-col gap-1 border-t border-border pt-8"
+        <motion.div
+          role="list"
+          className="flex flex-col gap-1 pt-8"
           variants={containerVariants}
           initial="hidden"
-          animate="visible"
+          animate={isMobileMenuOpen ? "visible" : "hidden"}
         >
-          {entries.map((entry, i) => (
-            <motion.li key={entry.key} variants={itemVariants}>
-              {i === utilityStart && utilityStart > 0 ? (
-                <div className="my-4 h-px w-full bg-border" aria-hidden />
-              ) : null}
-              {entry.node}
-            </motion.li>
-          ))}
-        </motion.ul>
+          {mobileChildren}
+        </motion.div>
       );
     }
 
@@ -329,6 +391,22 @@ function NavBarInner() {
         ))}
       </ul>
     );
+  };
+
+  const mobileEntryCount = (isV2 ? 2 : 0) + 3 + (NAV_SHOW_CV ? 1 : 0);
+  const mobileFooterStartDelay = reducedMotion
+    ? 0
+    : 0.05 + (1 + (isV2 ? 1 : 0) + mobileEntryCount) * 0.1;
+
+  const footerContainerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: mobileFooterStartDelay,
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   return (
@@ -396,12 +474,34 @@ function NavBarInner() {
                       </div>
                     </div>
 
-                    <div className="grid-container border-t border-border py-6 text-[10px] font-helveticaNowTextRegular normal-case tracking-normal text-muted-foreground">
-                      <div className="col-span-6 optical-edge-start">Buenos Aires · AR</div>
-                      <div className="col-span-6 text-right tabular-nums optical-edge-end">
-                        {t('contact.stamp')}
-                      </div>
-                    </div>
+                    <motion.div
+                      className="grid-container relative py-6 text-[10px] font-helveticaNowTextRegular normal-case tracking-normal text-muted-foreground"
+                      variants={footerContainerVariants}
+                      initial="hidden"
+                      animate={isMobileMenuOpen ? "visible" : "hidden"}
+                    >
+                      <motion.div
+                        className="absolute inset-x-0 top-0 h-px origin-left bg-border"
+                        variants={lineVariants}
+                        aria-hidden
+                      />
+                      <MobileNavRevealItem
+                        className="col-span-6"
+                        shellVariants={itemShellVariants}
+                        revealVariants={itemRevealVariants}
+                      >
+                        <span className="optical-edge-start">Buenos Aires · AR</span>
+                      </MobileNavRevealItem>
+                      <MobileNavRevealItem
+                        className="col-span-6"
+                        shellVariants={itemShellVariants}
+                        revealVariants={itemRevealVariants}
+                      >
+                        <span className="block text-right tabular-nums optical-edge-end">
+                          {t('contact.stamp')}
+                        </span>
+                      </MobileNavRevealItem>
+                    </motion.div>
                   </div>
                 </SheetContent>
               </Sheet>
