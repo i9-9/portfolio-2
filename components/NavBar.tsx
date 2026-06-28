@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { useGrid } from '@/lib/grid/GridContext';
@@ -62,8 +62,8 @@ function MobileNavRevealItem({
   role,
 }: {
   children: React.ReactNode;
-  shellVariants: { hidden: object; visible: object };
-  revealVariants: { hidden: object; visible: object };
+  shellVariants: Variants;
+  revealVariants: Variants;
   className?: string;
   role?: React.AriaRole;
 }) {
@@ -191,12 +191,12 @@ function NavBarInner() {
     },
   };
 
-  const itemShellVariants = {
+  const itemShellVariants: Variants = {
     hidden: {},
     visible: {},
   };
 
-  const itemRevealVariants = {
+  const itemRevealVariants: Variants = {
     hidden: { y: reducedMotion ? "0%" : "100%" },
     visible: {
       y: "0%",
