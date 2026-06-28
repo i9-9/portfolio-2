@@ -75,26 +75,43 @@ if crop:
 }
 
 async function dismissPopups(page) {
-  for (const sel of [
+  const selectors = [
+    // Kostüme newsletter modal (full-screen overlay, X button top-right)
+    ".fixed.inset-0.z-50 button.absolute.top-4.right-4",
+    "div.fixed.inset-0 button.absolute.top-4.right-4",
     '[aria-label="Close" i]',
     '[aria-label="Cerrar" i]',
     'button:has-text("Close")',
     'button:has-text("Cerrar")',
+    'button:has-text("No thanks")',
+    'button:has-text("No, gracias")',
     'button:has-text("Accept")',
     'button:has-text("Aceptar")',
     'button:has-text("×")',
     ".close",
     ".modal-close",
-  ]) {
-    try {
-      const btn = page.locator(sel).first();
-      if (await btn.isVisible({ timeout: 500 })) {
-        await btn.click({ timeout: 1000 });
-        await page.waitForTimeout(500);
-        break;
-      }
-    } catch {}
+  ];
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    let dismissed = false;
+    for (const sel of selectors) {
+      try {
+        const btn = page.locator(sel).first();
+        if (await btn.isVisible({ timeout: 400 })) {
+          await btn.click({ timeout: 1500 });
+          await page.waitForTimeout(600);
+          dismissed = true;
+          break;
+        }
+      } catch {}
+    }
+    if (!dismissed) break;
   }
+
+  try {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(300);
+  } catch {}
 }
 
 async function captureSite(browser, name, url, waitMs, viewportConfig) {
@@ -134,14 +151,23 @@ async function captureSite(browser, name, url, waitMs, viewportConfig) {
 }
 
 const onlyMobile = process.argv.includes("--mobile-only");
+const onlySite = process.argv.find((a) => a.startsWith("--only="))?.slice(7);
 
 (async () => {
   const browser = await chromium.launch();
   const viewports = onlyMobile
     ? VIEWPORTS.filter((v) => v.key === "mobile")
     : VIEWPORTS;
+  const sites = onlySite
+    ? SITES.filter(([name]) => name === onlySite)
+    : SITES;
 
-  for (const [name, url, waitMs = 4000] of SITES) {
+  if (onlySite && sites.length === 0) {
+    console.error(`Unknown site "${onlySite}". Available: ${SITES.map(([n]) => n).join(", ")}`);
+    process.exit(1);
+  }
+
+  for (const [name, url, waitMs = 4000] of sites) {
     for (const viewportConfig of viewports) {
       await captureSite(browser, name, url, waitMs, viewportConfig);
     }
