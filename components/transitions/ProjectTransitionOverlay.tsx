@@ -82,7 +82,7 @@ function TransitionLogo({
       src={src}
       alt={alt}
       className={cn(
-        "h-auto max-h-[min(28vh,200px)] w-auto max-w-[min(72vw,440px)] object-contain",
+        "h-auto max-h-[min(24vh,180px)] sm:max-h-[min(28vh,200px)] w-auto max-w-[min(80vw,400px)] sm:max-w-[min(72vw,440px)] object-contain",
         className,
       )}
     />
@@ -106,7 +106,7 @@ function DesenfrenoTransition({
     <FullscreenStage>
       <TransitionBackdrop backdrop={backdrop} />
       <motion.div
-        className="absolute inset-0 flex items-center justify-center px-6"
+        className="absolute inset-0 flex items-center justify-center px-[4vw] sm:px-[5vw] md:px-6"
         initial={{ opacity: 0, y: 14 }}
         animate={
           exiting
@@ -120,8 +120,9 @@ function DesenfrenoTransition({
         <p
           className={cn(
             aggie.className,
-            "text-center uppercase leading-none tracking-[0.04em] text-white text-[clamp(2.25rem,11vw,5rem)]",
+            "text-center uppercase leading-none tracking-[0.04em] text-white text-[clamp(1.75rem,8.5vw,5rem)] max-w-full",
           )}
+          style={{ wordBreak: "keep-all", hyphens: "none" }}
           aria-hidden
         >
           EL DESENFRENO
@@ -174,10 +175,10 @@ function TransitionMarquee({
 
   return (
     <div
-      className={cn("transition-marquee-viewport w-full", className)}
+      className={cn("transition-marquee-viewport w-full overflow-hidden", className)}
       aria-hidden
     >
-      <div className="transition-marquee-track font-helveticaNowDisplayBold text-type-display uppercase leading-none tracking-[0.04em] text-white">
+      <div className="transition-marquee-track font-helveticaNowDisplayBold uppercase leading-none tracking-[0.04em] text-white text-[clamp(1.5rem,7vw,11rem)]">
         {rail(0, true)}
         {rail(1)}
       </div>
@@ -269,7 +270,7 @@ function LetterboxTransition({
       />
 
       <motion.div
-        className="absolute inset-0 flex items-center justify-center px-6"
+        className="absolute inset-0 flex items-center justify-center px-[4vw] sm:px-[5vw] md:px-6"
         initial={{ opacity: 0, y: 12, scale: 0.982 }}
         animate={
           exiting
@@ -437,7 +438,7 @@ function SlicesTransition({
   return (
     <FullscreenStage>
       <TransitionBackdrop backdrop={backdrop} />
-      <div className="absolute inset-0 flex flex-col">
+      <div className="absolute inset-0 flex flex-col overflow-hidden">
         {Array.from({ length: SLICE_COUNT }, (_, i) => (
           <motion.div
             key={i}
@@ -455,7 +456,7 @@ function SlicesTransition({
             }}
           >
             <div
-              className="absolute left-0 flex w-full items-center justify-center"
+              className="absolute left-0 flex w-full items-center justify-center px-[4vw]"
               style={{
                 height: "100dvh",
                 top: `calc(-${i} * 100dvh / ${SLICE_COUNT})`,
@@ -494,7 +495,7 @@ function GridTransition({
   return (
     <FullscreenStage>
       <TransitionBackdrop backdrop={backdrop} />
-      <div className="absolute inset-0 grid grid-cols-12">
+      <div className="absolute inset-0 grid grid-cols-12 overflow-hidden">
         {Array.from({ length: GRID_COLS }, (_, i) => (
           <motion.div
             key={i}
@@ -509,8 +510,11 @@ function GridTransition({
             }}
           >
             <div
-              className="absolute top-0 flex h-[100dvh] w-[100vw] items-center justify-center"
-              style={{ left: `calc(-${i} * 100vw / ${GRID_COLS})` }}
+              className="absolute top-0 flex h-[100dvh] items-center justify-center px-[2vw]"
+              style={{ 
+                width: "100vw",
+                left: `calc(-${i} * 100vw / ${GRID_COLS})` 
+              }}
             >
               <TransitionLogo
                 src={logo}
@@ -558,7 +562,7 @@ function TypographicTransition({
       </motion.div>
 
       <motion.div
-        className="absolute inset-0 flex items-center justify-center px-6"
+        className="absolute inset-0 flex items-center justify-center px-[4vw] sm:px-[5vw] md:px-6"
         initial={{ opacity: 0, y: 14, scaleX: 0.97 }}
         animate={
           exiting
@@ -708,7 +712,7 @@ export function ProjectTransitionOverlay({
     <AnimatePresence mode="wait">
       <motion.div
         key={slug}
-        className="fixed inset-0 z-[10001] h-[100dvh] w-full pointer-events-none"
+        className="fixed inset-0 z-[10001] h-[100dvh] w-full pointer-events-none overflow-hidden"
         initial={{ opacity: 1 }}
         animate={{ opacity: phase === "enter" ? 0 : 1 }}
         transition={{
