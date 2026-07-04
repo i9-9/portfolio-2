@@ -38,6 +38,7 @@ import {
   Asterisk,
 } from "lucide-react";
 import { ChaosStarIcon } from "@/components/icons/ChaosStarIcon";
+import { LinesLoader } from "@/components/splash/LinesLoader";
 
 const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
 
@@ -97,34 +98,6 @@ const SPLASH_EXIT_MS = 950;
 const WOHL_STUDIO_URL = "https://wohl.co/";
 
 const SPLASH_LOAD_MS = 1400;
-const SPLASH_LINE_COUNT = 14;
-const SPLASH_LINE_GAP = "calc(var(--grid-row) / 4)";
-
-function LinesLoader() {
-  return (
-    <div
-      className="absolute inset-0 flex flex-col justify-center px-4 lg:px-6"
-      style={{ gap: SPLASH_LINE_GAP }}
-      aria-hidden
-    >
-      {Array.from({ length: SPLASH_LINE_COUNT }, (_, i) => (
-        <div key={i} className="relative h-px w-full overflow-hidden bg-border/50">
-          <motion.div
-            className="absolute inset-y-0 w-[22%] bg-foreground"
-            initial={{ x: "-100%" }}
-            animate={{ x: "560%" }}
-            transition={{
-              duration: 1.25,
-              repeat: Infinity,
-              delay: i * 0.065,
-              ease: [0.45, 0, 0.15, 1],
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
 
 // --- PageReveal -----------------------------------------------------------
 // Loader: horizontal lines sweep left → right, then waits for fonts (capped).

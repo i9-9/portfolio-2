@@ -156,6 +156,15 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     finishEnter();
   }, [pathname, finishEnter]);
 
+  // Leaving a case study — drop overlay immediately so it never flashes on landing.
+  useEffect(() => {
+    if (pathname.startsWith("/work/")) return;
+
+    clearTimers();
+    pendingSlugRef.current = null;
+    setState((prev) => (prev.phase === "idle" ? prev : idleState));
+  }, [pathname, clearTimers]);
+
   // Lock scroll while the overlay is active.
   useEffect(() => {
     if (state.phase === "idle") return;
