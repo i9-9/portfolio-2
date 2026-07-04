@@ -3,12 +3,15 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import type { ProjectSlug } from "@/app/data/projects";
+import { getProjectBySlug, type ProjectSlug } from "@/app/data/projects";
 import {
+  PROJECT_TRANSITION_BACKDROP,
+  PROJECT_TRANSITION_LOGO_CLASS,
   PROJECT_TRANSITION_VARIANT,
   TRANSITION_EASE,
   TRANSITION_ENTER_MS,
   TRANSITION_EXIT_MS,
+  type ProjectTransitionBackdrop,
   type ProjectTransitionVariant,
 } from "@/lib/transitions/config";
 import type { TransitionOrigin, TransitionPhase } from "@/lib/transitions/ProjectTransitionContext";
@@ -17,7 +20,6 @@ import { cn } from "@/lib/utils";
 const SLICE_COUNT = 6;
 const GRID_COLS = 12;
 
-/** Full-viewport stage — image always covers the screen edge-to-edge. */
 function FullscreenStage({
   className,
   children,
@@ -37,30 +39,77 @@ function FullscreenStage({
   );
 }
 
-function TransitionImage({
+/** Full-bleed screenshot, heavily blurred — backdrop for the logo. */
+function BlurredBackground({
+  src,
+  className,
+}: {
+  src: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn("absolute inset-0 overflow-hidden", className)}>
+      <Image
+        src={src}
+        alt=""
+        fill
+        className="scale-[1.12] object-cover object-center blur-3xl brightness-[0.45] saturate-[1.15]"
+        sizes="100vw"
+        priority
+      />
+      <div className="absolute inset-0 bg-black/25" aria-hidden />
+    </div>
+  );
+}
+
+function TransitionBackdrop({
+  backdrop,
+  previewImage,
+}: {
+  backdrop: ProjectTransitionBackdrop;
+  previewImage: string;
+}) {
+  if (backdrop === "white") {
+    return <div className="absolute inset-0 bg-white" aria-hidden />;
+  }
+
+  return <BlurredBackground src={previewImage} />;
+}
+
+function logoClassForBackdrop(
+  backdrop: ProjectTransitionBackdrop,
+  slug?: ProjectSlug,
+) {
+  return cn(
+    logoClassForBackdropTone(backdrop),
+    slug ? PROJECT_TRANSITION_LOGO_CLASS[slug] : undefined,
+  );
+}
+
+function logoClassForBackdropTone(backdrop: ProjectTransitionBackdrop) {
+  return backdrop === "white"
+    ? "drop-shadow-none"
+    : "drop-shadow-[0_8px_32px_rgba(0,0,0,0.35)]";
+}
+
+function TransitionLogo({
   src,
   alt,
   className,
-  priority,
-  fit = "cover",
 }: {
   src: string;
   alt: string;
   className?: string;
-  priority?: boolean;
-  fit?: "cover" | "contain";
 }) {
   return (
-    <Image
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
       src={src}
       alt={alt}
-      fill
       className={cn(
-        fit === "contain" ? "object-contain object-center" : "object-cover object-center",
+        "h-auto max-h-[min(28vh,200px)] w-auto max-w-[min(72vw,440px)] object-contain",
         className,
       )}
-      sizes="100vw"
-      priority={priority}
     />
   );
 }
@@ -68,10 +117,18 @@ function TransitionImage({
 function LetterboxTransition({
   phase,
   previewImage,
+  backdrop,
+  logo,
+  logoAlt,
+  logoClassName,
   origin,
 }: {
   phase: TransitionPhase;
   previewImage: string;
+  backdrop: ProjectTransitionBackdrop;
+  logo: string;
+  logoAlt: string;
+  logoClassName: string;
   origin: TransitionOrigin;
 }) {
   const exiting = phase === "exit";
@@ -98,9 +155,10 @@ function LetterboxTransition({
     : 0;
 
   return (
-    <FullscreenStage className="bg-black">
+    <FullscreenStage>
+      <TransitionBackdrop backdrop={backdrop} previewImage={previewImage} />
       <motion.div
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-0 flex items-center justify-center"
         initial={
           viewport
             ? { x: fromX, y: fromY, scale: fromScale, opacity: 1 }
@@ -110,14 +168,17 @@ function LetterboxTransition({
           exiting
             ? { x: 0, y: 0, scale: 1, opacity: 1 }
             : entering
-              ? { x: 0, y: 0, scale: 1.03, opacity: 0 }
+              ? { x: 0, y: 0, scale: 1.06, opacity: 0 }
               : { x: 0, y: 0, scale: 1, opacity: 1 }
         }
         transition={{ duration: TRANSITION_EXIT_MS / 1000, ease: TRANSITION_EASE }}
       >
-        <TransitionImage src={previewImage} alt="" priority />
+        <TransitionLogo
+          src={logo}
+          alt={logoAlt}
+          className={logoClassName}
+        />
       </motion.div>
-      {/* Cinematic bars — brief accent, then pull away for full-bleed hold */}
       <motion.div
         className="absolute inset-x-0 top-0 bg-black"
         initial={{ height: "0%" }}
@@ -145,10 +206,18 @@ function LetterboxTransition({
 function CurtainTransition({
   phase,
   previewImage,
+  backdrop,
+  logo,
+  logoAlt,
+  logoClassName,
   direction = "up",
 }: {
   phase: TransitionPhase;
   previewImage: string;
+  backdrop: ProjectTransitionBackdrop;
+  logo: string;
+  logoAlt: string;
+  logoClassName: string;
   direction?: "up" | "down";
 }) {
   const exiting = phase === "exit";
@@ -159,37 +228,50 @@ function CurtainTransition({
   const exitAway = fromBottom ? "inset(0% 0 100% 0)" : "inset(100% 0 0 0)";
 
   return (
-    <motion.div
-      className="absolute inset-0 h-[100dvh] w-full overflow-hidden bg-neutral-950"
-      initial={{ clipPath: hidden }}
-      animate={{ clipPath: exiting ? visible : exitAway }}
-      transition={{
-        duration: (exiting ? TRANSITION_EXIT_MS : TRANSITION_ENTER_MS) / 1000,
-        ease: TRANSITION_EASE,
-      }}
-    >
+    <FullscreenStage>
+      <TransitionBackdrop backdrop={backdrop} previewImage={previewImage} />
       <motion.div
-        className="absolute inset-0"
-        animate={exiting ? { scale: 1.02 } : { scale: 1 }}
+        className="absolute inset-0 flex items-center justify-center"
+        initial={{ clipPath: hidden }}
+        animate={{ clipPath: exiting ? visible : exitAway }}
         transition={{
           duration: (exiting ? TRANSITION_EXIT_MS : TRANSITION_ENTER_MS) / 1000,
           ease: TRANSITION_EASE,
         }}
       >
-        <TransitionImage src={previewImage} alt="" priority fit="contain" />
+        <motion.div
+          animate={exiting ? { scale: 1.02 } : { scale: 1 }}
+          transition={{
+            duration: (exiting ? TRANSITION_EXIT_MS : TRANSITION_ENTER_MS) / 1000,
+            ease: TRANSITION_EASE,
+          }}
+        >
+          <TransitionLogo
+            src={logo}
+            alt={logoAlt}
+            className={logoClassName}
+          />
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </FullscreenStage>
   );
 }
 
-/** Scale from project row to full frame — no clip artifacts, image stays intact. */
 function ExpandTransition({
   phase,
   previewImage,
+  backdrop,
+  logo,
+  logoAlt,
+  logoClassName,
   origin,
 }: {
   phase: TransitionPhase;
   previewImage: string;
+  backdrop: ProjectTransitionBackdrop;
+  logo: string;
+  logoAlt: string;
+  logoClassName: string;
   origin: TransitionOrigin;
 }) {
   const exiting = phase === "exit";
@@ -216,9 +298,10 @@ function ExpandTransition({
     : 0;
 
   return (
-    <FullscreenStage className="bg-neutral-950">
+    <FullscreenStage>
+      <TransitionBackdrop backdrop={backdrop} previewImage={previewImage} />
       <motion.div
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-0 flex items-center justify-center"
         initial={
           viewport
             ? { x: fromX, y: fromY, scale: fromScale, opacity: 1 }
@@ -233,7 +316,11 @@ function ExpandTransition({
         }
         transition={{ duration: TRANSITION_EXIT_MS / 1000, ease: TRANSITION_EASE }}
       >
-        <TransitionImage src={previewImage} alt="" priority fit="contain" />
+        <TransitionLogo
+          src={logo}
+          alt={logoAlt}
+          className={logoClassName}
+        />
       </motion.div>
     </FullscreenStage>
   );
@@ -242,41 +329,56 @@ function ExpandTransition({
 function SlicesTransition({
   phase,
   previewImage,
+  backdrop,
+  logo,
+  logoAlt,
+  logoClassName,
 }: {
   phase: TransitionPhase;
   previewImage: string;
+  backdrop: ProjectTransitionBackdrop;
+  logo: string;
+  logoAlt: string;
+  logoClassName: string;
 }) {
   const exiting = phase === "exit";
 
   return (
-    <FullscreenStage className="flex flex-col bg-background">
-      {Array.from({ length: SLICE_COUNT }, (_, i) => (
-        <motion.div
-          key={i}
-          className="relative min-h-0 flex-1 overflow-hidden"
-          initial={{ x: exiting ? (i % 2 === 0 ? "-105%" : "105%") : 0 }}
-          animate={
-            exiting
-              ? { x: 0 }
-              : { x: i % 2 === 0 ? "-105%" : "105%" }
-          }
-          transition={{
-            duration: 0.52,
-            ease: TRANSITION_EASE,
-            delay: exiting ? i * 0.045 : (SLICE_COUNT - 1 - i) * 0.035,
-          }}
-        >
-          <div
-            className="absolute left-0 w-full"
-            style={{
-              height: "100dvh",
-              top: `calc(-${i} * 100dvh / ${SLICE_COUNT})`,
+    <FullscreenStage>
+      <TransitionBackdrop backdrop={backdrop} previewImage={previewImage} />
+      <div className="absolute inset-0 flex flex-col">
+        {Array.from({ length: SLICE_COUNT }, (_, i) => (
+          <motion.div
+            key={i}
+            className="relative min-h-0 flex-1 overflow-hidden"
+            initial={{ x: exiting ? (i % 2 === 0 ? "-105%" : "105%") : 0 }}
+            animate={
+              exiting
+                ? { x: 0 }
+                : { x: i % 2 === 0 ? "-105%" : "105%" }
+            }
+            transition={{
+              duration: 0.52,
+              ease: TRANSITION_EASE,
+              delay: exiting ? i * 0.045 : (SLICE_COUNT - 1 - i) * 0.035,
             }}
           >
-            <TransitionImage src={previewImage} alt="" priority />
-          </div>
-        </motion.div>
-      ))}
+            <div
+              className="absolute left-0 flex w-full items-center justify-center"
+              style={{
+                height: "100dvh",
+                top: `calc(-${i} * 100dvh / ${SLICE_COUNT})`,
+              }}
+            >
+              <TransitionLogo
+                src={logo}
+                alt={logoAlt}
+                className={logoClassName}
+              />
+            </div>
+          </motion.div>
+        ))}
+      </div>
     </FullscreenStage>
   );
 }
@@ -284,40 +386,102 @@ function SlicesTransition({
 function GridTransition({
   phase,
   previewImage,
+  backdrop,
+  logo,
+  logoAlt,
+  logoClassName,
 }: {
   phase: TransitionPhase;
   previewImage: string;
+  backdrop: ProjectTransitionBackdrop;
+  logo: string;
+  logoAlt: string;
+  logoClassName: string;
 }) {
   const exiting = phase === "exit";
 
   return (
-    <div className="absolute inset-0 grid h-[100dvh] w-full grid-cols-12 bg-background">
-      {Array.from({ length: GRID_COLS }, (_, i) => (
-        <motion.div
-          key={i}
-          className="relative h-full overflow-hidden"
-          initial={{ scaleY: exiting ? 0 : 1 }}
-          animate={{ scaleY: exiting ? 1 : 0 }}
-          style={{ transformOrigin: "top" }}
-          transition={{
-            duration: 0.48,
-            ease: TRANSITION_EASE,
-            delay: exiting ? i * 0.035 : (GRID_COLS - 1 - i) * 0.028,
-          }}
-        >
-          <div
-            className="absolute top-0"
-            style={{
-              height: "100dvh",
-              width: "100vw",
-              left: `calc(-${i} * 100vw / ${GRID_COLS})`,
+    <FullscreenStage>
+      <TransitionBackdrop backdrop={backdrop} previewImage={previewImage} />
+      <div className="absolute inset-0 grid grid-cols-12">
+        {Array.from({ length: GRID_COLS }, (_, i) => (
+          <motion.div
+            key={i}
+            className="relative h-full overflow-hidden"
+            initial={{ scaleY: exiting ? 0 : 1 }}
+            animate={{ scaleY: exiting ? 1 : 0 }}
+            style={{ transformOrigin: "top" }}
+            transition={{
+              duration: 0.48,
+              ease: TRANSITION_EASE,
+              delay: exiting ? i * 0.035 : (GRID_COLS - 1 - i) * 0.028,
             }}
           >
-            <TransitionImage src={previewImage} alt="" priority />
-          </div>
-        </motion.div>
-      ))}
-    </div>
+            <div
+              className="absolute top-0 flex h-[100dvh] w-[100vw] items-center justify-center"
+              style={{ left: `calc(-${i} * 100vw / ${GRID_COLS})` }}
+            >
+              <TransitionLogo
+                src={logo}
+                alt={logoAlt}
+                className={logoClassName}
+              />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </FullscreenStage>
+  );
+}
+
+/** Wordmark — quiet fade, baseline settle, slight horizontal breathe. */
+function TypographicTransition({
+  phase,
+  previewImage,
+  backdrop,
+  logo,
+  logoAlt,
+  logoClassName,
+}: {
+  phase: TransitionPhase;
+  previewImage: string;
+  backdrop: ProjectTransitionBackdrop;
+  logo: string;
+  logoAlt: string;
+  logoClassName: string;
+}) {
+  const exiting = phase === "exit";
+  const entering = phase === "enter";
+  const duration =
+    (exiting ? TRANSITION_EXIT_MS : TRANSITION_ENTER_MS) / 1000;
+
+  return (
+    <FullscreenStage>
+      <motion.div
+        className="absolute inset-0"
+        initial={{ opacity: exiting ? 0.72 : 1 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: duration * 0.9, ease: TRANSITION_EASE }}
+      >
+        <TransitionBackdrop backdrop={backdrop} previewImage={previewImage} />
+      </motion.div>
+
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center px-6"
+        initial={{ opacity: 0, y: 14, scaleX: 0.97 }}
+        animate={
+          exiting
+            ? { opacity: 1, y: 0, scaleX: 1 }
+            : entering
+              ? { opacity: 0, y: -8, scaleX: 0.985 }
+              : { opacity: 1, y: 0, scaleX: 1 }
+        }
+        transition={{ duration, ease: TRANSITION_EASE }}
+        style={{ transformOrigin: "center center" }}
+      >
+        <TransitionLogo src={logo} alt={logoAlt} className={logoClassName} />
+      </motion.div>
+    </FullscreenStage>
   );
 }
 
@@ -325,11 +489,19 @@ function VariantLayer({
   variant,
   phase,
   previewImage,
+  backdrop,
+  logo,
+  logoAlt,
+  logoClassName,
   origin,
 }: {
   variant: ProjectTransitionVariant;
   phase: TransitionPhase;
   previewImage: string;
+  backdrop: ProjectTransitionBackdrop;
+  logo: string;
+  logoAlt: string;
+  logoClassName: string;
   origin: TransitionOrigin;
 }) {
   switch (variant) {
@@ -338,16 +510,33 @@ function VariantLayer({
         <LetterboxTransition
           phase={phase}
           previewImage={previewImage}
+          backdrop={backdrop}
+          logo={logo}
+          logoAlt={logoAlt}
+          logoClassName={logoClassName}
           origin={origin}
         />
       );
     case "curtain":
-      return <CurtainTransition phase={phase} previewImage={previewImage} />;
+      return (
+        <CurtainTransition
+          phase={phase}
+          previewImage={previewImage}
+          backdrop={backdrop}
+          logo={logo}
+          logoAlt={logoAlt}
+          logoClassName={logoClassName}
+        />
+      );
     case "curtainDown":
       return (
         <CurtainTransition
           phase={phase}
           previewImage={previewImage}
+          backdrop={backdrop}
+          logo={logo}
+          logoAlt={logoAlt}
+          logoClassName={logoClassName}
           direction="down"
         />
       );
@@ -356,13 +545,46 @@ function VariantLayer({
         <ExpandTransition
           phase={phase}
           previewImage={previewImage}
+          backdrop={backdrop}
+          logo={logo}
+          logoAlt={logoAlt}
+          logoClassName={logoClassName}
           origin={origin}
         />
       );
     case "slices":
-      return <SlicesTransition phase={phase} previewImage={previewImage} />;
+      return (
+        <SlicesTransition
+          phase={phase}
+          previewImage={previewImage}
+          backdrop={backdrop}
+          logo={logo}
+          logoAlt={logoAlt}
+          logoClassName={logoClassName}
+        />
+      );
     case "grid":
-      return <GridTransition phase={phase} previewImage={previewImage} />;
+      return (
+        <GridTransition
+          phase={phase}
+          previewImage={previewImage}
+          backdrop={backdrop}
+          logo={logo}
+          logoAlt={logoAlt}
+          logoClassName={logoClassName}
+        />
+      );
+    case "typographic":
+      return (
+        <TypographicTransition
+          phase={phase}
+          previewImage={previewImage}
+          backdrop={backdrop}
+          logo={logo}
+          logoAlt={logoAlt}
+          logoClassName={logoClassName}
+        />
+      );
   }
 }
 
@@ -379,7 +601,12 @@ export function ProjectTransitionOverlay({
 }) {
   if (!slug || !previewImage || !origin || phase === "idle") return null;
 
+  const project = getProjectBySlug(slug);
+  if (!project?.logo) return null;
+
   const variant = PROJECT_TRANSITION_VARIANT[slug];
+  const backdrop = PROJECT_TRANSITION_BACKDROP[slug];
+  const logoClassName = logoClassForBackdrop(backdrop, slug);
 
   return (
     <AnimatePresence mode="wait">
@@ -399,6 +626,10 @@ export function ProjectTransitionOverlay({
           variant={variant}
           phase={phase}
           previewImage={previewImage}
+          backdrop={backdrop}
+          logo={project.logo}
+          logoAlt={project.name}
+          logoClassName={logoClassName}
           origin={origin}
         />
       </motion.div>

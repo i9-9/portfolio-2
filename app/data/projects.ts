@@ -16,6 +16,10 @@ export interface Project {
   previewImage: string;
   /** Mobile viewport preview (390px) for transitions and listings */
   previewImageMobile: string;
+  /** Optional looping video for desktop hover preview (falls back to previewImage) */
+  previewVideo?: string;
+  /** Brand logo for route transition overlay */
+  logo: string;
   /** Hero image for /work/[slug] case study — desktop viewport */
   caseStudyHero: string;
   /** Hero image for /work/[slug] case study — mobile viewport */
@@ -38,6 +42,7 @@ export const projects: Project[] = [
     image: "/projects-heybristol/heybristol_macbook_mockup.png",
     previewImage: "/projects-v2/heybristol.png",
     previewImageMobile: "/projects-v2/heybristol-mobile.png",
+    logo: "/project-logos/heybristol.svg",
     caseStudyHero: "/projects-v2/heybristol.png",
     caseStudyHeroMobile: "/projects-v2/heybristol-mobile.png",
     heroWidth: 2880,
@@ -54,6 +59,8 @@ export const projects: Project[] = [
     image: "/projects-landing/kostume/jul:24/4 - Macbook mockup.png",
     previewImage: "/projects-v2/kostume.png",
     previewImageMobile: "/projects-v2/kostume-mobile.png",
+    previewVideo: "/projects-v2/kostume-preview.mp4",
+    logo: "/project-logos/kostume.svg",
     caseStudyHero: "/projects-v2/kostume.png",
     caseStudyHeroMobile: "/projects-v2/kostume-mobile.png",
     heroWidth: 2880,
@@ -70,6 +77,7 @@ export const projects: Project[] = [
     image: "/projects/ursulabenavidez.png",
     previewImage: "/projects-v2/ursulabenavidez.png",
     previewImageMobile: "/projects-v2/ursulabenavidez-mobile.png",
+    logo: "/project-logos/ursulabenavidez.svg",
     caseStudyHero: "/projects-v2/ursulabenavidez.png",
     caseStudyHeroMobile: "/projects-v2/ursulabenavidez-mobile.png",
     heroWidth: 2880,
@@ -86,6 +94,7 @@ export const projects: Project[] = [
     image: "/projects/templodetierra.png",
     previewImage: "/projects-v2/templodetierra.png",
     previewImageMobile: "/projects-v2/templodetierra-mobile.png",
+    logo: "/project-logos/templodetierra.png",
     caseStudyHero: "/projects-v2/templodetierra.png",
     caseStudyHeroMobile: "/projects-v2/templodetierra-mobile.png",
     heroWidth: 2880,
@@ -102,6 +111,7 @@ export const projects: Project[] = [
     image: "/projects-eldesenfreno/el_desenfreno_macbook_mockup.png",
     previewImage: "/projects-v2/eldesenfreno.png",
     previewImageMobile: "/projects-v2/eldesenfreno-mobile.png",
+    logo: "/project-logos/desenfreno.png",
     caseStudyHero: "/projects-v2/eldesenfreno.png",
     caseStudyHeroMobile: "/projects-v2/eldesenfreno-mobile.png",
     heroWidth: 2880,
@@ -118,6 +128,7 @@ export const projects: Project[] = [
     image: "/projects-v2/grupofrali.png",
     previewImage: "/projects-v2/grupofrali.png",
     previewImageMobile: "/projects-v2/grupofrali-mobile.png",
+    logo: "/project-logos/grupofrali.svg",
     caseStudyHero: "/projects-v2/grupofrali.png",
     caseStudyHeroMobile: "/projects-v2/grupofrali-mobile.png",
     heroWidth: 2880,

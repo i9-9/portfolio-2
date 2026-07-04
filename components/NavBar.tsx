@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useLayoutEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { motion, useReducedMotion } from 'framer-motion';
+import {
+  motion,
+  useReducedMotion,
+} from 'framer-motion';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { useGrid } from '@/lib/grid/GridContext';
@@ -30,6 +33,28 @@ import {
 const NAV_SHOW_CV = false;
 
 const NAV_LINE_DURATION = MOBILE_MENU_PANEL_CLOSE_DURATION;
+/** Case study: nav slides down over this scroll distance (matches --nav-height). */
+const CASE_STUDY_NAV_REVEAL_PX = 64;
+
+function readPageScrollY() {
+  if (typeof window === "undefined") return 0;
+  const scrollingElement = document.scrollingElement;
+  return (
+    document.body.scrollTop ||
+    scrollingElement?.scrollTop ||
+    window.scrollY ||
+    document.documentElement.scrollTop ||
+    0
+  );
+}
+
+function scrollPageToTop() {
+  document.body.scrollTop = 0;
+  if (document.scrollingElement) {
+    document.scrollingElement.scrollTop = 0;
+  }
+  window.scrollTo(0, 0);
+}
 
 const NAV_NAME_COLORS = {
   dark: { closed: "hsl(0 0% 94%)", open: "hsl(0 0% 0%)" },
@@ -148,16 +173,25 @@ function LanguageToggle({ isMobile = false }: { isMobile?: boolean }) {
 }
 
 export function NavBar() {
+  const pathname = usePathname();
+  const isCaseStudyRoute = pathname.startsWith("/work/");
+
   return (
-    <Suspense fallback={<NavBarFallback />}>
+    <Suspense fallback={<NavBarFallback hidden={isCaseStudyRoute} />}>
       <NavBarInner />
     </Suspense>
   );
 }
 
-function NavBarFallback() {
+function NavBarFallback({ hidden = false }: { hidden?: boolean }) {
   return (
-    <header className={NAV_SHELL_CLASS} aria-hidden />
+    <header
+      className={cn(
+        NAV_SHELL_CLASS,
+        hidden && "-translate-y-full pointer-events-none",
+      )}
+      aria-hidden
+    />
   );
 }
 
@@ -171,7 +205,61 @@ function NavBarInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
+  const [caseStudyScrollY, setCaseStudyScrollY] = useState(0);
   useEffect(() => setMounted(true), []);
+
+  const isCaseStudy = pathname.startsWith("/work/");
+  const caseStudyNavHidden =
+    isCaseStudy && caseStudyScrollY <= 0 && !isMobileMenuOpen;
+
+  useLayoutEffect(() => {
+    if (!isCaseStudy) {
+      setCaseStudyScrollY(0);
+      return;
+    }
+    scrollPageToTop();
+    setCaseStudyScrollY(0);
+  }, [isCaseStudy, pathname]);
+
+  useEffect(() => {
+    if (!isCaseStudy) {
+      setCaseStudyScrollY(0);
+      return;
+    }
+
+    let rafId = 0;
+
+    const update = () => {
+      setCaseStudyScrollY(readPageScrollY());
+    };
+
+    const handleScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(update);
+    };
+
+    update();
+    document.addEventListener("scroll", handleScroll, { passive: true, capture: true });
+    return () => {
+      cancelAnimationFrame(rafId);
+      document.removeEventListener("scroll", handleScroll, { capture: true });
+    };
+  }, [isCaseStudy, pathname]);
+
+  const caseStudyRevealProgress =
+    caseStudyScrollY <= 0
+      ? 0
+      : Math.min(caseStudyScrollY / CASE_STUDY_NAV_REVEAL_PX, 1);
+
+  const caseStudyNavY = isMobileMenuOpen
+    ? "0%"
+    : caseStudyNavHidden
+      ? "-100%"
+      : reducedMotion
+        ? "0%"
+        : `${(1 - caseStudyRevealProgress) * -100}%`;
+
+  const caseStudyNavInteractive = caseStudyScrollY > 0;
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -422,16 +510,33 @@ function NavBarInner() {
 
   return (
     <>
-      <header
+      <motion.header
+        style={isCaseStudy ? { y: caseStudyNavY } : undefined}
         className={cn(
           NAV_SHELL_BASE,
-          "max-lg:transition-[background-color,box-shadow] max-lg:ease-[cubic-bezier(0.16,1,0.3,1)]",
+          caseStudyNavHidden && "-translate-y-full",
+          isCaseStudy &&
+            !caseStudyNavInteractive &&
+            !isMobileMenuOpen &&
+            "pointer-events-none",
+          isCaseStudy
+            ? "transition-[background-color,box-shadow,backdrop-filter] duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]"
+            : cn(
+                "transition-[background-color,box-shadow,backdrop-filter] duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]",
+                "max-lg:transition-[background-color,box-shadow,backdrop-filter,transform] max-lg:ease-[cubic-bezier(0.16,1,0.3,1)]",
+              ),
           isMobileMenuOpen
             ? cn(
                 "z-[110] bg-background pointer-events-auto max-lg:duration-[var(--mobile-menu-panel-open-duration)]",
                 MOBILE_MENU_INVERTED,
               )
-            : "bg-nav/80 backdrop-blur-sm max-lg:duration-[var(--mobile-menu-panel-close-duration)]",
+            : cn(
+                "bg-nav/80 backdrop-blur-sm max-lg:duration-[var(--mobile-menu-panel-close-duration)]",
+                isCaseStudy &&
+                  !caseStudyNavInteractive &&
+                  !isMobileMenuOpen &&
+                  "bg-transparent backdrop-blur-none [box-shadow:none]",
+              ),
         )}
       >
         <div className="nav-bar-inner">
@@ -546,7 +651,7 @@ function NavBarInner() {
             </div>
           </nav>
         </div>
-      </header>
+      </motion.header>
     </>
   );
 }

@@ -530,6 +530,13 @@ html {
     text-transform: none;
     color: hsl(var(--foreground));
   }
+
+  /* Optical cap-height align: section label (Display) vs body (Text Regular) */
+  @media (min-width: 1024px) {
+    .case-study-section-copy {
+      padding-top: 0.2em;
+    }
+  }
   .text-type-body { font-size: var(--type-body); }
   .text-type-body-lg { font-size: var(--type-body-lg); }
   .text-type-display {

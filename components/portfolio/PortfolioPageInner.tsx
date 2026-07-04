@@ -37,6 +37,7 @@ import {
   ArrowRight,
   Asterisk,
 } from "lucide-react";
+import { ChaosStarIcon } from "@/components/icons/ChaosStarIcon";
 
 const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
 
@@ -504,6 +505,40 @@ const PROJECT_ROWS = [
   },
 ];
 
+// --- ProjectRowIcon -------------------------------------------------------
+function ProjectRowIcon({ hovered }: { hovered: boolean }) {
+  return (
+    <span className="relative inline-flex size-4 shrink-0">
+      <motion.span
+        className="absolute inset-0 flex items-center justify-center"
+        initial={false}
+        animate={{
+          opacity: hovered ? 0 : 1,
+          scale: hovered ? 0.55 : 1,
+          filter: hovered ? "blur(3px)" : "blur(0px)",
+        }}
+        transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
+        aria-hidden={hovered}
+      >
+        <ArrowRight className="size-4" />
+      </motion.span>
+      <motion.span
+        className="absolute inset-0 flex items-center justify-center"
+        initial={false}
+        animate={{
+          opacity: hovered ? 1 : 0,
+          scale: hovered ? 1 : 0.55,
+          rotate: hovered ? 0 : -22.5,
+        }}
+        transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
+        aria-hidden={!hovered}
+      >
+        <ChaosStarIcon />
+      </motion.span>
+    </span>
+  );
+}
+
 // --- ProjectRow -----------------------------------------------------------
 function ProjectRow({
   index,
@@ -528,6 +563,7 @@ function ProjectRow({
 }) {
   const project = getProjectBySlug(slug);
   const desktopPreview = project?.previewImage ?? "";
+  const desktopPreviewVideo = project?.previewVideo;
   const [hovered, setHovered] = useState(false);
   const { navigateToProject } = useProjectTransition();
 
@@ -649,7 +685,7 @@ function ProjectRow({
             animate={hovered ? { x: 3, y: 3 } : { x: 0, y: 0 }}
             transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
           >
-            <ArrowRight className="w-4 h-4 flex-shrink-0 transition-transform duration-500 ease-out group-hover:rotate-45" />
+            <ProjectRowIcon hovered={hovered} />
           </motion.span>
         </div>
         </div>
@@ -666,7 +702,19 @@ function ProjectRow({
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.32, ease: EASE_OUT_EXPO }}
           >
-            <Image src={desktopPreview} alt={name} fill className="object-cover" sizes="384px" />
+            {desktopPreviewVideo ? (
+              <video
+                src={desktopPreviewVideo}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 h-full w-full object-cover"
+                aria-hidden
+              />
+            ) : (
+              <Image src={desktopPreview} alt={name} fill className="object-cover" sizes="384px" />
+            )}
           </motion.div>
         )}
       </AnimatePresence>
