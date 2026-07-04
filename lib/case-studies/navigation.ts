@@ -7,7 +7,6 @@ export const CASE_STUDY_NAV_ORDER: CaseStudySlug[] = [
   "kostume",
   "ursulabenavidez",
   "desenfreno",
-  "templodetierra",
 ];
 
 export function getNextCaseStudySlug(slug: CaseStudySlug): CaseStudySlug | null {

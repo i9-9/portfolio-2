@@ -9,7 +9,7 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import { getProjectBySlug, projects } from "@/app/data/projects";
-import { getProjectPreview } from "@/lib/projects/screenshot";
+import { getProjectPreview, getProjectPreviewVideo } from "@/lib/projects/screenshot";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import {
@@ -480,16 +480,8 @@ const PROJECT_ROWS = [
     marqueeEs: "Ursula Benavidez · ",
   },
   {
-    key: "templodetierra",
-    idx: 3,
-    metricEn: "",
-    metricEs: "",
-    marqueeEn: "Templo de Tierra · ",
-    marqueeEs: "Templo de Tierra · ",
-  },
-  {
     key: "desenfreno",
-    idx: 4,
+    idx: 3,
     metricEn: "",
     metricEs: "",
     marqueeEn: "El Desenfreno · ",
@@ -497,7 +489,7 @@ const PROJECT_ROWS = [
   },
   {
     key: "grupofrali",
-    idx: 5,
+    idx: 4,
     metricEn: "",
     metricEs: "",
     marqueeEn: "Grupo Frali · ",
@@ -505,19 +497,51 @@ const PROJECT_ROWS = [
   },
 ];
 
+// --- HoverPreviewVideo ----------------------------------------------------
+function HoverPreviewVideo({ src, poster }: { src: string; poster: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+
+    const play = () => {
+      void video.play().catch(() => {});
+    };
+
+    play();
+    video.addEventListener("loadeddata", play);
+    return () => video.removeEventListener("loadeddata", play);
+  }, [src]);
+
+  return (
+    <video
+      ref={ref}
+      src={src}
+      poster={poster}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+      className="absolute inset-0 h-full w-full object-cover"
+      aria-hidden
+    />
+  );
+}
+
 // --- ProjectRowIcon -------------------------------------------------------
 function ProjectRowIcon({ hovered }: { hovered: boolean }) {
   return (
-    <span className="relative inline-flex size-4 shrink-0">
+    <span className="relative inline-flex size-[18px] shrink-0">
       <motion.span
         className="absolute inset-0 flex items-center justify-center"
         initial={false}
         animate={{
           opacity: hovered ? 0 : 1,
-          scale: hovered ? 0.55 : 1,
-          filter: hovered ? "blur(3px)" : "blur(0px)",
+          scale: hovered ? 0.7 : 1,
         }}
-        transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
+        transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
         aria-hidden={hovered}
       >
         <ArrowRight className="size-4" />
@@ -527,10 +551,9 @@ function ProjectRowIcon({ hovered }: { hovered: boolean }) {
         initial={false}
         animate={{
           opacity: hovered ? 1 : 0,
-          scale: hovered ? 1 : 0.55,
-          rotate: hovered ? 0 : -22.5,
+          scale: hovered ? 1 : 0.7,
         }}
-        transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
+        transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
         aria-hidden={!hovered}
       >
         <ChaosStarIcon />
@@ -563,7 +586,9 @@ function ProjectRow({
 }) {
   const project = getProjectBySlug(slug);
   const desktopPreview = project?.previewImage ?? "";
-  const desktopPreviewVideo = project?.previewVideo;
+  const desktopPreviewVideo = project
+    ? getProjectPreviewVideo(project, false)
+    : undefined;
   const [hovered, setHovered] = useState(false);
   const { navigateToProject } = useProjectTransition();
 
@@ -703,15 +728,7 @@ function ProjectRow({
             transition={{ duration: 0.32, ease: EASE_OUT_EXPO }}
           >
             {desktopPreviewVideo ? (
-              <video
-                src={desktopPreviewVideo}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 h-full w-full object-cover"
-                aria-hidden
-              />
+              <HoverPreviewVideo src={desktopPreviewVideo} poster={desktopPreview} />
             ) : (
               <Image src={desktopPreview} alt={name} fill className="object-cover" sizes="384px" />
             )}

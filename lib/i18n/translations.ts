@@ -105,6 +105,7 @@ export const translations = {
     },
     caseStudy: {
       back: "Back to work",
+      backShort: "Back",
       caseStudyLabel: "Case study",
       liveSite: "Live site",
       viewLiveSite: "View live site",
@@ -306,6 +307,7 @@ export const translations = {
     },
     caseStudy: {
       back: "Volver a proyectos",
+      backShort: "Volver",
       caseStudyLabel: "Caso de estudio",
       liveSite: "Sitio en vivo",
       viewLiveSite: "Ver sitio en vivo",

@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { getProjectBySlug } from "@/app/data/projects";
@@ -21,10 +21,11 @@ import {
   type CaseStudySlug,
 } from "@/lib/case-studies";
 import { CaseStudyHeroImage } from "@/components/case-study/CaseStudyHeroImage";
+import { CaseStudyHeroBack } from "@/components/case-study/CaseStudyHeroBack";
 
 /** Body copy in section rows — one step below headings, no desktop size bump. */
 const caseStudyBody =
-  "text-type-body font-helveticaNowTextRegular leading-snug text-muted-foreground";
+  "text-type-body font-helveticaNowTextRegular leading-normal text-muted-foreground";
 
 export function CaseStudyPage({ slug }: { slug: string }) {
   const { language, t } = useLanguage();
@@ -56,23 +57,11 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           project={project}
           alt={`${project.name} — preview`}
         />
+        <CaseStudyHeroBack />
       </div>
 
       <div className="grid-container py-16 lg:py-24">
-        <div className="col-span-12">
-          <Link
-            href="/#work"
-            className={cn(
-              editorialNavType,
-              "inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground",
-            )}
-          >
-            <ArrowLeft className="size-3.5" aria-hidden />
-            {t("caseStudy.back")}
-          </Link>
-        </div>
-
-        <header className="col-span-12 mt-10 lg:mt-12">
+        <header className="col-span-12">
           <div
             className={cn(
               editorialNavType,
@@ -171,7 +160,17 @@ export function CaseStudyPage({ slug }: { slug: string }) {
                   : t("caseStudy.nextProject")
               }
             >
-              {t("caseStudy.nextProject")}
+              {nextProject ? (
+                <span className="inline-flex items-baseline gap-2">
+                  <span>{t("caseStudy.nextProject")}</span>
+                  <span className="text-muted-foreground/45" aria-hidden>
+                    ·
+                  </span>
+                  <span>{nextProject.name}</span>
+                </span>
+              ) : (
+                t("caseStudy.nextProject")
+              )}
               <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5" aria-hidden />
             </Link>
 
@@ -207,14 +206,5 @@ function CaseStudySection({
 }
 
 function TextBlock({ paragraphs }: { paragraphs: string[] }) {
-  return (
-    <p className={caseStudyBody}>
-      {paragraphs.map((paragraph, i) => (
-        <Fragment key={paragraph}>
-          {i > 0 ? <br /> : null}
-          {paragraph}
-        </Fragment>
-      ))}
-    </p>
-  );
+  return <p className={caseStudyBody}>{paragraphs.join(" ")}</p>;
 }

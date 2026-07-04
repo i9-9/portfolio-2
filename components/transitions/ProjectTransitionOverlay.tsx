@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { getProjectBySlug, type ProjectSlug } from "@/app/data/projects";
 import {
   PROJECT_TRANSITION_BACKDROP,
   PROJECT_TRANSITION_LOGO_CLASS,
+  PROJECT_TRANSITION_MARQUEE,
   PROJECT_TRANSITION_VARIANT,
   TRANSITION_EASE,
   TRANSITION_ENTER_MS,
@@ -114,6 +115,85 @@ function TransitionLogo({
   );
 }
 
+function TransitionMarquee({
+  text,
+  className,
+}: {
+  text: string;
+  className?: string;
+}) {
+  const measureRef = useRef<HTMLSpanElement>(null);
+  const [copiesPerRail, setCopiesPerRail] = useState(6);
+
+  useLayoutEffect(() => {
+    const update = () => {
+      const itemW = measureRef.current?.getBoundingClientRect().width;
+      if (!itemW) return;
+      setCopiesPerRail(Math.max(4, Math.ceil(window.innerWidth / itemW) + 2));
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [text]);
+
+  const itemClass =
+    "inline-flex shrink-0 items-center whitespace-nowrap pr-[0.35em]";
+
+  const rail = (keyPrefix: number, measureFirst = false) => (
+    <div
+      className="transition-marquee-rail flex shrink-0"
+      aria-hidden={keyPrefix > 0}
+    >
+      {Array.from({ length: copiesPerRail }, (_, i) => (
+        <span
+          key={`${keyPrefix}-${i}`}
+          ref={measureFirst && i === 0 ? measureRef : undefined}
+          className={itemClass}
+        >
+          {text}
+        </span>
+      ))}
+    </div>
+  );
+
+  return (
+    <div
+      className={cn("transition-marquee-viewport w-full", className)}
+      aria-hidden
+    >
+      <div className="transition-marquee-track font-helveticaNowDisplayBold text-type-display uppercase leading-none tracking-[0.04em] text-white">
+        {rail(0, true)}
+        {rail(1)}
+      </div>
+    </div>
+  );
+}
+
+function TransitionCenterContent({
+  logo,
+  logoAlt,
+  logoClassName,
+  marquee,
+}: {
+  logo: string;
+  logoAlt: string;
+  logoClassName: string;
+  marquee?: string;
+}) {
+  if (marquee) {
+    return (
+      <TransitionMarquee
+        text={marquee}
+        className="drop-shadow-[0_8px_32px_rgba(0,0,0,0.35)]"
+      />
+    );
+  }
+
+  return (
+    <TransitionLogo src={logo} alt={logoAlt} className={logoClassName} />
+  );
+}
+
 function LetterboxTransition({
   phase,
   previewImage,
@@ -121,7 +201,6 @@ function LetterboxTransition({
   logo,
   logoAlt,
   logoClassName,
-  origin,
 }: {
   phase: TransitionPhase;
   previewImage: string;
@@ -133,45 +212,57 @@ function LetterboxTransition({
 }) {
   const exiting = phase === "exit";
   const entering = phase === "enter";
-  const [viewport, setViewport] = useState<{ w: number; h: number } | null>(
-    null,
-  );
-
-  useEffect(() => {
-    setViewport({
-      w: document.documentElement.clientWidth,
-      h: document.documentElement.clientHeight,
-    });
-  }, []);
-
-  const fromScale = viewport
-    ? Math.max(origin.width / viewport.w, origin.height / viewport.h, 0.12)
-    : 0.22;
-  const fromX = viewport
-    ? origin.x + origin.width / 2 - viewport.w / 2
-    : 0;
-  const fromY = viewport
-    ? origin.y + origin.height / 2 - viewport.h / 2
-    : 0;
+  const duration =
+    (exiting ? TRANSITION_EXIT_MS : TRANSITION_ENTER_MS) / 1000;
 
   return (
     <FullscreenStage>
-      <TransitionBackdrop backdrop={backdrop} previewImage={previewImage} />
       <motion.div
-        className="absolute inset-0 flex items-center justify-center"
-        initial={
-          viewport
-            ? { x: fromX, y: fromY, scale: fromScale, opacity: 1 }
-            : { scale: fromScale, opacity: 1 }
-        }
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: duration * 1.05, ease: TRANSITION_EASE }}
+      >
+        <TransitionBackdrop backdrop={backdrop} previewImage={previewImage} />
+      </motion.div>
+
+      {/* Whisper letterbox — fixed thin bars, opacity only */}
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 top-0 bg-black"
+        style={{ height: "2.25%" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: exiting ? [0, 0.42, 0] : 0 }}
+        transition={{
+          duration: 0.9,
+          ease: TRANSITION_EASE,
+          times: [0, 0.38, 1],
+        }}
+        aria-hidden
+      />
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 bottom-0 bg-black"
+        style={{ height: "2.25%" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: exiting ? [0, 0.42, 0] : 0 }}
+        transition={{
+          duration: 0.9,
+          ease: TRANSITION_EASE,
+          times: [0, 0.38, 1],
+        }}
+        aria-hidden
+      />
+
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center px-6"
+        initial={{ opacity: 0, y: 12, scale: 0.982 }}
         animate={
           exiting
-            ? { x: 0, y: 0, scale: 1, opacity: 1 }
+            ? { opacity: 1, y: 0, scale: 1 }
             : entering
-              ? { x: 0, y: 0, scale: 1.06, opacity: 0 }
-              : { x: 0, y: 0, scale: 1, opacity: 1 }
+              ? { opacity: 0, y: -6, scale: 0.992 }
+              : { opacity: 1, y: 0, scale: 1 }
         }
-        transition={{ duration: TRANSITION_EXIT_MS / 1000, ease: TRANSITION_EASE }}
+        transition={{ duration, ease: TRANSITION_EASE }}
       >
         <TransitionLogo
           src={logo}
@@ -179,26 +270,6 @@ function LetterboxTransition({
           className={logoClassName}
         />
       </motion.div>
-      <motion.div
-        className="absolute inset-x-0 top-0 bg-black"
-        initial={{ height: "0%" }}
-        animate={{ height: exiting ? ["0%", "10%", "0%"] : "0%" }}
-        transition={{
-          duration: 0.65,
-          ease: TRANSITION_EASE,
-          times: [0, 0.45, 1],
-        }}
-      />
-      <motion.div
-        className="absolute inset-x-0 bottom-0 bg-black"
-        initial={{ height: "0%" }}
-        animate={{ height: exiting ? ["0%", "10%", "0%"] : "0%" }}
-        transition={{
-          duration: 0.65,
-          ease: TRANSITION_EASE,
-          times: [0, 0.45, 1],
-        }}
-      />
     </FullscreenStage>
   );
 }
@@ -210,6 +281,7 @@ function CurtainTransition({
   logo,
   logoAlt,
   logoClassName,
+  marquee,
   direction = "up",
 }: {
   phase: TransitionPhase;
@@ -218,6 +290,7 @@ function CurtainTransition({
   logo: string;
   logoAlt: string;
   logoClassName: string;
+  marquee?: string;
   direction?: "up" | "down";
 }) {
   const exiting = phase === "exit";
@@ -231,7 +304,7 @@ function CurtainTransition({
     <FullscreenStage>
       <TransitionBackdrop backdrop={backdrop} previewImage={previewImage} />
       <motion.div
-        className="absolute inset-0 flex items-center justify-center"
+        className="absolute inset-0 flex items-center justify-center overflow-hidden"
         initial={{ clipPath: hidden }}
         animate={{ clipPath: exiting ? visible : exitAway }}
         transition={{
@@ -240,16 +313,18 @@ function CurtainTransition({
         }}
       >
         <motion.div
-          animate={exiting ? { scale: 1.02 } : { scale: 1 }}
+          className={marquee ? "w-full" : undefined}
+          animate={exiting && !marquee ? { scale: 1.02 } : { scale: 1 }}
           transition={{
             duration: (exiting ? TRANSITION_EXIT_MS : TRANSITION_ENTER_MS) / 1000,
             ease: TRANSITION_EASE,
           }}
         >
-          <TransitionLogo
-            src={logo}
-            alt={logoAlt}
-            className={logoClassName}
+          <TransitionCenterContent
+            logo={logo}
+            logoAlt={logoAlt}
+            logoClassName={logoClassName}
+            marquee={marquee}
           />
         </motion.div>
       </motion.div>
@@ -493,6 +568,7 @@ function VariantLayer({
   logo,
   logoAlt,
   logoClassName,
+  marquee,
   origin,
 }: {
   variant: ProjectTransitionVariant;
@@ -502,6 +578,7 @@ function VariantLayer({
   logo: string;
   logoAlt: string;
   logoClassName: string;
+  marquee?: string;
   origin: TransitionOrigin;
 }) {
   switch (variant) {
@@ -526,6 +603,7 @@ function VariantLayer({
           logo={logo}
           logoAlt={logoAlt}
           logoClassName={logoClassName}
+          marquee={marquee}
         />
       );
     case "curtainDown":
@@ -537,6 +615,7 @@ function VariantLayer({
           logo={logo}
           logoAlt={logoAlt}
           logoClassName={logoClassName}
+          marquee={marquee}
           direction="down"
         />
       );
@@ -602,7 +681,8 @@ export function ProjectTransitionOverlay({
   if (!slug || !previewImage || !origin || phase === "idle") return null;
 
   const project = getProjectBySlug(slug);
-  if (!project?.logo) return null;
+  const marquee = PROJECT_TRANSITION_MARQUEE[slug];
+  if (!project || (!project.logo && !marquee)) return null;
 
   const variant = PROJECT_TRANSITION_VARIANT[slug];
   const backdrop = PROJECT_TRANSITION_BACKDROP[slug];
@@ -630,6 +710,7 @@ export function ProjectTransitionOverlay({
           logo={project.logo}
           logoAlt={project.name}
           logoClassName={logoClassName}
+          marquee={marquee}
           origin={origin}
         />
       </motion.div>

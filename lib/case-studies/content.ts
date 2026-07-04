@@ -8,8 +8,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "ISR", "Contentful", "Vimeo API", "Tailwind CSS"],
       challenge: {
         paragraphs: [
-          "Design was done. Problem was implementation.",
-          "Heavy video files, content updates every week, and the site can't go down.",
+          "Design was done. Problem was implementation. Heavy video files, content updates every week, and the site can't go down.",
         ],
       },
       keyDecision:
@@ -23,8 +22,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "ISR", "Contentful", "Vimeo API", "Tailwind CSS"],
       challenge: {
         paragraphs: [
-          "El diseño estaba hecho. El problema era la implementación.",
-          "Archivos de video pesados, actualizaciones cada semana, y el sitio no puede caerse.",
+          "El diseño estaba hecho. El problema era la implementación. Archivos de video pesados, actualizaciones cada semana, y el sitio no puede caerse.",
         ],
       },
       keyDecision:
@@ -40,8 +38,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "Tailwind CSS", "Tienda Nube", "FTP", "CSS/JS"],
       challenge: {
         paragraphs: [
-          "They had a Tienda Nube store. Platform limits were killing the design.",
-          "Needed more control without migrating the entire e-commerce.",
+          "They had a Tienda Nube store. Platform limits were killing the design. Needed more control without migrating the entire e-commerce.",
         ],
       },
       keyDecision:
@@ -54,8 +51,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "Tailwind CSS", "Tienda Nube", "FTP", "CSS/JS"],
       challenge: {
         paragraphs: [
-          "Tenían una tienda en Tienda Nube. Los límites de la plataforma mataban el diseño.",
-          "Necesitaban más control sin migrar todo el e-commerce.",
+          "Tenían una tienda en Tienda Nube. Los límites de la plataforma mataban el diseño. Necesitaban más control sin migrar todo el e-commerce.",
         ],
       },
       keyDecision:
@@ -70,8 +66,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Custom animations"],
       challenge: {
         paragraphs: [
-          "She had design direction. Needed web implementation.",
-          "Animations had to match her work. She needed to update projects herself.",
+          "She had design direction. Needed web implementation. Animations had to match her work. She needed to update projects herself.",
         ],
       },
       keyDecision:
@@ -84,43 +79,12 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Animaciones custom"],
       challenge: {
         paragraphs: [
-          "Tenía dirección de diseño. Necesitaba implementación web.",
-          "Las animaciones tenían que coincidir con su trabajo. Necesitaba actualizar proyectos sola.",
+          "Tenía dirección de diseño. Necesitaba implementación web. Las animaciones tenían que coincidir con su trabajo. Necesitaba actualizar proyectos sola.",
         ],
       },
       keyDecision:
         "Diseñé y construí el componente de landing desde cero. Cada animación codificada manualmente para que coincida con el ritmo. ISR + Contentful para que pueda publicar proyectos sin mí.",
       result: "Sitio live. Maneja el contenido de forma independiente desde el lanzamiento.",
-    },
-  },
-  templodetierra: {
-    en: {
-      headline: "Branding and site for a retreat in Uruguay. Five temples, one brand.",
-      roles: ["Branding", "UX/UI design", "Development"],
-      stack: ["Next.js", "Tailwind CSS"],
-      challenge: {
-        paragraphs: [
-          "No brand. No site.",
-          "Five temples with different personalities. Needed a unified identity and booking system.",
-        ],
-      },
-      keyDecision:
-        "Built the brand first. Logo, palette, visual system. Then the site. Identity had to flex across five locations but still feel like one brand.",
-      result: "Site launched. Full project: brand and web.",
-    },
-    es: {
-      headline: "Branding y sitio para un refugio en Uruguay. Cinco templos, una marca.",
-      roles: ["Branding", "UX/UI", "Desarrollo"],
-      stack: ["Next.js", "Tailwind CSS"],
-      challenge: {
-        paragraphs: [
-          "Sin marca. Sin sitio.",
-          "Cinco templos con personalidades distintas. Necesitaban identidad unificada y sistema de reservas.",
-        ],
-      },
-      keyDecision:
-        "Construí primero la marca. Logo, paleta, sistema visual. Después el sitio. La identidad tenía que funcionar en cinco ubicaciones pero sentirse como una sola marca.",
-      result: "Sitio lanzado. Proyecto completo: marca y web.",
     },
   },
   desenfreno: {
@@ -131,8 +95,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Bandcamp integration"],
       challenge: {
         paragraphs: [
-          "Independent publisher. Poetry books + sound compilations.",
-          "Needed editorial site, blog, and store in one place.",
+          "Independent publisher. Poetry books + sound compilations. Needed editorial site, blog, and store in one place.",
         ],
       },
       keyDecision:
@@ -146,8 +109,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Integración Bandcamp"],
       challenge: {
         paragraphs: [
-          "Editorial independiente. Libros de poesía + compilados sonoros.",
-          "Necesitaban sitio editorial, blog, y tienda en un solo lugar.",
+          "Editorial independiente. Libros de poesía + compilados sonoros. Necesitaban sitio editorial, blog, y tienda en un solo lugar.",
         ],
       },
       keyDecision:
@@ -162,8 +124,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "Contentful", "Tailwind CSS", "Custom animations"],
       challenge: {
         paragraphs: [
-          "Design by Wohl Studio. High-end.",
-          "Needed pixel-perfect Figma match and animations that work in production.",
+          "Design by Wohl Studio. High-end. Needed pixel-perfect Figma match and animations that work in production.",
         ],
       },
       keyDecision:
@@ -178,8 +139,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       stack: ["Next.js", "Contentful", "Tailwind CSS", "Animaciones custom"],
       challenge: {
         paragraphs: [
-          "Diseño de Wohl Studio. Alto nivel.",
-          "Necesitaba match pixel-perfect con Figma y animaciones que funcionen en producción.",
+          "Diseño de Wohl Studio. Alto nivel. Necesitaba match pixel-perfect con Figma y animaciones que funcionen en producción.",
         ],
       },
       keyDecision:

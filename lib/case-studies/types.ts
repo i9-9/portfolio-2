@@ -19,7 +19,6 @@ export type CaseStudySlug =
   | "heybristol"
   | "kostume"
   | "ursulabenavidez"
-  | "templodetierra"
   | "desenfreno"
   | "grupofrali";
 

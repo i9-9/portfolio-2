@@ -2,7 +2,6 @@ export type ProjectSlug =
   | "heybristol"
   | "kostume"
   | "ursulabenavidez"
-  | "templodetierra"
   | "desenfreno"
   | "grupofrali";
 
@@ -16,7 +15,11 @@ export interface Project {
   previewImage: string;
   /** Mobile viewport preview (390px) for transitions and listings */
   previewImageMobile: string;
-  /** Optional looping video for desktop hover preview (falls back to previewImage) */
+  /** Optional looping video — mobile viewport (case study hero, mobile thumb) */
+  previewVideoMobile?: string;
+  /** Optional looping video — desktop viewport (case study hero, hover preview) */
+  previewVideoDesktop?: string;
+  /** @deprecated Use previewVideoMobile / previewVideoDesktop */
   previewVideo?: string;
   /** Brand logo for route transition overlay */
   logo: string;
@@ -42,6 +45,8 @@ export const projects: Project[] = [
     image: "/projects-heybristol/heybristol_macbook_mockup.png",
     previewImage: "/projects-v2/heybristol.png",
     previewImageMobile: "/projects-v2/heybristol-mobile.png",
+    previewVideoMobile: "/projects-v2/heybristol-preview-mobile.mp4",
+    previewVideoDesktop: "/projects-v2/heybristol-preview-desktop.mp4",
     logo: "/project-logos/heybristol.svg",
     caseStudyHero: "/projects-v2/heybristol.png",
     caseStudyHeroMobile: "/projects-v2/heybristol-mobile.png",
@@ -59,7 +64,8 @@ export const projects: Project[] = [
     image: "/projects-landing/kostume/jul:24/4 - Macbook mockup.png",
     previewImage: "/projects-v2/kostume.png",
     previewImageMobile: "/projects-v2/kostume-mobile.png",
-    previewVideo: "/projects-v2/kostume-preview.mp4",
+    previewVideoMobile: "/projects-v2/kostume-preview-mobile.mp4",
+    previewVideoDesktop: "/projects-v2/kostume-preview-desktop.mp4",
     logo: "/project-logos/kostume.svg",
     caseStudyHero: "/projects-v2/kostume.png",
     caseStudyHeroMobile: "/projects-v2/kostume-mobile.png",
@@ -77,6 +83,8 @@ export const projects: Project[] = [
     image: "/projects/ursulabenavidez.png",
     previewImage: "/projects-v2/ursulabenavidez.png",
     previewImageMobile: "/projects-v2/ursulabenavidez-mobile.png",
+    previewVideoMobile: "/projects-v2/ursulabenavidez-preview-mobile.mp4",
+    previewVideoDesktop: "/projects-v2/ursulabenavidez-preview-desktop.mp4",
     logo: "/project-logos/ursulabenavidez.svg",
     caseStudyHero: "/projects-v2/ursulabenavidez.png",
     caseStudyHeroMobile: "/projects-v2/ursulabenavidez-mobile.png",
@@ -87,23 +95,6 @@ export const projects: Project[] = [
   },
   {
     id: 4,
-    slug: "templodetierra",
-    year: 2024,
-    name: "Templo de Tierra",
-    anchor: "https://templodetierra.com",
-    image: "/projects/templodetierra.png",
-    previewImage: "/projects-v2/templodetierra.png",
-    previewImageMobile: "/projects-v2/templodetierra-mobile.png",
-    logo: "/project-logos/templodetierra.png",
-    caseStudyHero: "/projects-v2/templodetierra.png",
-    caseStudyHeroMobile: "/projects-v2/templodetierra-mobile.png",
-    heroWidth: 2880,
-    heroHeight: 1799,
-    heroMobileWidth: 780,
-    heroMobileHeight: 1688,
-  },
-  {
-    id: 5,
     slug: "desenfreno",
     year: 2026,
     name: "El Desenfreno",
@@ -111,6 +102,8 @@ export const projects: Project[] = [
     image: "/projects-eldesenfreno/el_desenfreno_macbook_mockup.png",
     previewImage: "/projects-v2/eldesenfreno.png",
     previewImageMobile: "/projects-v2/eldesenfreno-mobile.png",
+    previewVideoMobile: "/projects-v2/eldesenfreno-preview-mobile.mp4",
+    previewVideoDesktop: "/projects-v2/eldesenfreno-preview-desktop.mp4",
     logo: "/project-logos/desenfreno.png",
     caseStudyHero: "/projects-v2/eldesenfreno.png",
     caseStudyHeroMobile: "/projects-v2/eldesenfreno-mobile.png",
@@ -120,7 +113,7 @@ export const projects: Project[] = [
     heroMobileHeight: 1688,
   },
   {
-    id: 6,
+    id: 5,
     slug: "grupofrali",
     year: 2025,
     name: "Grupo Frali",
@@ -128,6 +121,8 @@ export const projects: Project[] = [
     image: "/projects-v2/grupofrali.png",
     previewImage: "/projects-v2/grupofrali.png",
     previewImageMobile: "/projects-v2/grupofrali-mobile.png",
+    previewVideoMobile: "/projects-v2/grupofrali-preview-mobile.mp4",
+    previewVideoDesktop: "/projects-v2/grupofrali-preview-desktop.mp4",
     logo: "/project-logos/grupofrali.svg",
     caseStudyHero: "/projects-v2/grupofrali.png",
     caseStudyHeroMobile: "/projects-v2/grupofrali-mobile.png",

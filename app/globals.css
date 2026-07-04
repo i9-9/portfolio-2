@@ -537,6 +537,19 @@ html {
       padding-top: 0.2em;
     }
   }
+
+  /* Hero back — legible on light and dark screenshots without a pill/button */
+  .case-study-hero-back-label {
+    text-shadow:
+      0 0 1px rgba(0, 0, 0, 0.85),
+      0 1px 3px rgba(0, 0, 0, 0.55),
+      0 0 14px rgba(0, 0, 0, 0.35);
+  }
+
+  .case-study-hero-back-icon {
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.85))
+      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  }
   .text-type-body { font-size: var(--type-body); }
   .text-type-body-lg { font-size: var(--type-body-lg); }
   .text-type-display {
@@ -893,6 +906,43 @@ html {
 
     .contact-cta-marquee-track:hover {
       animation-duration: unset;
+    }
+  }
+
+  /** Project transition — full-bleed editorial marquee. */
+  @keyframes transition-marquee-x {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  .transition-marquee-viewport {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .transition-marquee-rail {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  .transition-marquee-track {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: max-content;
+    animation: transition-marquee-x 20s linear infinite;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .transition-marquee-track {
+      animation: none;
+      transform: none;
     }
   }
 

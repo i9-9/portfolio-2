@@ -15,3 +15,10 @@ export function getCaseStudyHero(project: Project, mobile = isMobileScreenshotVi
 export function getProjectPreview(project: Project, mobile = isMobileScreenshotViewport()) {
   return mobile ? project.previewImageMobile : project.previewImage;
 }
+
+export function getProjectPreviewVideo(project: Project, mobile = isMobileScreenshotViewport()) {
+  if (mobile) {
+    return project.previewVideoMobile ?? project.previewVideo;
+  }
+  return project.previewVideoDesktop ?? project.previewVideo;
+}
