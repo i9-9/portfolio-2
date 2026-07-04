@@ -30,10 +30,10 @@ export const PROJECT_TRANSITION_BACKDROP: Record<
   ProjectTransitionBackdrop
 > = {
   heybristol: "black",
-  kostume: "white",
+  kostume: "black",
   ursulabenavidez: "white",
   desenfreno: "black",
-  grupofrali: "white",
+  grupofrali: "black",
 };
 
 /** Optional logo sizing overrides — wide wordmarks need more horizontal room. */
