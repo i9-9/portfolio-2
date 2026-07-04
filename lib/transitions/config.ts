@@ -4,7 +4,8 @@ import type { ProjectSlug } from "@/app/data/projects";
 export type ProjectTransitionVariant =
   | "letterbox" // Hey Bristol — whisper cinema bars + quiet logo settle
   | "curtain" // Kostüme — fashion runway lift
-  | "curtainDown" // El Desenfreno — editorial drop from top
+  | "curtainDown" // Reserved — editorial drop from top
+  | "marquee" // El Desenfreno — centered wordmark on black
   | "slices" // Reserved — contact-sheet strips
   | "expand" // Reserved — quiet scale from row, full frame
   | "grid" // Reserved — architectural grid reveal
@@ -17,22 +18,22 @@ export const PROJECT_TRANSITION_VARIANT: Record<
   heybristol: "letterbox",
   kostume: "curtain",
   ursulabenavidez: "typographic",
-  desenfreno: "curtainDown",
+  desenfreno: "marquee",
   grupofrali: "typographic",
 };
 
-/** Backdrop behind the transition logo. */
-export type ProjectTransitionBackdrop = "blur" | "white";
+/** Solid backdrop behind the transition content. */
+export type ProjectTransitionBackdrop = "white" | "black";
 
 export const PROJECT_TRANSITION_BACKDROP: Record<
   ProjectSlug,
   ProjectTransitionBackdrop
 > = {
-  heybristol: "blur",
-  kostume: "blur",
+  heybristol: "black",
+  kostume: "white",
   ursulabenavidez: "white",
-  desenfreno: "blur",
-  grupofrali: "blur",
+  desenfreno: "black",
+  grupofrali: "white",
 };
 
 /** Optional logo sizing overrides — wide wordmarks need more horizontal room. */
@@ -42,11 +43,6 @@ export const PROJECT_TRANSITION_LOGO_CLASS: Partial<
   grupofrali: "max-h-[min(14vh,56px)] max-w-[min(92vw,900px)]",
   heybristol: "max-h-[min(20vh,148px)] max-w-[min(78vw,480px)]",
   ursulabenavidez: "max-h-[min(9vh,44px)] max-w-[min(90vw,560px)]",
-};
-
-/** Full-bleed horizontal marquee instead of logo (repeated phrase, seamless loop). */
-export const PROJECT_TRANSITION_MARQUEE: Partial<Record<ProjectSlug, string>> = {
-  desenfreno: "El Desenfreno · ",
 };
 
 export const TRANSITION_EXIT_MS = 680;

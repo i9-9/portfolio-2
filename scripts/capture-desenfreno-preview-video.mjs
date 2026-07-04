@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Record El Desenfreno hero (marquee + editorial layout) for portfolio previews.
+ * Record El Desenfreno homepage at desktop + mobile viewports for portfolio previews.
+ * Full viewport — sidebar + catalog on desktop, ticker + catalog on mobile.
  * Run: node scripts/capture-desenfreno-preview-video.mjs [desktop|mobile|both]
  */
 import { chromium } from "playwright";
@@ -34,7 +35,7 @@ const PRESETS = {
 };
 
 const TRIM_DURATION_SEC = 7;
-const TRIM_BUFFER_SEC = 2;
+const TRIM_BUFFER_SEC = 1.5;
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -59,38 +60,25 @@ async function dismissPopups(page) {
   }
 }
 
-async function waitForHero(page) {
-  await page.waitForSelector("img, .rfm-marquee", { timeout: 30_000 });
-  console.log("  hero visible");
-
-  try {
-    await page.waitForFunction(
-      () =>
-        new Promise((resolve) => {
-          const animated =
-            document.querySelector('[style*="marquee-horiz"]') ??
-            [...document.querySelectorAll("*")].find(
-              (el) => getComputedStyle(el).animationName === "marquee-horiz",
-            ) ??
-            document.querySelector(".rfm-marquee");
-
-          if (!animated) {
-            resolve(false);
-            return;
-          }
-
-          const readTransform = (el) =>
-            getComputedStyle(el).transform || getComputedStyle(el.parentElement ?? el).transform;
-
-          const first = readTransform(animated);
-          setTimeout(() => resolve(readTransform(animated) !== first && first !== "none"), 700);
-        }),
-      { timeout: 12_000 },
-    );
-    console.log("  marquee animating");
-  } catch {
-    console.warn("  marquee motion not detected — recording anyway");
+async function waitForHomepage(page, presetKey) {
+  if (presetKey === "mobile") {
+    await page.waitForSelector(".rfm-marquee-container", {
+      state: "visible",
+      timeout: 30_000,
+    });
+    console.log("  mobile ticker visible");
+  } else {
+    await page.waitForSelector("aside", {
+      state: "visible",
+      timeout: 30_000,
+    });
+    console.log("  desktop sidebar visible");
   }
+
+  await page.waitForSelector('a[href*="/product"], a[href*="/tienda"]', {
+    timeout: 30_000,
+  });
+  console.log("  catalog content visible");
 
   await page.waitForTimeout(1500);
 }
@@ -149,7 +137,7 @@ async function capturePreset(presetKey) {
   }
 
   await dismissPopups(page);
-  await waitForHero(page);
+  await waitForHomepage(page, presetKey);
   await page.evaluate(() => window.scrollTo(0, 0));
 
   const trimStartSec =
@@ -166,10 +154,16 @@ async function capturePreset(presetKey) {
     throw new Error(`No video file produced for ${presetKey}.`);
   }
 
-  const webmFull = path.join(OUT_DIR, `eldesenfreno-preview-${presetKey}-full.webm`);
+  const webmFull = path.join(
+    OUT_DIR,
+    `eldesenfreno-preview-${presetKey}-full.webm`,
+  );
   fs.renameSync(webmTemp, webmFull);
 
-  const mp4Full = path.join(OUT_DIR, `eldesenfreno-preview-${presetKey}-full.mp4`);
+  const mp4Full = path.join(
+    OUT_DIR,
+    `eldesenfreno-preview-${presetKey}-full.mp4`,
+  );
   execSync(
     `ffmpeg -y -i ${JSON.stringify(webmFull)} -an -c:v libx264 -pix_fmt yuv420p ${JSON.stringify(mp4Full)}`,
     { stdio: "inherit" },

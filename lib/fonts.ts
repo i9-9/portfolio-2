@@ -65,6 +65,21 @@ export const helveticaNowText = localFont({
   adjustFontFallback: 'Arial',
 })
 
+/** El Desenfreno — Aggie (same face as eldesenfreno.com). */
+export const aggie = localFont({
+  src: [
+    {
+      path: '../public/fonts/Aggie-Regular.otf',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+  display: 'swap',
+  preload: false,
+  variable: '--font-aggie',
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
+})
+
 /*
 📋 NOTAS DE OPTIMIZACIÓN DE FUENTES:
 
