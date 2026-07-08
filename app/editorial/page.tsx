@@ -100,57 +100,70 @@ const EditorialPage = () => {
     fetchImages();
   }, []);
 
+  const leftColumnImages = images.filter((_, index) => index % 2 === 0);
+  const rightColumnImages = images.filter((_, index) => index % 2 === 1);
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Editorial Layout */}
       <div className="w-full pt-nav-2 pb-32">
         <div className="max-w-[1800px] mx-auto px-6 lg:px-12">
           
-          {images.map((imageName, index) => {
-            const layoutPatterns = [
-              // Pattern 1: Full bleed
-              { gridCols: "grid-cols-12", colSpan: "col-span-12", marginTop: "mt-0", marginBottom: "mb-32 lg:mb-48" },
-              // Pattern 2: Large left, margin right
-              { gridCols: "grid-cols-12", colSpan: "col-span-12 lg:col-span-7", marginTop: "mt-0", marginBottom: "mb-24 lg:mb-32" },
-              // Pattern 3: Margin left, large right
-              { gridCols: "grid-cols-12", colSpan: "col-span-12 lg:col-span-7 lg:col-start-6", marginTop: "mt-0", marginBottom: "mb-24 lg:mb-32" },
-              // Pattern 4: Medium centered
-              { gridCols: "grid-cols-12", colSpan: "col-span-12 lg:col-span-8 lg:col-start-3", marginTop: "mt-0", marginBottom: "mb-32 lg:mb-40" },
-              // Pattern 5: Small right aligned
-              { gridCols: "grid-cols-12", colSpan: "col-span-12 lg:col-span-6 lg:col-start-7", marginTop: "mt-0", marginBottom: "mb-20 lg:mb-24" },
-              // Pattern 6: Large with offset
-              { gridCols: "grid-cols-12", colSpan: "col-span-12 lg:col-span-10 lg:col-start-2", marginTop: "mt-0", marginBottom: "mb-32 lg:mb-48" },
-            ];
-
-            const pattern = layoutPatterns[index % layoutPatterns.length];
-
-            return (
-              <div key={imageName} className={`grid ${pattern.gridCols} gap-6 ${pattern.marginBottom}`}>
-                <div className={`${pattern.colSpan} ${pattern.marginTop}`}>
-                  <div 
-                    className="relative cursor-pointer"
-                    onClick={() => setSelectedImage(imageName)}
-                  >
-                    <div className="relative mb-3">
-                      <Image
-                        src={`/dg/${imageName}`}
-                        alt="Graphic design"
-                        width={1600}
-                        height={2000}
-                        className="w-full h-auto"
-                        loading={index < 2 ? "eager" : "lazy"}
-                        quality={90}
-                        priority={index === 0}
-                      />
-                    </div>
-                    <div className="text-type-micro text-muted-foreground uppercase tracking-widest">
-                      {String(index + 1).padStart(2, '0')}
-                    </div>
+          {/* Always 2 columns */}
+          <div className="grid grid-cols-2 gap-8 lg:gap-16">
+            
+            {/* Left Column */}
+            <div className="space-y-12 lg:space-y-24">
+              {leftColumnImages.map((imageName, index) => (
+                <div 
+                  key={imageName}
+                  className="cursor-pointer"
+                  onClick={() => setSelectedImage(imageName)}
+                >
+                  <div className="relative mb-3">
+                    <Image
+                      src={`/dg/${imageName}`}
+                      alt="Graphic design"
+                      width={1200}
+                      height={1600}
+                      className="w-full h-auto"
+                      loading={index < 2 ? "eager" : "lazy"}
+                      quality={90}
+                      priority={index === 0}
+                    />
+                  </div>
+                  <div className="text-type-micro text-muted-foreground uppercase tracking-widest">
+                    {String(index * 2 + 1).padStart(2, '0')}
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              ))}
+            </div>
+
+            {/* Right Column */}
+            <div className="space-y-12 lg:space-y-24 pt-16 lg:pt-32">
+              {rightColumnImages.map((imageName, index) => (
+                <div 
+                  key={imageName}
+                  className="cursor-pointer"
+                  onClick={() => setSelectedImage(imageName)}
+                >
+                  <div className="relative mb-3">
+                    <Image
+                      src={`/dg/${imageName}`}
+                      alt="Graphic design"
+                      width={1200}
+                      height={1600}
+                      className="w-full h-auto"
+                      loading={index < 2 ? "eager" : "lazy"}
+                      quality={90}
+                    />
+                  </div>
+                  <div className="text-type-micro text-muted-foreground uppercase tracking-widest">
+                    {String(index * 2 + 2).padStart(2, '0')}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
