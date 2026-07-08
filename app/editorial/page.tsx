@@ -105,63 +105,49 @@ const EditorialPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="grid-container pt-nav-2 pb-16">
-        <div className="col-span-12 mb-16">
-          <h1 className="text-name-hero font-helveticaNowDisplayBlack tracking-tight leading-none mb-6">
-            Editorial
-          </h1>
-          <p className="text-type-1 text-muted-foreground max-w-2xl">
-            A collection of graphic design work presented in a modern editorial layout. 
-            Large-format imagery showcasing visual storytelling and design craft.
-          </p>
-        </div>
-
+      <div className="grid-container pt-nav-2 pb-24">
         {/* Two Column Editorial Grid */}
-        <div className="col-span-12 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="col-span-12 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           
           {/* Left Column */}
-          <div className="space-y-8 lg:space-y-12">
+          <div className="space-y-6 lg:space-y-8">
             {leftColumnImages.map((imageName, index) => (
               <div 
                 key={imageName} 
-                className="w-full relative overflow-hidden rounded-lg cursor-pointer group"
+                className="w-full cursor-pointer"
                 onClick={() => setSelectedImage(imageName)}
               >
-                <div className="relative bg-muted">
-                  <Image
-                    src={`/dg/${imageName}`}
-                    alt={`Graphic design work`}
-                    width={800}
-                    height={1000}
-                    className="w-full h-auto transition-transform duration-500 ease-out group-hover:scale-105"
-                    loading={index < 2 ? "eager" : "lazy"}
-                    quality={85}
-                    priority={index === 0}
-                  />
-                </div>
+                <Image
+                  src={`/dg/${imageName}`}
+                  alt="Graphic design"
+                  width={1200}
+                  height={1600}
+                  className="w-full h-auto"
+                  loading={index < 2 ? "eager" : "lazy"}
+                  quality={90}
+                  priority={index === 0}
+                />
               </div>
             ))}
           </div>
 
           {/* Right Column */}
-          <div className="space-y-8 lg:space-y-12 lg:pt-24">
+          <div className="space-y-6 lg:space-y-8 lg:pt-32">
             {rightColumnImages.map((imageName, index) => (
               <div 
                 key={imageName} 
-                className="w-full relative overflow-hidden rounded-lg cursor-pointer group"
+                className="w-full cursor-pointer"
                 onClick={() => setSelectedImage(imageName)}
               >
-                <div className="relative bg-muted">
-                  <Image
-                    src={`/dg/${imageName}`}
-                    alt={`Graphic design work`}
-                    width={800}
-                    height={1000}
-                    className="w-full h-auto transition-transform duration-500 ease-out group-hover:scale-105"
-                    loading={index < 2 ? "eager" : "lazy"}
-                    quality={85}
-                  />
-                </div>
+                <Image
+                  src={`/dg/${imageName}`}
+                  alt="Graphic design"
+                  width={1200}
+                  height={1600}
+                  className="w-full h-auto"
+                  loading={index < 2 ? "eager" : "lazy"}
+                  quality={90}
+                />
               </div>
             ))}
           </div>
