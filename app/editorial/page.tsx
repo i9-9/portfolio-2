@@ -62,19 +62,13 @@ const EditorialPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="fixed inset-0 bg-background overflow-hidden">
       {/* Slideshow area */}
       <div 
-        className="w-full cursor-pointer px-4 lg:px-6 py-8 lg:py-12"
-        style={{ 
-          marginTop: "var(--nav-height)",
-          height: "calc(100dvh - var(--nav-height))"
-        }}
+        className="w-full h-full cursor-pointer px-4 lg:px-6 py-8 lg:py-12"
         onClick={handleClick}
       >
-        <div 
-          className="w-full h-full flex items-center"
-        >
+        <div className="w-full h-full flex items-center">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
@@ -84,7 +78,7 @@ const EditorialPage = () => {
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="relative flex items-center"
               style={{ 
-                height: "calc(100dvh - var(--nav-height) - 4rem)",
+                height: "calc(100dvh - 4rem)",
                 maxWidth: "100%"
               }}
             >
