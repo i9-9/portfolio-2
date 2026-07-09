@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
 const EditorialPage = () => {
   const [images, setImages] = useState<string[]>([]);
@@ -47,6 +46,17 @@ const EditorialPage = () => {
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const clickX = e.clientX;
+    const screenWidth = window.innerWidth;
+    
+    if (clickX < screenWidth / 2) {
+      goToPrevious();
+    } else {
+      goToNext();
+    }
+  };
+
   if (images.length === 0) {
     return null;
   }
@@ -55,55 +65,44 @@ const EditorialPage = () => {
     <div className="fixed inset-0 bg-background">
       {/* Slideshow area below nav */}
       <div 
-        className="pt-nav w-full flex items-center justify-center bg-background"
+        className="pt-nav w-full cursor-pointer px-6 lg:px-12 py-8 lg:py-12"
         style={{ height: "100dvh" }}
+        onClick={handleClick}
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full h-full flex items-center justify-center"
-          >
-            <Image
-              src={`/dg/${images[currentIndex]}`}
-              alt="Graphic design"
-              width={2000}
-              height={2000}
-              className="object-contain"
-              style={{ 
-                maxHeight: "calc(100dvh - var(--nav-height))",
-                maxWidth: "100%",
-                height: "auto",
-                width: "auto"
-              }}
-              quality={95}
-              priority
-            />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Navigation arrows */}
-        <button
-          onClick={goToPrevious}
-          className="fixed left-4 lg:left-8 top-1/2 -translate-y-1/2 z-10 p-3 bg-background/80 backdrop-blur-sm border border-border rounded-full transition-opacity hover:opacity-70"
-          aria-label="Previous image"
+        <div 
+          className="w-full h-full flex items-start justify-start"
+          style={{ height: "calc(100dvh - var(--nav-height) - 4rem)" }}
         >
-          <ChevronLeftIcon className="w-6 h-6" />
-        </button>
-
-        <button
-          onClick={goToNext}
-          className="fixed right-4 lg:right-8 top-1/2 -translate-y-1/2 z-10 p-3 bg-background/80 backdrop-blur-sm border border-border rounded-full transition-opacity hover:opacity-70"
-          aria-label="Next image"
-        >
-          <ChevronRightIcon className="w-6 h-6" />
-        </button>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="relative h-full flex items-center"
+            >
+              <Image
+                src={`/dg/${images[currentIndex]}`}
+                alt="Graphic design"
+                width={2000}
+                height={2000}
+                className="object-contain"
+                style={{ 
+                  maxHeight: "100%",
+                  maxWidth: "100%",
+                  height: "auto",
+                  width: "auto"
+                }}
+                quality={95}
+                priority
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
         {/* Counter */}
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-background/80 backdrop-blur-sm border border-border rounded-full">
+        <div className="fixed bottom-8 left-6 lg:left-12 z-10">
           <span className="text-type-micro uppercase tracking-widest text-muted-foreground">
             {String(currentIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
           </span>
