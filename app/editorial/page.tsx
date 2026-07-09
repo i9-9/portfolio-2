@@ -62,16 +62,18 @@ const EditorialPage = () => {
   }
 
   return (
-    <div className="fixed inset-0 bg-background">
-      {/* Slideshow area below nav */}
+    <div className="min-h-screen bg-background">
+      {/* Slideshow area */}
       <div 
-        className="pt-nav w-full cursor-pointer px-6 lg:px-12 py-8 lg:py-12"
-        style={{ height: "100dvh" }}
+        className="w-full cursor-pointer px-4 lg:px-6 py-8 lg:py-12"
+        style={{ 
+          marginTop: "var(--nav-height)",
+          height: "calc(100dvh - var(--nav-height))"
+        }}
         onClick={handleClick}
       >
         <div 
-          className="w-full h-full flex items-start justify-start"
-          style={{ height: "calc(100dvh - var(--nav-height) - 4rem)" }}
+          className="w-full h-full flex items-center"
         >
           <AnimatePresence mode="wait">
             <motion.div
@@ -80,7 +82,8 @@ const EditorialPage = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="relative h-full flex items-center"
+              className="relative flex items-center"
+              style={{ maxHeight: "100%", maxWidth: "100%" }}
             >
               <Image
                 src={`/dg/${images[currentIndex]}`}
@@ -89,7 +92,7 @@ const EditorialPage = () => {
                 height={2000}
                 className="object-contain"
                 style={{ 
-                  maxHeight: "100%",
+                  maxHeight: "calc(100dvh - var(--nav-height) - 4rem)",
                   maxWidth: "100%",
                   height: "auto",
                   width: "auto"
@@ -99,13 +102,6 @@ const EditorialPage = () => {
               />
             </motion.div>
           </AnimatePresence>
-        </div>
-
-        {/* Counter */}
-        <div className="fixed bottom-8 left-6 lg:left-12 z-10">
-          <span className="text-type-micro uppercase tracking-widest text-muted-foreground">
-            {String(currentIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
-          </span>
         </div>
       </div>
     </div>
