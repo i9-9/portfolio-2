@@ -74,23 +74,13 @@ function NavNameLink({
   const target = isMenuOpen ? colors.open : colors.closed;
 
   return (
-    <motion.a
+    <a
       href={href}
       className="optical-edge-start text-name-nav leading-none tracking-[-0.02em] font-helveticaNowDisplayBold truncate"
-      animate={{ color: target }}
-      transition={{
-        duration: MOBILE_MENU_NAME_COLOR_DURATION,
-        delay: isMenuOpen ? MOBILE_MENU_NAME_COLOR_DELAY : 0,
-        ease: isMenuOpen ? EASE_CINEMATIC : EASE_OUT_EXPO,
-      }}
-      whileHover={
-        !isMenuOpen
-          ? { color: theme === "dark" ? "hsl(0 0% 94% / 0.8)" : "hsl(0 0% 12% / 0.8)" }
-          : undefined
-      }
+      style={{ color: target }}
     >
       Ivan Nevares
-    </motion.a>
+    </a>
   );
 }
 
