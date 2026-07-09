@@ -14,7 +14,7 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {/* <NavBar /> */}
+      <NavBar />
       <main className="relative">
         {children}
       </main>

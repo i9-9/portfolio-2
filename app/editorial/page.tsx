@@ -26,6 +26,15 @@ const EditorialPage = () => {
   }, []);
 
   useEffect(() => {
+    // Hide scrollbar
+    document.body.style.overflow = "hidden";
+    
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
         goToPrevious();
@@ -62,10 +71,14 @@ const EditorialPage = () => {
   }
 
   return (
-    <div className="fixed inset-0 bg-background overflow-hidden">
+    <div className="fixed inset-0 bg-background">
       {/* Slideshow area */}
       <div 
         className="w-full h-full cursor-pointer px-4 lg:px-6 py-8 lg:py-12"
+        style={{ 
+          marginTop: "var(--nav-height)",
+          height: "calc(100dvh - var(--nav-height))"
+        }}
         onClick={handleClick}
       >
         <div className="w-full h-full flex items-center">
@@ -78,7 +91,7 @@ const EditorialPage = () => {
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="relative flex items-center"
               style={{ 
-                height: "calc(100dvh - 4rem)",
+                height: "calc(100dvh - var(--nav-height) - 4rem)",
                 maxWidth: "100%"
               }}
             >
