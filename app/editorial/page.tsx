@@ -1,87 +1,13 @@
 "use client";
 
-import Footer from "@/components/Footer";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Cross2Icon } from "@radix-ui/react-icons";
-
-function ImageModal({
-  isOpen,
-  imageName,
-  onClose,
-}: {
-  isOpen: boolean;
-  imageName: string | null;
-  onClose: () => void;
-}) {
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen || !imageName) return null;
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm"
-        onClick={onClose}
-      >
-        <div className="flex h-screen items-center justify-center p-4">
-          <motion.div
-            initial={{ scale: 0.98, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.98, opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative flex h-full w-full max-h-[80vh] max-w-[80vw] items-center justify-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={onClose}
-              className="absolute -top-12 right-0 z-10 text-white transition-colors hover:text-gray-300"
-            >
-              <Cross2Icon className="h-6 w-6" />
-            </button>
-
-            <div className="flex h-full max-h-full w-full max-w-full items-center justify-center">
-              <Image
-                src={`/dg/${imageName}`}
-                alt="Graphic design"
-                width={1600}
-                height={2000}
-                className="max-h-full max-w-full object-contain"
-                quality={95}
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
-              />
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
-  );
-}
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
 const EditorialPage = () => {
   const [images, setImages] = useState<string[]>([]);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -100,80 +26,89 @@ const EditorialPage = () => {
     fetchImages();
   }, []);
 
-  const leftColumnImages = images.filter((_, index) => index % 2 === 0);
-  const rightColumnImages = images.filter((_, index) => index % 2 === 1);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        goToPrevious();
+      } else if (e.key === "ArrowRight") {
+        goToNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentIndex, images.length]);
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  if (images.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="w-full pt-nav-2 pb-32">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-12">
-          
-          {/* Always 2 columns */}
-          <div className="grid grid-cols-2 gap-8 lg:gap-16">
-            
-            {/* Left Column */}
-            <div className="space-y-12 lg:space-y-24">
-              {leftColumnImages.map((imageName, index) => (
-                <div 
-                  key={imageName}
-                  className="cursor-pointer"
-                  onClick={() => setSelectedImage(imageName)}
-                >
-                  <div className="relative mb-3">
-                    <Image
-                      src={`/dg/${imageName}`}
-                      alt="Graphic design"
-                      width={1200}
-                      height={1600}
-                      className="w-full h-auto"
-                      loading={index < 2 ? "eager" : "lazy"}
-                      quality={90}
-                      priority={index === 0}
-                    />
-                  </div>
-                  <div className="text-type-micro text-muted-foreground uppercase tracking-widest">
-                    {String(index * 2 + 1).padStart(2, '0')}
-                  </div>
-                </div>
-              ))}
-            </div>
+    <div className="fixed inset-0 bg-background">
+      {/* Slideshow area below nav */}
+      <div 
+        className="pt-nav w-full flex items-center justify-center bg-background"
+        style={{ height: "100dvh" }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full h-full flex items-center justify-center"
+          >
+            <Image
+              src={`/dg/${images[currentIndex]}`}
+              alt="Graphic design"
+              width={2000}
+              height={2000}
+              className="object-contain"
+              style={{ 
+                maxHeight: "calc(100dvh - var(--nav-height))",
+                maxWidth: "100%",
+                height: "auto",
+                width: "auto"
+              }}
+              quality={95}
+              priority
+            />
+          </motion.div>
+        </AnimatePresence>
 
-            {/* Right Column */}
-            <div className="space-y-12 lg:space-y-24 pt-16 lg:pt-32">
-              {rightColumnImages.map((imageName, index) => (
-                <div 
-                  key={imageName}
-                  className="cursor-pointer"
-                  onClick={() => setSelectedImage(imageName)}
-                >
-                  <div className="relative mb-3">
-                    <Image
-                      src={`/dg/${imageName}`}
-                      alt="Graphic design"
-                      width={1200}
-                      height={1600}
-                      className="w-full h-auto"
-                      loading={index < 2 ? "eager" : "lazy"}
-                      quality={90}
-                    />
-                  </div>
-                  <div className="text-type-micro text-muted-foreground uppercase tracking-widest">
-                    {String(index * 2 + 2).padStart(2, '0')}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Navigation arrows */}
+        <button
+          onClick={goToPrevious}
+          className="fixed left-4 lg:left-8 top-1/2 -translate-y-1/2 z-10 p-3 bg-background/80 backdrop-blur-sm border border-border rounded-full transition-opacity hover:opacity-70"
+          aria-label="Previous image"
+        >
+          <ChevronLeftIcon className="w-6 h-6" />
+        </button>
+
+        <button
+          onClick={goToNext}
+          className="fixed right-4 lg:right-8 top-1/2 -translate-y-1/2 z-10 p-3 bg-background/80 backdrop-blur-sm border border-border rounded-full transition-opacity hover:opacity-70"
+          aria-label="Next image"
+        >
+          <ChevronRightIcon className="w-6 h-6" />
+        </button>
+
+        {/* Counter */}
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-10 px-4 py-2 bg-background/80 backdrop-blur-sm border border-border rounded-full">
+          <span className="text-type-micro uppercase tracking-widest text-muted-foreground">
+            {String(currentIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+          </span>
         </div>
       </div>
-
-      <ImageModal
-        isOpen={selectedImage !== null}
-        imageName={selectedImage}
-        onClose={() => setSelectedImage(null)}
-      />
-
-      <Footer />
     </div>
   );
 };
