@@ -83,7 +83,10 @@ const EditorialPage = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="relative flex items-center"
-              style={{ maxHeight: "100%", maxWidth: "100%" }}
+              style={{ 
+                height: "calc(100dvh - var(--nav-height) - 4rem)",
+                maxWidth: "100%"
+              }}
             >
               <Image
                 src={`/dg/${images[currentIndex]}`}
@@ -92,10 +95,9 @@ const EditorialPage = () => {
                 height={2000}
                 className="object-contain"
                 style={{ 
-                  maxHeight: "calc(100dvh - var(--nav-height) - 4rem)",
-                  maxWidth: "100%",
-                  height: "auto",
-                  width: "auto"
+                  height: "100%",
+                  width: "auto",
+                  maxWidth: "100%"
                 }}
                 quality={95}
                 priority
