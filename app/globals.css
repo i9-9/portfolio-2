@@ -900,18 +900,10 @@ html {
     will-change: transform;
   }
 
-  .contact-cta-marquee-track:hover {
-    animation-duration: 32s;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .contact-cta-marquee-track {
       animation: none;
       transform: none;
-    }
-
-    .contact-cta-marquee-track:hover {
-      animation-duration: unset;
     }
   }
 

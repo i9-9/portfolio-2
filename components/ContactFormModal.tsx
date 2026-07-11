@@ -102,22 +102,28 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogPortal>
-        <DialogOverlay />
+        <DialogOverlay className="z-[110]" />
         <DialogPrimitive.Content
-          className="fixed inset-0 md:left-[50%] md:top-[50%] z-50 grid w-full h-full md:h-auto md:max-w-lg md:translate-x-[-50%] md:translate-y-[-50%] gap-4 md:border bg-background p-6 md:p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] md:rounded-lg overflow-y-auto"
+          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[min(90dvh,40rem)] md:max-w-lg md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-lg md:border md:data-[state=closed]:slide-out-to-left-1/2 md:data-[state=closed]:slide-out-to-top-[48%] md:data-[state=open]:slide-in-from-left-1/2 md:data-[state=open]:slide-in-from-top-[48%]"
         >
-          <DialogHeader>
-            <div className="flex items-center justify-between">
+          <DialogHeader className="shrink-0">
+            <div className="flex items-center justify-between gap-3">
               <DialogTitle className="text-lg font-helveticaNowDisplayBold">
                 {t('form.title')}
               </DialogTitle>
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="h-10 w-10 md:h-8 md:w-8 p-0 -mr-2 md:mr-0"
+                className="h-10 w-10 shrink-0 p-0 -mr-2 md:h-8 md:w-8 md:mr-0"
               >
                 <X className="h-5 w-5 md:h-4 md:w-4" />
               </Button>
@@ -127,59 +133,92 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
             </p>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-helveticaNowTextRegular">
-                {t('form.name')}
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                className={`font-helveticaNowTextRegular h-12 md:h-10 ${errors.name ? 'border-red-500' : ''}`}
-                disabled={isSubmitting}
-              />
-              {errors.name && (
-                <p className="text-xs text-red-500">{errors.name}</p>
-              )}
+          <form
+            onSubmit={handleSubmit}
+            className="mt-4 flex min-h-0 flex-1 flex-col"
+          >
+            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain pr-1">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-helveticaNowTextRegular">
+                  {t('form.name')}
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  className={`font-helveticaNowTextRegular h-12 md:h-10 ${errors.name ? 'border-red-500' : ''}`}
+                  disabled={isSubmitting}
+                />
+                {errors.name && (
+                  <p className="text-xs text-red-500">{errors.name}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-helveticaNowTextRegular">
+                  {t('form.email')}
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  className={`font-helveticaNowTextRegular h-12 md:h-10 ${errors.email ? 'border-red-500' : ''}`}
+                  disabled={isSubmitting}
+                />
+                {errors.email && (
+                  <p className="text-xs text-red-500">{errors.email}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="message" className="text-sm font-helveticaNowTextRegular">
+                  {t('form.message')}
+                </Label>
+                <Textarea
+                  id="message"
+                  value={formData.message}
+                  onChange={(e) => handleInputChange('message', e.target.value)}
+                  rows={4}
+                  className={`font-helveticaNowTextRegular ${errors.message ? 'border-red-500' : ''}`}
+                  disabled={isSubmitting}
+                />
+                {errors.message && (
+                  <p className="text-xs text-red-500">{errors.message}</p>
+                )}
+              </div>
+
+              <AnimatePresence>
+                {submitStatus === "success" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-3 bg-green-500/10 border border-green-500/20 rounded-md"
+                  >
+                    <p className="text-sm text-green-600 font-helveticaNowTextRegular">
+                      {t('form.success')}
+                    </p>
+                  </motion.div>
+                )}
+
+                {submitStatus === "error" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-3 bg-red-500/10 border border-red-500/20 rounded-md"
+                  >
+                    <p className="text-sm text-red-600 font-helveticaNowTextRegular">
+                      {t('form.error')}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-helveticaNowTextRegular">
-                {t('form.email')}
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                className={`font-helveticaNowTextRegular h-12 md:h-10 ${errors.email ? 'border-red-500' : ''}`}
-                disabled={isSubmitting}
-              />
-              {errors.email && (
-                <p className="text-xs text-red-500">{errors.email}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="message" className="text-sm font-helveticaNowTextRegular">
-                {t('form.message')}
-              </Label>
-              <Textarea
-                id="message"
-                value={formData.message}
-                onChange={(e) => handleInputChange('message', e.target.value)}
-                rows={4}
-                className={`font-helveticaNowTextRegular ${errors.message ? 'border-red-500' : ''}`}
-                disabled={isSubmitting}
-              />
-              {errors.message && (
-                <p className="text-xs text-red-500">{errors.message}</p>
-              )}
-            </div>
-
-            <div className="flex gap-3 pt-4">
+            <div className="shrink-0 border-t border-border/60 bg-background pt-4">
               <Button
                 type="submit"
                 disabled={isSubmitting}
@@ -188,34 +227,6 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                 {isSubmitting ? "Sending..." : t('form.send')}
               </Button>
             </div>
-
-            <AnimatePresence>
-              {submitStatus === "success" && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="p-3 bg-green-500/10 border border-green-500/20 rounded-md"
-                >
-                  <p className="text-sm text-green-600 font-helveticaNowTextRegular">
-                    {t('form.success')}
-                  </p>
-                </motion.div>
-              )}
-
-              {submitStatus === "error" && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="p-3 bg-red-500/10 border border-red-500/20 rounded-md"
-                >
-                  <p className="text-sm text-red-600 font-helveticaNowTextRegular">
-                    {t('form.error')}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </form>
         </DialogPrimitive.Content>
       </DialogPortal>
