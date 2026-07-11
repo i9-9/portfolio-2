@@ -8,9 +8,6 @@ export const EASE_CINEMATIC = [0.87, 0, 0.13, 1] as const;
 export const MOBILE_MENU_PANEL_OPEN_DURATION = 2.1;
 export const MOBILE_MENU_PANEL_CLOSE_DURATION = 1.45;
 
-/** @deprecated use OPEN/CLOSE variants; kept for line animations on close */
-export const MOBILE_MENU_PANEL_DURATION = MOBILE_MENU_PANEL_CLOSE_DURATION;
-
 /** Delay before nav links/lines start — after panel begins opening. */
 export const MOBILE_MENU_CONTENT_DELAY =
   MOBILE_MENU_PANEL_OPEN_DURATION * 0.28;

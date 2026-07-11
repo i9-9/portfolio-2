@@ -8,10 +8,6 @@ export function isMobileScreenshotViewport(): boolean {
   return window.matchMedia(`(max-width: ${PROJECT_SCREENSHOT_MOBILE_MAX_WIDTH}px)`).matches;
 }
 
-export function getCaseStudyHero(project: Project, mobile = isMobileScreenshotViewport()) {
-  return mobile ? project.caseStudyHeroMobile : project.caseStudyHero;
-}
-
 export function getProjectPreview(project: Project, mobile = isMobileScreenshotViewport()) {
   return mobile ? project.previewImageMobile : project.previewImage;
 }

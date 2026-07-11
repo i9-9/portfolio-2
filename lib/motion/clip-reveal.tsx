@@ -76,20 +76,6 @@ export function mobileMenuContainerVariants(
   };
 }
 
-export function clipRevealContainerVariants(
-  delayChildren = CLIP_REVEAL_BASE_DELAY,
-): Variants {
-  return {
-    hidden: {},
-    visible: {
-      transition: {
-        delayChildren,
-        staggerChildren: CLIP_REVEAL_STAGGER,
-      },
-    },
-  };
-}
-
 /** Staggered clip reveal for menu overlays (mobile nav sheet). */
 export function ClipRevealItem({
   children,

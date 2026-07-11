@@ -1,12 +1,12 @@
 import type { CaseStudySlug } from "./types";
 
-/** Editorial order for “Next project” on case study pages. */
+/** Same order as the landing work list (ProjectRow). */
 export const CASE_STUDY_NAV_ORDER: CaseStudySlug[] = [
   "heybristol",
-  "grupofrali",
   "kostume",
   "ursulabenavidez",
   "desenfreno",
+  "grupofrali",
 ];
 
 export function getNextCaseStudySlug(slug: CaseStudySlug): CaseStudySlug | null {

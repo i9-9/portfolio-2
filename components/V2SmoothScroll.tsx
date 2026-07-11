@@ -7,8 +7,11 @@ import {
   SPLASH_SESSION_KEY,
   useSplashHandoff,
 } from "@/lib/splash/SplashHandoffContext";
-import { scrollToLandingHashWhenReady, landingHashId } from "@/lib/scroll/landingHash";
-import { setLandingLenis } from "@/lib/scroll/lenisStore";
+import {
+  scrollToLandingHashWhenReady,
+  landingHashId,
+} from "@/lib/scroll/landingHash";
+import { setLandingLenis, getLandingLenis } from "@/lib/scroll/lenisStore";
 
 /**
  * Smooth scroll for layouts that wrap this provider (e.g. home). Disabled when `prefers-reduced-motion` is set.
@@ -77,9 +80,6 @@ export function V2SmoothScroll({ children }: { children: ReactNode }) {
       lenisRef.current = null;
       setLandingLenis(null);
       setLenisReady(false);
-      lenis = null;
-      ro = null;
-      onLoad = null;
     };
   }, [mounted, reducedMotion]);
 
@@ -101,34 +101,37 @@ export function V2SmoothScroll({ children }: { children: ReactNode }) {
       reducedMotion === true || splashHandoff || skipSplash;
     if (!splashReady) return;
 
-    // #contact opens a dialog that locks body scroll — must be instant.
-    const instant = reducedMotion === true || landingHashId(hash) === "contact";
+    const currentLenis = () => lenisRef.current ?? getLandingLenis();
 
-    const scrollHash = (next: string) => {
+    // Soft-nav from /work/*: Next scroll-to-top cancels animated Lenis — use reliable/instant.
+    const cancelScroll = scrollToLandingHashWhenReady(hash, {
+      getLenis: currentLenis,
+      reducedMotion: reducedMotion === true,
+      reliable: true,
+    });
+
+    const scrollHash = (next: string, { reliable }: { reliable: boolean }) => {
       scrollToLandingHashWhenReady(next, {
-        lenis: lenisRef.current,
+        getLenis: currentLenis,
         reducedMotion:
           reducedMotion === true || landingHashId(next) === "contact",
+        reliable: reliable || landingHashId(next) === "contact",
       });
     };
-
-    const cancelScroll = scrollToLandingHashWhenReady(hash, {
-      lenis: lenisRef.current,
-      reducedMotion: instant,
-    });
 
     // Soft-nav from /work/* often sets the hash without firing hashchange.
     // Re-run when the portfolio chunk mounts and dispatches this.
     const onLandingReady = () => {
       const next = window.location.hash;
       if (!next) return;
-      scrollHash(next);
+      scrollHash(next, { reliable: true });
     };
 
     const onHashChange = () => {
       const next = window.location.hash;
       if (!next) return;
-      scrollHash(next);
+      // Same-page hash changes can animate; contact stays instant.
+      scrollHash(next, { reliable: landingHashId(next) === "contact" });
     };
 
     window.addEventListener("hashchange", onHashChange);
@@ -139,10 +142,6 @@ export function V2SmoothScroll({ children }: { children: ReactNode }) {
       window.removeEventListener("landing:sections-ready", onLandingReady);
     };
   }, [mounted, pathname, reducedMotion, splashHandoff, lenisReady]);
-
-  if (!mounted || reducedMotion === true) {
-    return <>{children}</>;
-  }
 
   return <>{children}</>;
 }

@@ -25,7 +25,7 @@ import {
 } from "@/lib/splash/SplashHandoffContext";
 import {
   landingHashId,
-  scrollToLandingSection,
+  scrollToLandingHashReliable,
 } from "@/lib/scroll/landingHash";
 import { getLandingLenis } from "@/lib/scroll/lenisStore";
 import { EASE_CINEMATIC, EASE_OUT_EXPO } from "@/lib/motion/easing";
@@ -736,7 +736,8 @@ function ProjectRow({
 export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode }) {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [contactModalLoaded, setContactModalLoaded] = useState(false);
-  const [showToast,     setShowToast]     = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
   const { t, language } = useLanguage();
 
   useLayoutEffect(() => {
@@ -750,20 +751,17 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
   // /#contact from case study CTA — scroll once #contact is mounted, open modal
   useEffect(() => {
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let cancelScroll: (() => void) | undefined;
 
     const applyLandingHash = () => {
       const hash = window.location.hash;
       const id = landingHashId(hash);
       if (!id) return;
 
-      // Instant scroll before the contact dialog locks body overflow.
-      // Animated Lenis scroll would be cancelled by Radix scroll-lock.
-      scrollToLandingSection(hash, {
-        lenis: getLandingLenis(),
-        reducedMotion: id === "contact" ? true : reduced,
+      // Soft-nav from /work/* races Next scroll-to-top — reliable/instant scroll.
+      cancelScroll?.();
+      cancelScroll = scrollToLandingHashReliable(hash, {
+        getLenis: getLandingLenis,
       });
 
       if (id === "contact") {
@@ -775,7 +773,10 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
     applyLandingHash();
     window.dispatchEvent(new Event("landing:sections-ready"));
     window.addEventListener("hashchange", applyLandingHash);
-    return () => window.removeEventListener("hashchange", applyLandingHash);
+    return () => {
+      cancelScroll?.();
+      window.removeEventListener("hashchange", applyLandingHash);
+    };
   }, []);
 
   const [isLgNav, setIsLgNav] = useState(true);
@@ -806,9 +807,12 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText("ivannevares9@gmail.com");
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
-    } catch {}
+      setToastMessage(t("contact.mailCopied"));
+    } catch {
+      setToastMessage(t("contact.mailCopyFailed"));
+    }
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
   const isEn = language === "en";
@@ -1054,7 +1058,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       {contactModalLoaded ? (
         <ContactFormModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
       ) : null}
-      <Toast message={t("contact.mailCopied")} isVisible={showToast} />
+      <Toast message={toastMessage || t("contact.mailCopied")} isVisible={showToast} />
     </div>
   );
 }

@@ -1,9 +1,18 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { translations } from './translations';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
+import { translations } from "./translations";
 
-type Language = 'en' | 'es';
+type Language = "en" | "es";
+
+const LANG_STORAGE_KEY = "portfolio-lang";
 
 interface LanguageContextType {
   language: Language;
@@ -11,25 +20,50 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined,
+);
+
+function readStoredLanguage(): Language {
+  try {
+    const stored = window.localStorage.getItem(LANG_STORAGE_KEY);
+    if (stored === "en" || stored === "es") return stored;
+  } catch {
+    /* private mode / quota */
+  }
+  return "es";
+}
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>('es');
+  const [language, setLanguageState] = useState<Language>("es");
+
+  useLayoutEffect(() => {
+    setLanguageState(readStoredLanguage());
+  }, []);
+
+  const setLanguage = useCallback((lang: Language) => {
+    setLanguageState(lang);
+    try {
+      window.localStorage.setItem(LANG_STORAGE_KEY, lang);
+    } catch {
+      /* private mode / quota */
+    }
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
 
   const t = (key: string) => {
-    const keys = key.split('.');
-    let value: any = translations[language];
-    
+    const keys = key.split(".");
+    let value: unknown = translations[language];
+
     for (const k of keys) {
-      if (value === undefined) return key;
-      value = value[k];
+      if (value === undefined || value === null) return key;
+      value = (value as Record<string, unknown>)[k];
     }
-    
-    return value || key;
+
+    return typeof value === "string" ? value : key;
   };
 
   return (
@@ -42,7 +76,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    throw new Error("useLanguage must be used within a LanguageProvider");
   }
   return context;
-} 
+}

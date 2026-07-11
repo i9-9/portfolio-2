@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
+import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -128,9 +128,9 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                 <X className="h-5 w-5 md:h-4 md:w-4" />
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground font-helveticaNowTextRegular">
+            <DialogDescription className="text-sm text-muted-foreground font-helveticaNowTextRegular">
               {t('form.subtitle')}
-            </p>
+            </DialogDescription>
           </DialogHeader>
 
           <form
