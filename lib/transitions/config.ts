@@ -2,12 +2,12 @@ import type { ProjectSlug } from "@/app/data/projects";
 
 /** Visual language per project — maps identity to transition mechanics. */
 export type ProjectTransitionVariant =
-  | "letterbox" // Reserved — whisper cinema bars + quiet logo settle
+  | "letterbox" // Hey Bristol — whisper cinema bars + quiet logo settle
   | "curtain" // Kostüme — fashion runway lift
   | "curtainDown" // Reserved — editorial drop from top
   | "marquee" // El Desenfreno — centered wordmark on black
   | "slices" // Reserved — contact-sheet strips
-  | "expand" // Hey Bristol — preview morph from row / hover card
+  | "expand" // Reserved — preview morph from row / hover card
   | "grid" // Reserved — architectural grid reveal
   | "typographic"; // Grupo Frali — wordmark fade + baseline settle
 
@@ -15,7 +15,7 @@ export const PROJECT_TRANSITION_VARIANT: Record<
   ProjectSlug,
   ProjectTransitionVariant
 > = {
-  heybristol: "expand",
+  heybristol: "letterbox",
   kostume: "curtain",
   ursulabenavidez: "typographic",
   desenfreno: "marquee",
