@@ -153,6 +153,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
             <Link
               href={nextHref}
+              scroll={nextHref.startsWith("/#") ? false : undefined}
               className={editorialNavOutline("group w-fit")}
               aria-label={
                 nextProject
@@ -176,6 +177,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
             <Link
               href="/#contact"
+              scroll={false}
               className={editorialNavMuted("w-fit")}
             >
               {t("caseStudy.workWithMe")}

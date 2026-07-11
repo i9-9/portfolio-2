@@ -282,6 +282,12 @@
 }
 
 /* Fixed-nav offsets — multiples of --grid-row */
+#work,
+#about,
+#contact {
+  scroll-margin-top: var(--nav-height);
+}
+
 .pt-nav {
   padding-top: var(--nav-height);
 }

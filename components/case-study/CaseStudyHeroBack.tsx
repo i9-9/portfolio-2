@@ -14,6 +14,7 @@ export function CaseStudyHeroBack() {
       <div className="relative grid-container py-4 lg:py-5">
         <Link
           href="/#work"
+          scroll={false}
           aria-label={t("caseStudy.back")}
           className={cn(
             "pointer-events-auto inline-flex items-center gap-1",

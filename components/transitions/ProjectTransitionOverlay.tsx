@@ -349,25 +349,42 @@ function CurtainTransition({
   );
 }
 
+function TransitionPreview({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+}) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={alt}
+      className={cn("h-full w-full object-cover", className)}
+    />
+  );
+}
+
 function ExpandTransition({
   phase,
   previewImage,
   backdrop,
-  logo,
   logoAlt,
-  logoClassName,
   origin,
 }: {
   phase: TransitionPhase;
   previewImage: string;
   backdrop: ProjectTransitionBackdrop;
-  logo: string;
   logoAlt: string;
-  logoClassName: string;
   origin: TransitionOrigin;
 }) {
   const exiting = phase === "exit";
   const entering = phase === "enter";
+  const duration =
+    (exiting ? TRANSITION_EXIT_MS : TRANSITION_ENTER_MS) / 1000;
   const [viewport, setViewport] = useState<{ w: number; h: number } | null>(
     null,
   );
@@ -379,40 +396,44 @@ function ExpandTransition({
     });
   }, []);
 
-  const fromScale = viewport
-    ? Math.max(origin.width / viewport.w, origin.height / viewport.h, 0.12)
-    : 0.22;
-  const fromX = viewport
-    ? origin.x + origin.width / 2 - viewport.w / 2
-    : 0;
-  const fromY = viewport
-    ? origin.y + origin.height / 2 - viewport.h / 2
-    : 0;
+  const fullFrame = viewport
+    ? { top: 0, left: 0, width: viewport.w, height: viewport.h, opacity: 1 }
+    : { opacity: 1 };
+
+  const fromFrame = viewport
+    ? {
+        top: origin.y,
+        left: origin.x,
+        width: origin.width,
+        height: origin.height,
+        opacity: 1,
+      }
+    : { opacity: 1 };
 
   return (
     <FullscreenStage>
-      <TransitionBackdrop backdrop={backdrop} />
       <motion.div
-        className="absolute inset-0 flex items-center justify-center"
-        initial={
-          viewport
-            ? { x: fromX, y: fromY, scale: fromScale, opacity: 1 }
-            : { scale: fromScale, opacity: 1 }
-        }
+        className="absolute inset-0"
+        initial={{ opacity: exiting ? 0 : 1 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: duration * 0.85, ease: TRANSITION_EASE }}
+      >
+        <TransitionBackdrop backdrop={backdrop} />
+      </motion.div>
+
+      <motion.div
+        className="absolute overflow-hidden"
+        initial={exiting ? fromFrame : fullFrame}
         animate={
           exiting
-            ? { x: 0, y: 0, scale: 1, opacity: 1 }
+            ? fullFrame
             : entering
-              ? { x: 0, y: 0, scale: 1, opacity: 0 }
-              : { x: 0, y: 0, scale: 1, opacity: 1 }
+              ? { ...fullFrame, opacity: 0 }
+              : fullFrame
         }
-        transition={{ duration: TRANSITION_EXIT_MS / 1000, ease: TRANSITION_EASE }}
+        transition={{ duration, ease: TRANSITION_EASE }}
       >
-        <TransitionLogo
-          src={logo}
-          alt={logoAlt}
-          className={logoClassName}
-        />
+        <TransitionPreview src={previewImage} alt={logoAlt} />
       </motion.div>
     </FullscreenStage>
   );
@@ -645,9 +666,7 @@ function VariantLayer({
           phase={phase}
           previewImage={previewImage}
           backdrop={backdrop}
-          logo={logo}
           logoAlt={logoAlt}
-          logoClassName={logoClassName}
           origin={origin}
         />
       );
@@ -704,7 +723,7 @@ export function ProjectTransitionOverlay({
   if (!project) return null;
 
   const variant = PROJECT_TRANSITION_VARIANT[slug];
-  if (variant !== "marquee" && !project.logo) return null;
+  if (variant !== "marquee" && variant !== "expand" && !project.logo) return null;
   const backdrop = PROJECT_TRANSITION_BACKDROP[slug];
   const logoClassName = logoClassForBackdrop(backdrop, slug);
 

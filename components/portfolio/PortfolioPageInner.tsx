@@ -23,6 +23,11 @@ import {
   SPLASH_SESSION_KEY,
   useSplashHandoff,
 } from "@/lib/splash/SplashHandoffContext";
+import {
+  landingHashId,
+  scrollToLandingSection,
+} from "@/lib/scroll/landingHash";
+import { getLandingLenis } from "@/lib/scroll/lenisStore";
 import { EASE_CINEMATIC, EASE_OUT_EXPO } from "@/lib/motion/easing";
 import {
   heroRevealIndex,
@@ -578,6 +583,9 @@ function ProjectRow({
     seedPreview(e.clientX, e.clientY);
   };
 
+  const PREVIEW_WIDTH = 384;
+  const PREVIEW_HEIGHT = 240;
+
   const handleNavigate = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (
       e.metaKey ||
@@ -589,14 +597,26 @@ function ProjectRow({
       return;
     }
     e.preventDefault();
-    const rect = e.currentTarget.getBoundingClientRect();
+    const rowRect = e.currentTarget.getBoundingClientRect();
+    const useHoverPreview =
+      hovered &&
+      typeof window !== "undefined" &&
+      window.matchMedia("(min-width: 1024px)").matches;
+    const origin = useHoverPreview
+      ? {
+          x: pvX.get(),
+          y: pvY.get(),
+          width: PREVIEW_WIDTH,
+          height: PREVIEW_HEIGHT,
+        }
+      : {
+          x: rowRect.left,
+          y: rowRect.top,
+          width: rowRect.width,
+          height: rowRect.height,
+        };
     const preview = project ? getProjectPreview(project) : "";
-    navigateToProject(slug as ProjectSlug, preview, {
-      x: rect.left,
-      y: rect.top,
-      width: rect.width,
-      height: rect.height,
-    });
+    navigateToProject(slug as ProjectSlug, preview, origin);
   };
 
   return (
@@ -727,6 +747,36 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const heroReduced = useReducedMotion();
   const { handoff: splashHandoff } = useSplashHandoff();
   const heroLive = splashHandoff || !!heroReduced;
+
+  // /#contact from case study CTA — scroll once #contact is mounted, open modal
+  useEffect(() => {
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const applyLandingHash = () => {
+      const hash = window.location.hash;
+      const id = landingHashId(hash);
+      if (!id) return;
+
+      // Instant scroll before the contact dialog locks body overflow.
+      // Animated Lenis scroll would be cancelled by Radix scroll-lock.
+      scrollToLandingSection(hash, {
+        lenis: getLandingLenis(),
+        reducedMotion: id === "contact" ? true : reduced,
+      });
+
+      if (id === "contact") {
+        setContactModalLoaded(true);
+        setIsContactOpen(true);
+      }
+    };
+
+    applyLandingHash();
+    window.dispatchEvent(new Event("landing:sections-ready"));
+    window.addEventListener("hashchange", applyLandingHash);
+    return () => window.removeEventListener("hashchange", applyLandingHash);
+  }, []);
 
   const [isLgNav, setIsLgNav] = useState(true);
   useLayoutEffect(() => {
