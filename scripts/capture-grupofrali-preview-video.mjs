@@ -125,6 +125,16 @@ function hasFfmpeg() {
   }
 }
 
+/** High-quality H.264 for portfolio previews (single encode from WebM). */
+const H264_ARGS = [
+  "-an",
+  "-c:v libx264",
+  "-crf 18",
+  "-preset medium",
+  "-pix_fmt yuv420p",
+  "-movflags +faststart",
+];
+
 function trimToPreview(input, output, trimStartSec) {
   execSync(
     [
@@ -132,10 +142,7 @@ function trimToPreview(input, output, trimStartSec) {
       `-ss ${trimStartSec.toFixed(2)}`,
       `-i ${JSON.stringify(input)}`,
       `-t ${TRIM_DURATION_SEC}`,
-      "-an",
-      "-c:v libx264",
-      "-pix_fmt yuv420p",
-      "-movflags +faststart",
+      ...H264_ARGS,
       JSON.stringify(output),
     ].join(" "),
     { stdio: "inherit" },
@@ -148,6 +155,8 @@ async function capturePreset(presetKey) {
 
   const browser = await chromium.launch();
   const recordingStartedAt = Date.now();
+  // recordVideo.size must match viewport CSS size — a larger canvas
+  // letterboxes the page into a corner (Playwright does not upscale-fill).
   const context = await browser.newContext({
     viewport: preset.viewport,
     deviceScaleFactor: preset.deviceScaleFactor,
@@ -190,17 +199,10 @@ async function capturePreset(presetKey) {
   const webmFull = path.join(OUT_DIR, `grupofrali-preview-${presetKey}-full.webm`);
   fs.renameSync(webmTemp, webmFull);
 
-  const mp4Full = path.join(OUT_DIR, `grupofrali-preview-${presetKey}-full.mp4`);
-  execSync(
-    `ffmpeg -y -i ${JSON.stringify(webmFull)} -an -c:v libx264 -pix_fmt yuv420p ${JSON.stringify(mp4Full)}`,
-    { stdio: "inherit" },
-  );
-
   const mp4Out = path.join(OUT_DIR, preset.outFile);
-  trimToPreview(mp4Full, mp4Out, trimStartSec);
+  trimToPreview(webmFull, mp4Out, trimStartSec);
 
   fs.unlinkSync(webmFull);
-  fs.unlinkSync(mp4Full);
 
   console.log(
     `  saved ${mp4Out} (${(fs.statSync(mp4Out).size / 1024).toFixed(0)}kb, ${TRIM_DURATION_SEC}s loop)`,

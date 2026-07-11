@@ -5,7 +5,6 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const MAX_FILES = 18;
@@ -197,6 +196,19 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
     }
   };
 
+  const handleViewerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!canNavigate) return;
+    const clickX = e.clientX;
+    const screenWidth = window.innerWidth;
+    if (clickX < screenWidth / 2) {
+      navDirRef.current = -1;
+      goAdjacent(-1);
+    } else {
+      navDirRef.current = 1;
+      goAdjacent(1);
+    }
+  };
+
   const blockViewer =
     portalReady &&
     typeof document !== "undefined" &&
@@ -209,131 +221,68 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[10050]"
+            className="fixed inset-0 z-[10050] flex flex-col bg-background"
             aria-modal="true"
             role="dialog"
             aria-labelledby="graphic-block-title"
           >
-            <button
-              type="button"
-              className={cn(
-                "absolute inset-0 cursor-zoom-out bg-[#ebe9e6]/92 backdrop-blur-md",
-                "dark:bg-neutral-950/88",
-              )}
-              aria-label="Close"
-              onClick={() => setOpenFile(null)}
-            />
-
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 px-3 py-4 sm:gap-4 sm:px-6 sm:py-6">
-              {canNavigate ? (
-                <button
-                  type="button"
-                  className={cn(
-                    "pointer-events-auto flex size-10 shrink-0 items-center justify-center rounded-full border border-foreground/10 bg-[#fdfcfa]/90 text-foreground/60 shadow-sm backdrop-blur-sm transition-colors",
-                    "hover:bg-foreground/5 hover:text-foreground sm:size-11",
-                    "dark:border-white/10 dark:bg-[#161616]/90 dark:text-white/55 dark:hover:bg-white/10 dark:hover:text-white",
-                  )}
-                  aria-label="Previous image"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navDirRef.current = -1;
-                    goAdjacent(-1);
-                  }}
-                >
-                  <ChevronLeft className="size-5 sm:size-6" strokeWidth={1.5} />
-                </button>
-              ) : (
-                <span className="size-10 shrink-0 sm:size-11" aria-hidden />
-              )}
-
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.985 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 6, scale: 0.99 }}
-                transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                className={cn(
-                  "pointer-events-auto relative flex max-h-[min(88dvh,calc(100vh-2rem))] w-full max-w-[min(96vw,56rem)] flex-col rounded-sm border border-foreground/[0.08] bg-[#fdfcfa] shadow-[0_24px_80px_-24px_rgb(0_0_0/0.18)] dark:border-white/[0.08] dark:bg-[#161616]",
-                )}
-                onClick={(ev) => ev.stopPropagation()}
+            {/* Window chrome — same traffic lights as thumbnail cards */}
+            <div className="flex h-9 shrink-0 items-center gap-1 border-b border-border/60 bg-muted/50 px-2 dark:bg-muted/30">
+              <button
+                type="button"
+                className="group flex size-5 items-center justify-center"
+                aria-label="Close"
+                onClick={() => setOpenFile(null)}
               >
-                <div className="flex shrink-0 items-center gap-3 border-b border-foreground/[0.06] px-4 py-3 dark:border-white/[0.06]">
-                  <span
-                    id="graphic-block-title"
-                    className="min-w-0 flex-1 font-mono text-[11px] font-normal uppercase tracking-[0.2em] text-foreground/70 dark:text-white/65"
-                  >
-                    {displayName(openFile)}
-                  </span>
-                  {canNavigate && openIndex >= 0 ? (
-                    <span
-                      className="shrink-0 tabular-nums font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
-                      aria-live="polite"
-                    >
-                      {openIndex + 1}/{images.length}
-                    </span>
-                  ) : null}
-                  <button
-                    type="button"
-                    className="-m-2 rounded-full p-2 text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground"
-                    aria-label="Close block"
-                    onClick={() => setOpenFile(null)}
-                  >
-                    <X className="size-4" strokeWidth={1.5} />
-                  </button>
-                </div>
-                <div
-                  className="max-h-[min(calc(88dvh-3.75rem),calc(100vh-8rem))] overflow-x-hidden overflow-y-auto overscroll-contain px-4 pb-4 pt-1 sm:px-5 sm:pb-5 sm:pt-2"
-                  style={{ scrollbarGutter: "stable" }}
+                <span className="size-2.5 rounded-full bg-[#ff5f57]/90 transition-opacity group-hover:opacity-80" />
+              </button>
+              <span className="flex size-5 items-center justify-center" aria-hidden>
+                <span className="size-2.5 rounded-full bg-[#febc2e]/90" />
+              </span>
+              <span className="flex size-5 items-center justify-center" aria-hidden>
+                <span className="size-2.5 rounded-full bg-[#28c840]/90" />
+              </span>
+              <span
+                id="graphic-block-title"
+                className="ml-1 min-w-0 flex-1 truncate font-mono text-[10px] uppercase tracking-wide text-muted-foreground"
+              >
+                {displayName(openFile)}
+              </span>
+              {canNavigate && openIndex >= 0 ? (
+                <span
+                  className="mr-1 shrink-0 tabular-nums font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
+                  aria-live="polite"
                 >
-                  <div className="flex w-full justify-center">
-                    <AnimatePresence mode="wait" initial={false}>
-                      <motion.div
-                        key={openFile}
-                        role="presentation"
-                        initial={{
-                          opacity: 0,
-                          x: navDirRef.current * 18,
-                          filter: "blur(6px)",
-                        }}
-                        animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                        exit={{
-                          opacity: 0,
-                          x: navDirRef.current * -14,
-                          filter: "blur(4px)",
-                        }}
-                        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                      >
-                        <img
-                          src={`/dg/${openFile}`}
-                          alt={displayName(openFile)}
-                          className="block max-h-[min(calc(100dvh-9rem),80dvh)] w-auto max-w-full object-contain shadow-sm"
-                          decoding="async"
-                        />
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </motion.div>
+                  {openIndex + 1}/{images.length}
+                </span>
+              ) : null}
+            </div>
 
-              {canNavigate ? (
-                <button
-                  type="button"
-                  className={cn(
-                    "pointer-events-auto flex size-10 shrink-0 items-center justify-center rounded-full border border-foreground/10 bg-[#fdfcfa]/90 text-foreground/60 shadow-sm backdrop-blur-sm transition-colors",
-                    "hover:bg-foreground/5 hover:text-foreground sm:size-11",
-                    "dark:border-white/10 dark:bg-[#161616]/90 dark:text-white/55 dark:hover:bg-white/10 dark:hover:text-white",
-                  )}
-                  aria-label="Next image"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navDirRef.current = 1;
-                    goAdjacent(1);
-                  }}
-                >
-                  <ChevronRight className="size-5 sm:size-6" strokeWidth={1.5} />
-                </button>
-              ) : (
-                <span className="size-10 shrink-0 sm:size-11" aria-hidden />
+            {/* Editorial-style fullscreen slideshow */}
+            <div
+              className={cn(
+                "relative flex min-h-0 flex-1 items-center px-4 py-8 lg:px-6 lg:py-12",
+                canNavigate && "cursor-pointer",
               )}
+              onClick={handleViewerClick}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={openFile}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative flex h-full max-h-full max-w-full items-center"
+                >
+                  <img
+                    src={`/dg/${openFile}`}
+                    alt={displayName(openFile)}
+                    className="block h-full max-h-full w-auto max-w-full object-contain"
+                    decoding="async"
+                  />
+                </motion.div>
+              </AnimatePresence>
             </div>
           </motion.div>
         ) : null}

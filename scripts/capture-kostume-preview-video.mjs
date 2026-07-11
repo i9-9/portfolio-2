@@ -33,10 +33,10 @@ const PRESETS = {
   },
 };
 
-/** Clip length for hover / hero loop (trim start is computed after popup dismiss). */
+/** Clip length for hover / hero loop. */
 const TRIM_DURATION_SEC = 7;
-/** Extra seconds after dismiss before the hero clip starts. */
-const TRIM_BUFFER_SEC = 2;
+/** Extra seconds of settled playback before the clip starts. */
+const TRIM_BUFFER_SEC = 1;
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -88,6 +88,135 @@ async function dismissPopups(page) {
   } catch {}
 }
 
+/** Wait until the visible hero Vimeo iframe has real frames playing (not the loader). */
+async function waitForVimeoPlaying(page) {
+  // Site mounts desktop + mobile iframes; only one is laid out.
+  await page.waitForFunction(
+    () => {
+      for (const iframe of document.querySelectorAll(
+        'iframe[src*="player.vimeo.com"]',
+      )) {
+        const rect = iframe.getBoundingClientRect();
+        const style = getComputedStyle(iframe);
+        if (
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          rect.width > 100 &&
+          rect.height > 100
+        ) {
+          return true;
+        }
+      }
+      return false;
+    },
+    { timeout: 45_000 },
+  );
+  console.log("  Vimeo iframe laid out");
+
+  await page.waitForTimeout(800);
+
+  const frameInfo = await page.evaluate(() => {
+    for (const iframe of document.querySelectorAll(
+      'iframe[src*="player.vimeo.com"]',
+    )) {
+      const rect = iframe.getBoundingClientRect();
+      const style = getComputedStyle(iframe);
+      if (
+        style.display !== "none" &&
+        style.visibility !== "hidden" &&
+        rect.width > 100 &&
+        rect.height > 100
+      ) {
+        return { src: iframe.src, name: iframe.name || null };
+      }
+    }
+    return null;
+  });
+
+  if (!frameInfo?.src) {
+    throw new Error("Visible Vimeo iframe not found.");
+  }
+
+  let vimeoFrame = null;
+  for (let i = 0; i < 40; i++) {
+    vimeoFrame = page.frames().find((f) => {
+      const url = f.url();
+      return (
+        url.includes("player.vimeo.com") &&
+        (url.includes("1183457699") || url.includes("video/"))
+      );
+    });
+    // Prefer the frame whose URL matches the visible iframe src closely.
+    const exact = page.frames().find((f) => f.url().startsWith(frameInfo.src.split("?")[0]));
+    if (exact) {
+      vimeoFrame = exact;
+      break;
+    }
+    if (vimeoFrame) break;
+    await page.waitForTimeout(500);
+  }
+
+  // If multiple player frames exist, pick the one whose element is visible.
+  if (!vimeoFrame || page.frames().filter((f) => f.url().includes("player.vimeo.com")).length > 1) {
+    const candidates = page.frames().filter((f) =>
+      f.url().includes("player.vimeo.com"),
+    );
+    for (const frame of candidates) {
+      const el = await frame.frameElement().catch(() => null);
+      if (!el) continue;
+      const box = await el.boundingBox().catch(() => null);
+      if (box && box.width > 100 && box.height > 100) {
+        vimeoFrame = frame;
+        break;
+      }
+    }
+  }
+
+  if (!vimeoFrame) {
+    throw new Error("Vimeo player frame not attached.");
+  }
+  console.log(`  using frame ${vimeoFrame.url().slice(0, 80)}…`);
+
+  // Force muted play inside the player (autoplay policies).
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      await vimeoFrame.evaluate(() => {
+        const video = document.querySelector("video");
+        if (!video) return;
+        video.muted = true;
+        video.loop = true;
+        void video.play();
+      });
+    } catch {}
+    await page.waitForTimeout(400);
+  }
+
+  await vimeoFrame.waitForFunction(
+    () => {
+      const video = document.querySelector("video");
+      if (!video) return false;
+      return (
+        video.readyState >= 2 &&
+        video.videoWidth > 16 &&
+        video.currentTime > 0.5 &&
+        !video.paused
+      );
+    },
+    { timeout: 60_000 },
+  );
+
+  await vimeoFrame.evaluate(() => {
+    const video = document.querySelector("video");
+    if (!video) return;
+    video.muted = true;
+    video.loop = true;
+    if (video.paused) void video.play();
+  });
+
+  console.log("  Vimeo video playing");
+  await page.waitForTimeout(500);
+}
+
 function hasFfmpeg() {
   try {
     execSync("ffmpeg -version", { stdio: "ignore" });
@@ -97,6 +226,16 @@ function hasFfmpeg() {
   }
 }
 
+/** High-quality H.264 for portfolio previews (single encode from WebM). */
+const H264_ARGS = [
+  "-an",
+  "-c:v libx264",
+  "-crf 18",
+  "-preset medium",
+  "-pix_fmt yuv420p",
+  "-movflags +faststart",
+];
+
 function trimToPreview(input, output, trimStartSec) {
   execSync(
     [
@@ -104,10 +243,7 @@ function trimToPreview(input, output, trimStartSec) {
       `-ss ${trimStartSec.toFixed(2)}`,
       `-i ${JSON.stringify(input)}`,
       `-t ${TRIM_DURATION_SEC}`,
-      "-an",
-      "-c:v libx264",
-      "-pix_fmt yuv420p",
-      "-movflags +faststart",
+      ...H264_ARGS,
       JSON.stringify(output),
     ].join(" "),
     { stdio: "inherit" },
@@ -120,6 +256,8 @@ async function capturePreset(presetKey) {
 
   const browser = await chromium.launch();
   const recordingStartedAt = Date.now();
+  // recordVideo.size must match viewport CSS size — a larger canvas
+  // letterboxes the page into a corner (Playwright does not upscale-fill).
   const context = await browser.newContext({
     viewport: preset.viewport,
     deviceScaleFactor: preset.deviceScaleFactor,
@@ -161,21 +299,15 @@ async function capturePreset(presetKey) {
     console.log("  popup dismissed");
   }
 
+  await waitForVimeoPlaying(page);
+  await page.evaluate(() => window.scrollTo(0, 0));
+
+  // Trim only after Vimeo is actually playing — not while the loader shows.
   const trimStartSec =
     (Date.now() - recordingStartedAt) / 1000 + TRIM_BUFFER_SEC;
   console.log(`  trim starts at ${trimStartSec.toFixed(1)}s`);
 
-  try {
-    await page.waitForSelector('iframe[src*="player.vimeo.com"]', {
-      timeout: 30_000,
-    });
-    console.log("  Vimeo iframe loaded");
-  } catch {
-    console.warn("  Vimeo iframe not found — recording anyway");
-  }
-
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(10_000);
+  await page.waitForTimeout((TRIM_DURATION_SEC + TRIM_BUFFER_SEC + 1) * 1000);
 
   const webmTemp = await page.video()?.path();
   await context.close();
@@ -188,17 +320,10 @@ async function capturePreset(presetKey) {
   const webmFull = path.join(OUT_DIR, `kostume-preview-${presetKey}-full.webm`);
   fs.renameSync(webmTemp, webmFull);
 
-  const mp4Full = path.join(OUT_DIR, `kostume-preview-${presetKey}-full.mp4`);
-  execSync(
-    `ffmpeg -y -i ${JSON.stringify(webmFull)} -an -c:v libx264 -pix_fmt yuv420p ${JSON.stringify(mp4Full)}`,
-    { stdio: "inherit" },
-  );
-
   const mp4Out = path.join(OUT_DIR, preset.outFile);
-  trimToPreview(mp4Full, mp4Out, trimStartSec);
+  trimToPreview(webmFull, mp4Out, trimStartSec);
 
   fs.unlinkSync(webmFull);
-  fs.unlinkSync(mp4Full);
 
   console.log(
     `  saved ${mp4Out} (${(fs.statSync(mp4Out).size / 1024).toFixed(0)}kb, ${TRIM_DURATION_SEC}s loop)`,

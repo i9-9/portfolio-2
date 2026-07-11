@@ -91,6 +91,10 @@ export type V2ContentMode = "web" | "graphic";
 
 const WOHL_STUDIO_URL = "https://wohl.co/";
 
+/** Work-list dividers — slower than nav so the L→R draw reads clearly. */
+const WORK_LINE_DURATION = 2.35;
+const WORK_LINE_STAGGER = 0.22;
+
 export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode }) {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [contactModalLoaded, setContactModalLoaded] = useState(false);
@@ -155,7 +159,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const sep2Ref = useRef(null);
   const sep3Ref = useRef(null);
 
-  const workInView = useInView(workRef, { once: true, margin: "-10%" });
+  const workInView = useInView(workRef, { once: true, amount: 0.2 });
   const aboutInView = useInView(aboutRef, { once: true, margin: "-10%" });
   const contactInView = useInView(contactRef, { once: true, margin: "-10%" });
   const sep1InView = useInView(sep1Ref, { once: true, margin: "-5%" });
@@ -229,24 +233,32 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             {t("work.title")}
           </motion.p>
 
-          <div className="divide-y divide-border">
+          <div>
             {PROJECT_ROWS.map(
               ({ key, metricEn, metricEs, marqueeEn, marqueeEs }, i) => {
                 const project = getProjectBySlug(key);
                 if (!project) return null;
                 return (
-                  <ProjectRow
-                    key={key}
-                    slug={key}
-                    index={i + 1}
-                    name={project.name}
-                    category={t(`work.${key}.title` as Parameters<typeof t>[0])}
-                    metric={isEn ? metricEn : metricEs}
-                    year={project.year}
-                    marqueeLine={isEn ? marqueeEn : marqueeEs}
-                    delay={i * 0.06}
-                    inView={workInView}
-                  />
+                  <div key={key}>
+                    {i > 0 ? (
+                      <AnimatedLine
+                        inView={workInView}
+                        delay={(i - 1) * WORK_LINE_STAGGER}
+                        duration={WORK_LINE_DURATION}
+                      />
+                    ) : null}
+                    <ProjectRow
+                      slug={key}
+                      index={i + 1}
+                      name={project.name}
+                      category={t(`work.${key}.title` as Parameters<typeof t>[0])}
+                      metric={isEn ? metricEn : metricEs}
+                      year={project.year}
+                      marqueeLine={isEn ? marqueeEn : marqueeEs}
+                      delay={i * 0.06}
+                      inView={workInView}
+                    />
+                  </div>
                 );
               },
             )}
