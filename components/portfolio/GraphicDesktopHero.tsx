@@ -56,6 +56,11 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
   /** +/-1 for image crossfade slide direction after keyboard or button navigation */
   const navDirRef = useRef(1);
 
+  /** Viewer swipe state */
+  const [viewerSwipeX, setViewerSwipeX] = useState(0);
+  const viewerSwipeStart = useRef<{ x: number; y: number; time: number } | null>(null);
+  const viewerSwiping = useRef(false);
+
   useEffect(() => setPortalReady(true), []);
 
   useEffect(() => {
@@ -82,6 +87,12 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
     if (!openFile) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    
+    // Reset swipe state when image changes
+    setViewerSwipeX(0);
+    viewerSwipeStart.current = null;
+    viewerSwiping.current = false;
+    
     const onKey = (e: KeyboardEvent) => {
       const ae = document.activeElement;
       if (
@@ -196,17 +207,84 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
     }
   };
 
-  const handleViewerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleViewerPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!canNavigate) return;
-    const clickX = e.clientX;
-    const screenWidth = window.innerWidth;
-    if (clickX < screenWidth / 2) {
-      navDirRef.current = -1;
-      goAdjacent(-1);
-    } else {
-      navDirRef.current = 1;
-      goAdjacent(1);
+    viewerSwipeStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+      time: Date.now(),
+    };
+    viewerSwiping.current = false;
+    setViewerSwipeX(0);
+  };
+
+  const handleViewerPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!canNavigate || !viewerSwipeStart.current) return;
+    
+    const dx = e.clientX - viewerSwipeStart.current.x;
+    const dy = e.clientY - viewerSwipeStart.current.y;
+    
+    // Detect horizontal swipe (more horizontal than vertical movement)
+    if (!viewerSwiping.current && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+      if (Math.abs(dx) > Math.abs(dy) * 1.5) {
+        viewerSwiping.current = true;
+      } else {
+        // More vertical than horizontal, cancel swipe
+        viewerSwipeStart.current = null;
+        return;
+      }
     }
+    
+    if (viewerSwiping.current) {
+      // Apply resistance at boundaries
+      let swipeX = dx;
+      const maxSwipe = window.innerWidth * 0.8;
+      if (Math.abs(swipeX) > maxSwipe) {
+        const excess = Math.abs(swipeX) - maxSwipe;
+        swipeX = Math.sign(swipeX) * (maxSwipe + excess * 0.3);
+      }
+      setViewerSwipeX(swipeX);
+    }
+  };
+
+  const handleViewerPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!canNavigate || !viewerSwipeStart.current) return;
+    
+    const dx = e.clientX - viewerSwipeStart.current.x;
+    const dt = Date.now() - viewerSwipeStart.current.time;
+    const velocity = Math.abs(dx) / dt; // pixels per ms
+    
+    // Navigate if swipe distance or velocity is sufficient
+    const swipeThreshold = window.innerWidth * 0.25;
+    const velocityThreshold = 0.3;
+    
+    if (viewerSwiping.current && (Math.abs(dx) > swipeThreshold || velocity > velocityThreshold)) {
+      if (dx > 0) {
+        // Swiped right, go to previous
+        navDirRef.current = -1;
+        goAdjacent(-1);
+      } else {
+        // Swiped left, go to next
+        navDirRef.current = 1;
+        goAdjacent(1);
+      }
+    } else if (!viewerSwiping.current) {
+      // It was a click/tap, not a swipe
+      const clickX = e.clientX;
+      const screenWidth = window.innerWidth;
+      if (clickX < screenWidth / 2) {
+        navDirRef.current = -1;
+        goAdjacent(-1);
+      } else {
+        navDirRef.current = 1;
+        goAdjacent(1);
+      }
+    }
+    
+    // Reset swipe state
+    viewerSwipeStart.current = null;
+    viewerSwiping.current = false;
+    setViewerSwipeX(0);
   };
 
   const blockViewer =
@@ -262,9 +340,12 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
             <div
               className={cn(
                 "relative flex min-h-0 flex-1 items-center px-4 py-8 lg:px-6 lg:py-12",
-                canNavigate && "cursor-pointer",
+                canNavigate && "cursor-pointer touch-none",
               )}
-              onClick={handleViewerClick}
+              onPointerDown={handleViewerPointerDown}
+              onPointerMove={handleViewerPointerMove}
+              onPointerUp={handleViewerPointerUp}
+              onPointerCancel={handleViewerPointerUp}
             >
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
@@ -274,12 +355,19 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   className="relative flex h-full max-h-full max-w-full items-center"
+                  style={{
+                    transform: viewerSwiping.current
+                      ? `translateX(${viewerSwipeX}px)`
+                      : undefined,
+                    transition: viewerSwiping.current ? "none" : undefined,
+                  }}
                 >
                   <img
                     src={`/dg/${openFile}`}
                     alt={displayName(openFile)}
                     className="block h-full max-h-full w-auto max-w-full object-contain"
                     decoding="async"
+                    draggable={false}
                   />
                 </motion.div>
               </AnimatePresence>
