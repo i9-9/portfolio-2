@@ -109,9 +109,9 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
       }}
     >
       <DialogPortal>
-        <DialogOverlay className="z-[110]" />
+        <DialogOverlay className="z-[110] duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)]" />
         <DialogPrimitive.Content
-          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[min(90dvh,40rem)] md:max-w-lg md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-lg md:border md:data-[state=closed]:slide-out-to-left-1/2 md:data-[state=closed]:slide-out-to-top-[48%] md:data-[state=open]:slide-in-from-left-1/2 md:data-[state=open]:slide-in-from-top-[48%]"
+          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background p-6 shadow-lg duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-[0.98] data-[state=open]:zoom-in-[0.98] md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[min(90dvh,40rem)] md:max-w-lg md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-lg md:border md:data-[state=closed]:slide-out-to-left-1/2 md:data-[state=closed]:slide-out-to-top-[48%] md:data-[state=open]:slide-in-from-left-1/2 md:data-[state=open]:slide-in-from-top-[48%]"
         >
           <DialogHeader className="shrink-0">
             <div className="flex items-center justify-between gap-3">
@@ -192,9 +192,10 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
               <AnimatePresence>
                 {submitStatus === "success" && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                    transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
                     className="p-3 bg-green-500/10 border border-green-500/20 rounded-md"
                   >
                     <p className="text-sm text-green-600 font-helveticaNowTextRegular">
@@ -205,9 +206,10 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
 
                 {submitStatus === "error" && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                    transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
                     className="p-3 bg-red-500/10 border border-red-500/20 rounded-md"
                   >
                     <p className="text-sm text-red-600 font-helveticaNowTextRegular">

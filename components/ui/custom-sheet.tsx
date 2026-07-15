@@ -22,7 +22,7 @@ const SheetOverlay = React.forwardRef<
     className={cn(
       motion === "clip"
         ? "mobile-menu-panel fixed inset-0 z-50"
-        : "fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-150",
+        : "fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)]",
       className,
     )}
     {...props}
@@ -41,7 +41,7 @@ const sheetVariants = cva("fixed z-50 gap-4 p-6 shadow-lg", {
     },
     motion: {
       default:
-        "transition ease-out data-[state=closed]:duration-150 data-[state=open]:duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
+        "transition-all ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=closed]:duration-[350ms] data-[state=open]:duration-[400ms] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
       clip: "mobile-menu-panel border-0 shadow-none",
     },
   },
