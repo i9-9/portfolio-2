@@ -14,14 +14,14 @@ export function Toast({ message, isVisible }: ToastProps) {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
           className="fixed bottom-4 right-4 z-50 pointer-events-none"
         >
           <div className={cn(
-            "px-4 py-3 rounded-lg shadow-lg",
+            "px-4 py-3 shadow-lg",
             "bg-background border border-border",
             "text-sm font-helveticaNowTextRegular text-foreground"
           )}>
