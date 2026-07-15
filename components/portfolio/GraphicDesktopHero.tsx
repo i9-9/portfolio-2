@@ -58,8 +58,10 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
 
   /** Viewer swipe state */
   const [viewerSwipeX, setViewerSwipeX] = useState(0);
+  const [viewerSwipeY, setViewerSwipeY] = useState(0);
   const viewerSwipeStart = useRef<{ x: number; y: number; time: number } | null>(null);
   const viewerSwiping = useRef(false);
+  const viewerSwipeDirection = useRef<"horizontal" | "vertical" | null>(null);
 
   useEffect(() => setPortalReady(true), []);
 
@@ -90,8 +92,10 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
     
     // Reset swipe state when image changes
     setViewerSwipeX(0);
+    setViewerSwipeY(0);
     viewerSwipeStart.current = null;
     viewerSwiping.current = false;
+    viewerSwipeDirection.current = null;
     
     const onKey = (e: KeyboardEvent) => {
       const ae = document.activeElement;
@@ -215,7 +219,9 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
       time: Date.now(),
     };
     viewerSwiping.current = false;
+    viewerSwipeDirection.current = null;
     setViewerSwipeX(0);
+    setViewerSwipeY(0);
   };
 
   const handleViewerPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -224,26 +230,49 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
     const dx = e.clientX - viewerSwipeStart.current.x;
     const dy = e.clientY - viewerSwipeStart.current.y;
     
-    // Detect horizontal swipe (more horizontal than vertical movement)
+    // Detect swipe direction if not yet determined
     if (!viewerSwiping.current && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
       if (Math.abs(dx) > Math.abs(dy) * 1.5) {
+        // More horizontal than vertical
+        viewerSwipeDirection.current = "horizontal";
+        viewerSwiping.current = true;
+      } else if (Math.abs(dy) > Math.abs(dx) * 1.5) {
+        // More vertical than horizontal
+        viewerSwipeDirection.current = "vertical";
         viewerSwiping.current = true;
       } else {
-        // More vertical than horizontal, cancel swipe
+        // Ambiguous direction, cancel swipe
         viewerSwipeStart.current = null;
         return;
       }
     }
     
     if (viewerSwiping.current) {
-      // Apply resistance at boundaries
-      let swipeX = dx;
-      const maxSwipe = window.innerWidth * 0.8;
-      if (Math.abs(swipeX) > maxSwipe) {
-        const excess = Math.abs(swipeX) - maxSwipe;
-        swipeX = Math.sign(swipeX) * (maxSwipe + excess * 0.3);
+      if (viewerSwipeDirection.current === "horizontal") {
+        // Apply resistance at boundaries for horizontal swipe
+        let swipeX = dx;
+        const maxSwipe = window.innerWidth * 0.8;
+        if (Math.abs(swipeX) > maxSwipe) {
+          const excess = Math.abs(swipeX) - maxSwipe;
+          swipeX = Math.sign(swipeX) * (maxSwipe + excess * 0.3);
+        }
+        setViewerSwipeX(swipeX);
+      } else if (viewerSwipeDirection.current === "vertical") {
+        // Only allow downward swipe to close, add resistance for upward
+        let swipeY = dy;
+        if (swipeY < 0) {
+          // Upward swipe - add strong resistance
+          swipeY = swipeY * 0.2;
+        } else {
+          // Downward swipe - allow but with some resistance at the end
+          const maxSwipe = window.innerHeight * 0.5;
+          if (swipeY > maxSwipe) {
+            const excess = swipeY - maxSwipe;
+            swipeY = maxSwipe + excess * 0.3;
+          }
+        }
+        setViewerSwipeY(swipeY);
       }
-      setViewerSwipeX(swipeX);
     }
   };
 
@@ -251,22 +280,35 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
     if (!canNavigate || !viewerSwipeStart.current) return;
     
     const dx = e.clientX - viewerSwipeStart.current.x;
+    const dy = e.clientY - viewerSwipeStart.current.y;
     const dt = Date.now() - viewerSwipeStart.current.time;
-    const velocity = Math.abs(dx) / dt; // pixels per ms
     
-    // Navigate if swipe distance or velocity is sufficient
-    const swipeThreshold = window.innerWidth * 0.25;
-    const velocityThreshold = 0.3;
-    
-    if (viewerSwiping.current && (Math.abs(dx) > swipeThreshold || velocity > velocityThreshold)) {
-      if (dx > 0) {
-        // Swiped right, go to previous
-        navDirRef.current = -1;
-        goAdjacent(-1);
-      } else {
-        // Swiped left, go to next
-        navDirRef.current = 1;
-        goAdjacent(1);
+    if (viewerSwiping.current && viewerSwipeDirection.current === "horizontal") {
+      // Handle horizontal swipe for navigation
+      const velocity = Math.abs(dx) / dt; // pixels per ms
+      const swipeThreshold = window.innerWidth * 0.25;
+      const velocityThreshold = 0.3;
+      
+      if (Math.abs(dx) > swipeThreshold || velocity > velocityThreshold) {
+        if (dx > 0) {
+          // Swiped right, go to previous
+          navDirRef.current = -1;
+          goAdjacent(-1);
+        } else {
+          // Swiped left, go to next
+          navDirRef.current = 1;
+          goAdjacent(1);
+        }
+      }
+    } else if (viewerSwiping.current && viewerSwipeDirection.current === "vertical") {
+      // Handle vertical swipe to close
+      const velocity = dy / dt; // pixels per ms (positive = downward)
+      const swipeThreshold = window.innerHeight * 0.15;
+      const velocityThreshold = 0.3;
+      
+      if (dy > swipeThreshold || (dy > 0 && velocity > velocityThreshold)) {
+        // Swiped down sufficiently, close the viewer
+        setOpenFile(null);
       }
     } else if (!viewerSwiping.current) {
       // It was a click/tap, not a swipe
@@ -284,7 +326,9 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
     // Reset swipe state
     viewerSwipeStart.current = null;
     viewerSwiping.current = false;
+    viewerSwipeDirection.current = null;
     setViewerSwipeX(0);
+    setViewerSwipeY(0);
   };
 
   const blockViewer =
@@ -346,6 +390,11 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
               onPointerMove={handleViewerPointerMove}
               onPointerUp={handleViewerPointerUp}
               onPointerCancel={handleViewerPointerUp}
+              style={{
+                opacity: viewerSwipeDirection.current === "vertical" && viewerSwipeY > 0
+                  ? Math.max(0.3, 1 - viewerSwipeY / (window.innerHeight * 0.5))
+                  : 1,
+              }}
             >
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
@@ -357,7 +406,9 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
                   className="relative flex h-full max-h-full max-w-full items-center"
                   style={{
                     transform: viewerSwiping.current
-                      ? `translateX(${viewerSwipeX}px)`
+                      ? viewerSwipeDirection.current === "horizontal"
+                        ? `translateX(${viewerSwipeX}px)`
+                        : `translateY(${viewerSwipeY}px) scale(${Math.max(0.85, 1 - viewerSwipeY / (window.innerHeight * 2))})`
                       : undefined,
                     transition: viewerSwiping.current ? "none" : undefined,
                   }}
