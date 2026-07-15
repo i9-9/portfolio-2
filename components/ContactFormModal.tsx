@@ -110,9 +110,9 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
       }}
     >
       <DialogPortal>
-        <DialogOverlay className="z-[110] duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)] bg-background/95 backdrop-blur-md" />
+        <DialogOverlay className="z-[110] duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] bg-background/95 backdrop-blur-md" />
         <DialogPrimitive.Content
-          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-[0.98] data-[state=open]:zoom-in-[0.98] md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[min(88dvh,46rem)] md:w-[min(90vw,42rem)] md:translate-x-[-50%] md:translate-y-[-50%] md:border md:border-border/40"
+          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[90vh] md:w-[min(85vw,38rem)] md:translate-x-[-50%] md:translate-y-[-50%] md:border md:border-border/40"
         >
           {/* Close button - top right */}
           <button
@@ -124,13 +124,13 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
             <X className="h-5 w-5" />
           </button>
 
-          <div className="flex min-h-0 flex-1 flex-col px-6 py-12 md:px-16 md:py-16">
+          <div className="flex min-h-0 flex-1 flex-col px-6 py-8 md:px-12 md:py-10">
             {/* Editorial Header */}
-            <div className="mb-12 max-w-2xl md:mb-16">
-              <h2 className="mb-4 text-3xl font-helveticaNowDisplayBold leading-tight tracking-tight md:text-4xl lg:text-5xl">
+            <div className="mb-8 max-w-2xl md:mb-10">
+              <h2 className="mb-3 text-3xl font-helveticaNowDisplayBold leading-tight tracking-tight md:text-4xl">
                 {t('form.title')}
               </h2>
-              <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
+              <p className="text-base leading-relaxed text-muted-foreground">
                 {t('form.subtitle')}
               </p>
             </div>
@@ -139,9 +139,9 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
               onSubmit={handleSubmit}
               className="flex min-h-0 flex-1 flex-col"
             >
-              <div className="min-h-0 flex-1 space-y-8 overflow-y-auto overscroll-contain pb-8 md:space-y-10">
+              <div className="space-y-6 md:space-y-7">
                 {/* Name Field */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <Label 
                     htmlFor="name" 
                     className="block text-xs font-medium uppercase tracking-wider text-foreground/70"
@@ -154,7 +154,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
                     className={cn(
-                      "h-14 border-0 border-b-2 bg-transparent px-0 text-base shadow-none transition-colors focus-visible:ring-0 md:h-16 md:text-lg",
+                      "h-12 border-0 border-b-2 bg-transparent px-0 text-base shadow-none transition-colors focus-visible:ring-0 md:h-14",
                       errors.name 
                         ? "border-b-red-500" 
                         : "border-b-border/40 focus-visible:border-b-foreground"
@@ -165,9 +165,9 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                   <AnimatePresence>
                     {errors.name && (
                       <motion.p
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         className="text-xs text-red-500"
                       >
@@ -178,7 +178,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                 </div>
 
                 {/* Email Field */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <Label 
                     htmlFor="email" 
                     className="block text-xs font-medium uppercase tracking-wider text-foreground/70"
@@ -191,7 +191,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     className={cn(
-                      "h-14 border-0 border-b-2 bg-transparent px-0 text-base shadow-none transition-colors focus-visible:ring-0 md:h-16 md:text-lg",
+                      "h-12 border-0 border-b-2 bg-transparent px-0 text-base shadow-none transition-colors focus-visible:ring-0 md:h-14",
                       errors.email 
                         ? "border-b-red-500" 
                         : "border-b-border/40 focus-visible:border-b-foreground"
@@ -202,9 +202,9 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                   <AnimatePresence>
                     {errors.email && (
                       <motion.p
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         className="text-xs text-red-500"
                       >
@@ -215,7 +215,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                 </div>
 
                 {/* Message Field */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <Label 
                     htmlFor="message" 
                     className="block text-xs font-medium uppercase tracking-wider text-foreground/70"
@@ -226,9 +226,9 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                     id="message"
                     value={formData.message}
                     onChange={(e) => handleInputChange('message', e.target.value)}
-                    rows={6}
+                    rows={4}
                     className={cn(
-                      "min-h-[160px] resize-none border-0 border-b-2 bg-transparent px-0 text-base shadow-none transition-colors focus-visible:ring-0 md:min-h-[200px] md:text-lg",
+                      "min-h-[120px] resize-none border-0 border-b-2 bg-transparent px-0 text-base shadow-none transition-colors focus-visible:ring-0",
                       errors.message 
                         ? "border-b-red-500" 
                         : "border-b-border/40 focus-visible:border-b-foreground"
@@ -238,9 +238,9 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                   <AnimatePresence>
                     {errors.message && (
                       <motion.p
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         className="text-xs text-red-500"
                       >
@@ -254,13 +254,13 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                 <AnimatePresence>
                   {submitStatus === "success" && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
-                      className="border-l-2 border-green-500 bg-green-500/5 py-4 pl-4 pr-6"
+                      className="border-l-2 border-green-500 bg-green-500/5 py-3 pl-4 pr-6"
                     >
-                      <p className="text-sm text-green-600 md:text-base">
+                      <p className="text-sm text-green-600">
                         {t('form.success')}
                       </p>
                     </motion.div>
@@ -268,13 +268,13 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
 
                   {submitStatus === "error" && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
-                      className="border-l-2 border-red-500 bg-red-500/5 py-4 pl-4 pr-6"
+                      className="border-l-2 border-red-500 bg-red-500/5 py-3 pl-4 pr-6"
                     >
-                      <p className="text-sm text-red-600 md:text-base">
+                      <p className="text-sm text-red-600">
                         {t('form.error')}
                       </p>
                     </motion.div>
@@ -283,11 +283,11 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
               </div>
 
               {/* Submit Button */}
-              <div className="shrink-0 pt-8 md:pt-10">
+              <div className="mt-7 shrink-0 md:mt-8">
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="h-14 w-full text-base font-medium tracking-wide transition-opacity md:h-16 md:text-lg"
+                  className="h-12 w-full text-base font-medium tracking-wide transition-opacity md:h-14"
                 >
                   {isSubmitting ? t('form.sending') || "Sending..." : t('form.send')}
                 </Button>
