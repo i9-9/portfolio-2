@@ -29,7 +29,6 @@ import {
 import { Mail, MessageSquare, ArrowRight } from "lucide-react";
 import { PageReveal } from "@/components/splash/PageReveal";
 import { ContactFooterMarquee } from "@/components/portfolio/ContactFooterMarquee";
-import { Magnetic } from "@/components/portfolio/Magnetic";
 import { ScrollProgress } from "@/components/portfolio/ScrollProgress";
 import { CustomCursor } from "@/components/portfolio/CustomCursor";
 import { AnimatedLine } from "@/components/portfolio/AnimatedLine";
@@ -371,10 +370,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             transition={{ duration: 1.05, delay: 0.2, ease: EASE_OUT_EXPO }}
             className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
           >
-            <Magnetic
-              strength={0.2}
-              className="min-w-0 w-full sm:w-auto sm:max-w-full"
-            >
+            <div className="min-w-0 w-full sm:w-auto sm:max-w-full">
               <button
                 type="button"
                 onClick={copyEmail}
@@ -384,8 +380,8 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 <Mail className="w-4 h-4 shrink-0" aria-hidden />
                 <span className="truncate">ivannevares9@gmail.com</span>
               </button>
-            </Magnetic>
-            <Magnetic strength={0.2} className="w-full sm:w-auto sm:max-w-full">
+            </div>
+            <div className="w-full sm:w-auto sm:max-w-full">
               <button
                 type="button"
                 onClick={() => setIsContactOpen(true)}
@@ -394,7 +390,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 <MessageSquare className="w-4 h-4 shrink-0" aria-hidden />
                 {isEn ? "Send a message" : "Enviar mensaje"}
               </button>
-            </Magnetic>
+            </div>
           </motion.div>
         </div>
 
@@ -420,9 +416,8 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 { href: "https://dribbble.com/i9i9", label: "Dribbble" },
               ] as const
             ).map(({ href, label }) => (
-              <Magnetic
+              <div
                 key={href}
-                strength={0.22}
                 className="col-span-6 lg:col-span-1"
               >
                 <a
@@ -433,11 +428,11 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 >
                   {label}
                   <ArrowRight
-                    className="size-3.5 shrink-0 opacity-60 transition-all duration-300 group-hover:rotate-45 group-hover:opacity-100"
+                    className="size-3.5 shrink-0 opacity-60 transition-opacity duration-300 group-hover:opacity-100"
                     aria-hidden
                   />
                 </a>
-              </Magnetic>
+              </div>
             ))}
           </div>
         </motion.nav>

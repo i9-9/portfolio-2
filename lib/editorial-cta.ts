@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
-/** One radius for all editorial CTAs — tweak only `radius` for consistency. */
-const radius = "rounded-sm";
+/** One radius for all editorial CTAs — square corners. */
+const radius = "";
 
 /** Hero + case study footer — original `px-6 py-4`. */
 const padComfortable = "px-6 py-4";
@@ -32,7 +32,7 @@ export function editorialFooterMuted(className?: string) {
     radius,
     padCompact,
     contactFooterButtonStructure,
-    "border border-border bg-background text-foreground transition-colors duration-300 active:scale-[0.98] hover:bg-accent",
+    "border border-border bg-background text-foreground transition-colors duration-300 hover:bg-accent",
     className,
   );
 }
@@ -43,7 +43,7 @@ export function editorialFooterPrimary(className?: string) {
     radius,
     padCompact,
     contactFooterButtonStructure,
-    "border border-transparent bg-foreground text-background transition-colors duration-300 active:scale-[0.98] hover:bg-foreground/90",
+    "border border-transparent bg-foreground text-background transition-colors duration-300 hover:bg-foreground/90",
     className,
   );
 }
@@ -52,7 +52,7 @@ const editorialButtonBase = cn(
   "inline-flex items-center justify-center gap-2",
   editorialNavType,
   radius,
-  "transition-colors duration-300 active:scale-[0.98]",
+  "transition-colors duration-300",
 );
 
 /** Solid CTA — nav editorial style (case study, inline actions). */
