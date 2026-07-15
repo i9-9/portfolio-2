@@ -148,7 +148,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
               aria-label={`${t("caseStudy.viewLiveSite")} — ${t("caseStudy.openExternal")}`}
             >
               {t("caseStudy.viewLiveSite")}
-              <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5" aria-hidden />
+              <ArrowRight className="size-3.5 transition-opacity duration-300 group-hover:opacity-70" aria-hidden />
             </a>
 
             <Link
@@ -172,7 +172,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
               ) : (
                 t("caseStudy.nextProject")
               )}
-              <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:rotate-90 group-hover:translate-y-0.5" aria-hidden />
+              <ArrowRight className="size-3.5 transition-opacity duration-300 group-hover:opacity-70" aria-hidden />
             </Link>
 
             <Link

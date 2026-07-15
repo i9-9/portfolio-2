@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ContactFormModalProps {
   isOpen: boolean;
@@ -109,127 +110,190 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
       }}
     >
       <DialogPortal>
-        <DialogOverlay className="z-[110] duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)]" />
+        <DialogOverlay className="z-[110] duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)] bg-background/95 backdrop-blur-md" />
         <DialogPrimitive.Content
-          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background p-6 shadow-lg duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-[0.98] data-[state=open]:zoom-in-[0.98] md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[min(90dvh,40rem)] md:max-w-lg md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-lg md:border md:data-[state=closed]:slide-out-to-left-1/2 md:data-[state=closed]:slide-out-to-top-[48%] md:data-[state=open]:slide-in-from-left-1/2 md:data-[state=open]:slide-in-from-top-[48%]"
+          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-[0.98] data-[state=open]:zoom-in-[0.98] md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[min(88dvh,46rem)] md:w-[min(90vw,42rem)] md:translate-x-[-50%] md:translate-y-[-50%] md:border md:border-border/40"
         >
-          <DialogHeader className="shrink-0">
-            <div className="flex items-center justify-between gap-3">
-              <DialogTitle className="text-lg font-helveticaNowDisplayBold">
-                {t('form.title')}
-              </DialogTitle>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={onClose}
-                className="h-10 w-10 shrink-0 p-0 -mr-2 md:h-8 md:w-8 md:mr-0"
-              >
-                <X className="h-5 w-5 md:h-4 md:w-4" />
-              </Button>
-            </div>
-            <DialogDescription className="text-sm text-muted-foreground font-helveticaNowTextRegular">
-              {t('form.subtitle')}
-            </DialogDescription>
-          </DialogHeader>
-
-          <form
-            onSubmit={handleSubmit}
-            className="mt-4 flex min-h-0 flex-1 flex-col"
+          {/* Close button - top right */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-6 top-6 z-10 flex h-10 w-10 items-center justify-center text-muted-foreground transition-colors hover:text-foreground md:right-8 md:top-8"
+            aria-label="Close"
           >
-            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain pr-1">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm font-helveticaNowTextRegular">
-                  {t('form.name')}
-                </Label>
-                <Input
-                  id="name"
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  className={`font-helveticaNowTextRegular h-12 md:h-10 ${errors.name ? 'border-red-500' : ''}`}
-                  disabled={isSubmitting}
-                />
-                {errors.name && (
-                  <p className="text-xs text-red-500">{errors.name}</p>
-                )}
-              </div>
+            <X className="h-5 w-5" />
+          </button>
 
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-helveticaNowTextRegular">
-                  {t('form.email')}
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={`font-helveticaNowTextRegular h-12 md:h-10 ${errors.email ? 'border-red-500' : ''}`}
-                  disabled={isSubmitting}
-                />
-                {errors.email && (
-                  <p className="text-xs text-red-500">{errors.email}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="message" className="text-sm font-helveticaNowTextRegular">
-                  {t('form.message')}
-                </Label>
-                <Textarea
-                  id="message"
-                  value={formData.message}
-                  onChange={(e) => handleInputChange('message', e.target.value)}
-                  rows={4}
-                  className={`font-helveticaNowTextRegular ${errors.message ? 'border-red-500' : ''}`}
-                  disabled={isSubmitting}
-                />
-                {errors.message && (
-                  <p className="text-xs text-red-500">{errors.message}</p>
-                )}
-              </div>
-
-              <AnimatePresence>
-                {submitStatus === "success" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                    transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
-                    className="p-3 bg-green-500/10 border border-green-500/20 rounded-md"
-                  >
-                    <p className="text-sm text-green-600 font-helveticaNowTextRegular">
-                      {t('form.success')}
-                    </p>
-                  </motion.div>
-                )}
-
-                {submitStatus === "error" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                    transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
-                    className="p-3 bg-red-500/10 border border-red-500/20 rounded-md"
-                  >
-                    <p className="text-sm text-red-600 font-helveticaNowTextRegular">
-                      {t('form.error')}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+          <div className="flex min-h-0 flex-1 flex-col px-6 py-12 md:px-16 md:py-16">
+            {/* Editorial Header */}
+            <div className="mb-12 max-w-2xl md:mb-16">
+              <h2 className="mb-4 text-3xl font-helveticaNowDisplayBold leading-tight tracking-tight md:text-4xl lg:text-5xl">
+                {t('form.title')}
+              </h2>
+              <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
+                {t('form.subtitle')}
+              </p>
             </div>
 
-            <div className="shrink-0 border-t border-border/60 bg-background pt-4">
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full font-helveticaNowTextRegular h-12 md:h-10"
-              >
-                {isSubmitting ? "Sending..." : t('form.send')}
-              </Button>
-            </div>
-          </form>
+            <form
+              onSubmit={handleSubmit}
+              className="flex min-h-0 flex-1 flex-col"
+            >
+              <div className="min-h-0 flex-1 space-y-8 overflow-y-auto overscroll-contain pb-8 md:space-y-10">
+                {/* Name Field */}
+                <div className="space-y-3">
+                  <Label 
+                    htmlFor="name" 
+                    className="block text-xs font-medium uppercase tracking-wider text-foreground/70"
+                  >
+                    {t('form.name')}
+                  </Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    className={cn(
+                      "h-14 border-0 border-b-2 bg-transparent px-0 text-base shadow-none transition-colors focus-visible:ring-0 md:h-16 md:text-lg",
+                      errors.name 
+                        ? "border-b-red-500" 
+                        : "border-b-border/40 focus-visible:border-b-foreground"
+                    )}
+                    disabled={isSubmitting}
+                    autoComplete="name"
+                  />
+                  <AnimatePresence>
+                    {errors.name && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-xs text-red-500"
+                      >
+                        {errors.name}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Email Field */}
+                <div className="space-y-3">
+                  <Label 
+                    htmlFor="email" 
+                    className="block text-xs font-medium uppercase tracking-wider text-foreground/70"
+                  >
+                    {t('form.email')}
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className={cn(
+                      "h-14 border-0 border-b-2 bg-transparent px-0 text-base shadow-none transition-colors focus-visible:ring-0 md:h-16 md:text-lg",
+                      errors.email 
+                        ? "border-b-red-500" 
+                        : "border-b-border/40 focus-visible:border-b-foreground"
+                    )}
+                    disabled={isSubmitting}
+                    autoComplete="email"
+                  />
+                  <AnimatePresence>
+                    {errors.email && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-xs text-red-500"
+                      >
+                        {errors.email}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Message Field */}
+                <div className="space-y-3">
+                  <Label 
+                    htmlFor="message" 
+                    className="block text-xs font-medium uppercase tracking-wider text-foreground/70"
+                  >
+                    {t('form.message')}
+                  </Label>
+                  <Textarea
+                    id="message"
+                    value={formData.message}
+                    onChange={(e) => handleInputChange('message', e.target.value)}
+                    rows={6}
+                    className={cn(
+                      "min-h-[160px] resize-none border-0 border-b-2 bg-transparent px-0 text-base shadow-none transition-colors focus-visible:ring-0 md:min-h-[200px] md:text-lg",
+                      errors.message 
+                        ? "border-b-red-500" 
+                        : "border-b-border/40 focus-visible:border-b-foreground"
+                    )}
+                    disabled={isSubmitting}
+                  />
+                  <AnimatePresence>
+                    {errors.message && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-xs text-red-500"
+                      >
+                        {errors.message}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Success/Error Messages */}
+                <AnimatePresence>
+                  {submitStatus === "success" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+                      className="border-l-2 border-green-500 bg-green-500/5 py-4 pl-4 pr-6"
+                    >
+                      <p className="text-sm text-green-600 md:text-base">
+                        {t('form.success')}
+                      </p>
+                    </motion.div>
+                  )}
+
+                  {submitStatus === "error" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+                      className="border-l-2 border-red-500 bg-red-500/5 py-4 pl-4 pr-6"
+                    >
+                      <p className="text-sm text-red-600 md:text-base">
+                        {t('form.error')}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Submit Button */}
+              <div className="shrink-0 pt-8 md:pt-10">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="h-14 w-full text-base font-medium tracking-wide transition-opacity md:h-16 md:text-lg"
+                >
+                  {isSubmitting ? t('form.sending') || "Sending..." : t('form.send')}
+                </Button>
+              </div>
+            </form>
+          </div>
         </DialogPrimitive.Content>
       </DialogPortal>
     </Dialog>
