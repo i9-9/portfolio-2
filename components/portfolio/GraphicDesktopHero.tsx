@@ -423,9 +423,9 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={openFile}
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   transition={{ 
                     duration: 0.35,
                     ease: [0.32, 0.72, 0, 1],
@@ -435,11 +435,11 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
                     transform: viewerSwiping.current
                       ? viewerSwipeDirection.current === "horizontal"
                         ? `translateX(${viewerSwipeX}px)`
-                        : `translateY(${viewerSwipeY}px) scale(${Math.max(0.9, 1 - viewerSwipeY / (window.innerHeight * 2.5))})`
+                        : `translateY(${viewerSwipeY}px)`
                       : viewerSwipeX !== 0 || viewerSwipeY !== 0
                       ? viewerSwipeDirection.current === "horizontal"
                         ? `translateX(${viewerSwipeX}px)`
-                        : `translateY(${viewerSwipeY}px) scale(${Math.max(0.9, 1 - viewerSwipeY / (window.innerHeight * 2.5))})`
+                        : `translateY(${viewerSwipeY}px)`
                       : undefined,
                     transition: viewerSwiping.current 
                       ? "none" 
