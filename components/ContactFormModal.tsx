@@ -112,7 +112,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
       <DialogPortal>
         <DialogOverlay className="z-[110] duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] bg-background/95 backdrop-blur-md" />
         <DialogPrimitive.Content
-          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[90vh] md:w-[min(85vw,38rem)] md:translate-x-[-50%] md:translate-y-[-50%] md:border md:border-border/40"
+          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background transition-opacity duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=closed]:opacity-0 data-[state=open]:opacity-100 md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[90vh] md:w-[min(85vw,38rem)] md:translate-x-[-50%] md:translate-y-[-50%] md:border md:border-border/40"
         >
           {/* Close button - top right */}
           <button
