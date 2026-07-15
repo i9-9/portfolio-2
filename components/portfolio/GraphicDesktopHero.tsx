@@ -249,26 +249,28 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
     
     if (viewerSwiping.current) {
       if (viewerSwipeDirection.current === "horizontal") {
-        // Apply resistance at boundaries for horizontal swipe
+        // Apply smooth resistance curve at boundaries for horizontal swipe
         let swipeX = dx;
-        const maxSwipe = window.innerWidth * 0.8;
+        const maxSwipe = window.innerWidth * 0.5;
         if (Math.abs(swipeX) > maxSwipe) {
           const excess = Math.abs(swipeX) - maxSwipe;
-          swipeX = Math.sign(swipeX) * (maxSwipe + excess * 0.3);
+          // Smoother resistance curve using logarithmic function
+          const resistance = maxSwipe + Math.log(1 + excess) * 30;
+          swipeX = Math.sign(swipeX) * resistance;
         }
         setViewerSwipeX(swipeX);
       } else if (viewerSwipeDirection.current === "vertical") {
-        // Only allow downward swipe to close, add resistance for upward
+        // Only allow downward swipe to close, smooth resistance for upward
         let swipeY = dy;
         if (swipeY < 0) {
-          // Upward swipe - add strong resistance
-          swipeY = swipeY * 0.2;
+          // Upward swipe - strong resistance with smooth curve
+          swipeY = -Math.log(1 + Math.abs(swipeY)) * 15;
         } else {
-          // Downward swipe - allow but with some resistance at the end
-          const maxSwipe = window.innerHeight * 0.5;
+          // Downward swipe - allow but with smooth resistance curve at the end
+          const maxSwipe = window.innerHeight * 0.6;
           if (swipeY > maxSwipe) {
             const excess = swipeY - maxSwipe;
-            swipeY = maxSwipe + excess * 0.3;
+            swipeY = maxSwipe + Math.log(1 + excess) * 40;
           }
         }
         setViewerSwipeY(swipeY);
@@ -284,10 +286,10 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
     const dt = Date.now() - viewerSwipeStart.current.time;
     
     if (viewerSwiping.current && viewerSwipeDirection.current === "horizontal") {
-      // Handle horizontal swipe for navigation
+      // Handle horizontal swipe for navigation - more sensitive thresholds
       const velocity = Math.abs(dx) / dt; // pixels per ms
-      const swipeThreshold = window.innerWidth * 0.25;
-      const velocityThreshold = 0.3;
+      const swipeThreshold = window.innerWidth * 0.2; // Reduced from 0.25
+      const velocityThreshold = 0.25; // Reduced from 0.3
       
       if (Math.abs(dx) > swipeThreshold || velocity > velocityThreshold) {
         if (dx > 0) {
@@ -299,16 +301,34 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
           navDirRef.current = 1;
           goAdjacent(1);
         }
+      } else {
+        // Animate back to center with spring
+        setViewerSwipeX(0);
+        setTimeout(() => {
+          viewerSwipeStart.current = null;
+          viewerSwiping.current = false;
+          viewerSwipeDirection.current = null;
+        }, 450);
+        return;
       }
     } else if (viewerSwiping.current && viewerSwipeDirection.current === "vertical") {
-      // Handle vertical swipe to close
+      // Handle vertical swipe to close - more sensitive
       const velocity = dy / dt; // pixels per ms (positive = downward)
-      const swipeThreshold = window.innerHeight * 0.15;
-      const velocityThreshold = 0.3;
+      const swipeThreshold = window.innerHeight * 0.12; // Reduced from 0.15
+      const velocityThreshold = 0.25; // Reduced from 0.3
       
       if (dy > swipeThreshold || (dy > 0 && velocity > velocityThreshold)) {
         // Swiped down sufficiently, close the viewer
         setOpenFile(null);
+      } else {
+        // Animate back to original position with spring
+        setViewerSwipeY(0);
+        setTimeout(() => {
+          viewerSwipeStart.current = null;
+          viewerSwiping.current = false;
+          viewerSwipeDirection.current = null;
+        }, 450);
+        return;
       }
     } else if (!viewerSwiping.current) {
       // It was a click/tap, not a swipe
@@ -342,7 +362,10 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ 
+              duration: 0.35, 
+              ease: [0.32, 0.72, 0, 1],
+            }}
             className="fixed inset-0 z-[10050] flex flex-col bg-background"
             aria-modal="true"
             role="dialog"
@@ -392,25 +415,35 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
               onPointerCancel={handleViewerPointerUp}
               style={{
                 opacity: viewerSwipeDirection.current === "vertical" && viewerSwipeY > 0
-                  ? Math.max(0.3, 1 - viewerSwipeY / (window.innerHeight * 0.5))
+                  ? Math.max(0.4, 1 - viewerSwipeY / (window.innerHeight * 0.6))
                   : 1,
+                transition: viewerSwiping.current ? "none" : "opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
               }}
             >
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={openFile}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ 
+                    duration: 0.35,
+                    ease: [0.32, 0.72, 0, 1],
+                  }}
                   className="relative flex h-full max-h-full max-w-full items-center"
                   style={{
                     transform: viewerSwiping.current
                       ? viewerSwipeDirection.current === "horizontal"
                         ? `translateX(${viewerSwipeX}px)`
-                        : `translateY(${viewerSwipeY}px) scale(${Math.max(0.85, 1 - viewerSwipeY / (window.innerHeight * 2))})`
+                        : `translateY(${viewerSwipeY}px) scale(${Math.max(0.9, 1 - viewerSwipeY / (window.innerHeight * 2.5))})`
+                      : viewerSwipeX !== 0 || viewerSwipeY !== 0
+                      ? viewerSwipeDirection.current === "horizontal"
+                        ? `translateX(${viewerSwipeX}px)`
+                        : `translateY(${viewerSwipeY}px) scale(${Math.max(0.9, 1 - viewerSwipeY / (window.innerHeight * 2.5))})`
                       : undefined,
-                    transition: viewerSwiping.current ? "none" : undefined,
+                    transition: viewerSwiping.current 
+                      ? "none" 
+                      : "transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)",
                   }}
                 >
                   <img
