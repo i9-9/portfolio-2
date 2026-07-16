@@ -178,7 +178,7 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             <Link
               href="/#contact"
               scroll={false}
-              className={editorialNavMuted("w-fit")}
+              className={editorialNavMuted("w-fit", "comfortable")}
             >
               {t("caseStudy.workWithMe")}
             </Link>
