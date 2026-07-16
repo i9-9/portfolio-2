@@ -234,7 +234,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
           <div>
             {PROJECT_ROWS.map(
-              ({ key, metricEn, metricEs, marqueeEn, marqueeEs }, i) => {
+              ({ key, metricEn, metricEs }, i) => {
                 const project = getProjectBySlug(key);
                 if (!project) return null;
                 return (
@@ -253,7 +253,6 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                       category={t(`work.${key}.title` as Parameters<typeof t>[0])}
                       metric={isEn ? metricEn : metricEs}
                       year={project.year}
-                      marqueeLine={isEn ? marqueeEn : marqueeEs}
                       delay={i * 0.06}
                       inView={workInView}
                     />
