@@ -75,7 +75,7 @@ export const aggie = localFont({
     },
   ],
   display: 'swap',
-  preload: false,
+  preload: true,
   variable: '--font-aggie',
   fallback: ['Georgia', 'Times New Roman', 'serif'],
 })
