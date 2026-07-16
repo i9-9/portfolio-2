@@ -4,7 +4,7 @@ import { ClientLayout } from '@/components/ClientLayout'
 import { ThemeProvider } from "@/lib/theme/ThemeContext";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { Analytics } from "@vercel/analytics/react";
-import { helveticaNow, helveticaNowText, inter } from "@/lib/fonts";
+import { helveticaNow, helveticaNowText, inter, aggie } from "@/lib/fonts";
 
 // Viewport configuration for mobile optimization
 export const viewport: Viewport = {
@@ -72,7 +72,7 @@ export default function RootLayout({
       lang="es"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${helveticaNow.variable} ${helveticaNowText.variable} ${inter.variable}`}
+      className={`${helveticaNow.variable} ${helveticaNowText.variable} ${inter.variable} ${aggie.variable}`}
     >
       <head>
         <link rel="icon" href="/favicon_v2.ico" />

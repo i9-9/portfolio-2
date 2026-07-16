@@ -89,7 +89,6 @@ export function ProjectRow({
   metric,
   year,
   slug,
-  marqueeLine,
   delay,
   inView,
 }: {
@@ -99,7 +98,6 @@ export function ProjectRow({
   metric: string;
   year: number;
   slug: string;
-  marqueeLine: string;
   delay: number;
   inView: boolean;
 }) {
@@ -183,22 +181,6 @@ export function ProjectRow({
         className="group relative flex flex-col -mx-4 px-4 transition-colors duration-500 hover:bg-foreground hover:text-background overflow-hidden lg:-mx-6 lg:px-6"
       >
         <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-5 py-5 lg:py-6 lg:grid-cols-12 lg:gap-x-6">
-          <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-0 hidden h-8 motion-reduce:hidden lg:block overflow-hidden opacity-0 transition-opacity duration-500 [mask-image:linear-gradient(180deg,transparent_0%,#000_40%,#000_100%)] [-webkit-mask-image:linear-gradient(180deg,transparent_0%,#000_40%,#000_100%)] group-hover:opacity-100"
-            aria-hidden
-          >
-            <div className="flex h-full items-end pb-1">
-              <div className="work-row-marquee-track">
-                <span className="inline-block whitespace-nowrap pr-12 text-type-micro font-helveticaNowTextRegular uppercase tracking-[0.22em] text-background/40">
-                  {marqueeLine}
-                </span>
-                <span className="inline-block whitespace-nowrap pr-12 text-type-micro font-helveticaNowTextRegular uppercase tracking-[0.22em] text-background/40">
-                  {marqueeLine}
-                </span>
-              </div>
-            </div>
-          </div>
-
           <span className="relative z-10 col-start-1 row-start-1 flex h-[1em] w-6 shrink-0 items-center self-start text-type-project leading-none lg:col-start-1">
             <span className="text-type-micro font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 transition-colors duration-500 tabular-nums">
               <NumberScramble value={index} inView={inView} />
