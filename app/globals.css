@@ -161,14 +161,10 @@
     --nav: 0 0% 10%;
   }
 
-  /* Thin transparent scrollbar */
+  /* Thin scrollbar */
   * {
     scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
-  }
-
-  *:hover {
-    scrollbar-color: hsl(var(--foreground) / 0.15) transparent;
+    scrollbar-color: #888 transparent;
   }
 
   /* Webkit browsers (Chrome, Safari, Edge) */
@@ -182,16 +178,12 @@
   }
 
   *::-webkit-scrollbar-thumb {
-    background: transparent;
+    background: #888;
     border-radius: 3px;
   }
 
-  *:hover::-webkit-scrollbar-thumb {
-    background: hsl(var(--foreground) / 0.15);
-  }
-
   *::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--foreground) / 0.25);
+    background: #666;
   }
 
   /** Mobile menu — always inverted vs site theme (dark site → light menu). */
