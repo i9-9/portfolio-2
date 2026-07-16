@@ -161,6 +161,39 @@
     --nav: 0 0% 10%;
   }
 
+  /* Thin transparent scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  *:hover {
+    scrollbar-color: hsl(var(--foreground) / 0.15) transparent;
+  }
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  *:hover::-webkit-scrollbar-thumb {
+    background: hsl(var(--foreground) / 0.15);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--foreground) / 0.25);
+  }
+
   /** Mobile menu — always inverted vs site theme (dark site → light menu). */
   html.dark .mobile-menu-inverted {
     --background: 0 0% 98%;
