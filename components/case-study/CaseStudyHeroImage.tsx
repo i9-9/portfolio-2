@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { Project } from "@/app/data/projects";
+
+const DESKTOP_MQ = "(min-width: 768px)";
 
 function CaseStudyHeroVideo({
   src,
@@ -44,6 +46,20 @@ function CaseStudyHeroVideo({
   );
 }
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_MQ);
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  return isDesktop;
+}
+
 export function CaseStudyHeroImage({
   project,
   alt,
@@ -51,46 +67,58 @@ export function CaseStudyHeroImage({
   project: Project;
   alt: string;
 }) {
-  const mobileVideo =
-    project.previewVideoMobile ?? project.previewVideo;
-  const desktopVideo =
-    project.previewVideoDesktop ?? project.previewVideo;
+  const isDesktop = useIsDesktop();
 
-  return (
-    <>
-      {mobileVideo ? (
-        <CaseStudyHeroVideo
-          src={mobileVideo}
-          poster={project.caseStudyHeroMobile}
-          className="absolute inset-0 h-full w-full object-cover object-top md:hidden"
-        />
-      ) : (
-        <Image
-          src={project.caseStudyHeroMobile}
-          alt={alt}
-          fill
-          className="object-cover object-top md:hidden"
-          sizes="100vw"
-          priority
-        />
-      )}
+  // SSR / pre-hydration: single poster so we never double-fetch media.
+  if (isDesktop === null) {
+    return (
+      <Image
+        src={project.caseStudyHeroMobile}
+        alt={alt}
+        fill
+        className="object-cover object-top"
+        sizes="100vw"
+        priority
+      />
+    );
+  }
 
-      {desktopVideo ? (
-        <CaseStudyHeroVideo
-          src={desktopVideo}
-          poster={project.caseStudyHero}
-          className="absolute inset-0 hidden h-full w-full object-cover object-top md:block"
-        />
-      ) : (
-        <Image
-          src={project.caseStudyHero}
-          alt={alt}
-          fill
-          className="hidden object-cover object-top md:block"
-          sizes="100vw"
-          priority
-        />
-      )}
-    </>
+  if (isDesktop) {
+    const desktopVideo =
+      project.previewVideoDesktop ?? project.previewVideo;
+    return desktopVideo ? (
+      <CaseStudyHeroVideo
+        src={desktopVideo}
+        poster={project.caseStudyHero}
+        className="absolute inset-0 h-full w-full object-cover object-top"
+      />
+    ) : (
+      <Image
+        src={project.caseStudyHero}
+        alt={alt}
+        fill
+        className="object-cover object-top"
+        sizes="100vw"
+        priority
+      />
+    );
+  }
+
+  const mobileVideo = project.previewVideoMobile ?? project.previewVideo;
+  return mobileVideo ? (
+    <CaseStudyHeroVideo
+      src={mobileVideo}
+      poster={project.caseStudyHeroMobile}
+      className="absolute inset-0 h-full w-full object-cover object-top"
+    />
+  ) : (
+    <Image
+      src={project.caseStudyHeroMobile}
+      alt={alt}
+      fill
+      className="object-cover object-top"
+      sizes="100vw"
+      priority
+    />
   );
 }

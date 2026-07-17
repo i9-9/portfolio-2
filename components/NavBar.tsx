@@ -95,7 +95,7 @@ const navLabel = cn(
 );
 
 const navInteractiveFocus =
-  "outline-none focus:outline-none [-webkit-tap-highlight-color:transparent]";
+  "outline-none focus:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [-webkit-tap-highlight-color:transparent]";
 
 function navLinkClass(active: boolean, isMobile = false) {
   return cn(

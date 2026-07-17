@@ -178,11 +178,11 @@ export function ProjectRow({
           }
         }}
         onMouseMove={handleMouseMove}
-        className="group relative flex flex-col -mx-4 px-4 transition-colors duration-500 hover:bg-foreground hover:text-background overflow-hidden lg:-mx-6 lg:px-6"
+        className="group relative flex flex-col -mx-4 px-4 transition-colors duration-500 [@media(hover:hover)]:hover:bg-foreground [@media(hover:hover)]:hover:text-background overflow-hidden lg:-mx-6 lg:px-6"
       >
         <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-5 py-5 lg:py-6 lg:grid-cols-12 lg:gap-x-6">
           <span className="relative z-10 col-start-1 row-start-1 flex h-[1em] w-6 shrink-0 items-center self-start text-type-project leading-none lg:col-start-1">
-            <span className="text-type-micro font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 transition-colors duration-500 tabular-nums">
+            <span className="text-type-micro font-helveticaNowTextRegular text-muted-foreground [@media(hover:hover)]:group-hover:text-background/40 transition-colors duration-500 tabular-nums">
               <NumberScramble value={index} inView={inView} />
             </span>
           </span>
@@ -196,10 +196,13 @@ export function ProjectRow({
           </motion.p>
 
           <motion.p
-            className="relative z-10 col-start-2 row-start-2 min-w-0 text-type-0 font-helveticaNowTextRegular text-muted-foreground mt-0.5 group-hover:text-background/50 transition-colors duration-500 lg:col-start-3 lg:col-span-6"
+            className="relative z-10 col-start-2 row-start-2 min-w-0 text-type-0 font-helveticaNowTextRegular text-muted-foreground mt-0.5 [@media(hover:hover)]:group-hover:text-background/50 transition-colors duration-500 lg:col-start-3 lg:col-span-6"
             animate={{ x: hovered ? 12 : 0 }}
             transition={{ duration: 0.6, delay: 0.04, ease: EASE_OUT_EXPO }}
           >
+            <span className="lg:hidden tabular-nums after:content-['·'] after:mx-1.5 after:text-muted-foreground/50">
+              {year}
+            </span>
             {category}
           </motion.p>
 
@@ -218,7 +221,7 @@ export function ProjectRow({
                 {metric}
               </motion.span>
             ) : null}
-            <span className="hidden lg:block text-type-0 font-helveticaNowTextRegular text-muted-foreground group-hover:text-background/40 tabular-nums transition-colors duration-500 w-10 text-right">
+            <span className="hidden lg:block text-type-0 font-helveticaNowTextRegular text-muted-foreground [@media(hover:hover)]:group-hover:text-background/40 tabular-nums transition-colors duration-500 w-10 text-right">
               {year}
             </span>
             <motion.span

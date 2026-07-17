@@ -52,13 +52,10 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
-    title: 'Ivan Nevares - UX/UI Designer & Front-End Developer',
+    title: 'Ivan Nevares — graphic design & front end development',
+    description:
+      'Graphic design and front end development. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
     card: 'summary_large_image',
-  },
-  verification: {
-    google: 'google',
-    yandex: 'yandex',
-    yahoo: 'yahoo',
   },
 }
 

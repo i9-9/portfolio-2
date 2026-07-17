@@ -19,7 +19,7 @@
     --secondary: 0 0% 94%;
     --secondary-foreground: 0 0% 12%;
     --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 45.1%;
+    --muted-foreground: 0 0% 40%;
     --accent: 0 0% 94%;
     --accent-foreground: 0 0% 12%;
     --destructive: 0 84.2% 60.2%;
@@ -52,18 +52,6 @@
     --section-gap: calc(var(--space-unit) * 40);    /* 160px */
     --content-gap: calc(var(--space-unit) * 24);    /* 96px */
     --element-gap: calc(var(--space-unit) * 6);     /* 24px */
-
-    /* Typography Scale */
-    --font-xs: 0.75rem;      /* 12px */
-    --font-sm: 0.875rem;     /* 14px */
-    --font-base: 1rem;       /* 16px */
-    --font-lg: 1.125rem;     /* 18px */
-    --font-xl: 1.25rem;      /* 20px */
-    --font-2xl: 1.5rem;      /* 24px */
-    --font-3xl: 1.875rem;    /* 30px */
-    --font-4xl: 2.25rem;     /* 36px */
-    --font-5xl: 3rem;        /* 48px */
-    --font-6xl: 4rem;        /* 64px */
 
     /* Golden-ratio typographic scale (base = step 0, each step × φ) */
     --phi: 1.6180339887;
@@ -199,7 +187,7 @@
     --secondary: 0 0% 94%;
     --secondary-foreground: 0 0% 12%;
     --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 45.1%;
+    --muted-foreground: 0 0% 40%;
     --accent: 0 0% 94%;
     --accent-foreground: 0 0% 12%;
     --border: 0 0% 89.8%;
