@@ -26,9 +26,6 @@ module.exports = {
   			text: ['var(--font-helvetica-now-text)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
   		},
   		colors: {
-  			'mid-gray': '#6B7280',
-  			'light-gray': '#D8D8D8',
-  			gray: '#4A4A4A',
   			background: "hsl(var(--background))",
   			foreground: "hsl(var(--foreground))",
   			card: {

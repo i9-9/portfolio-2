@@ -10,8 +10,6 @@ interface GeometricFlowCardProps {
 const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [patternType, setPatternType] = useState(0);
-  const [transitionProgress, setTransitionProgress] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | undefined>(undefined);
@@ -57,10 +55,6 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
 
     try {
       const { GRID_SIZE, PARTICLE_COUNT } = config;
-
-      // Obtener tamaño real del contenedor
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const renderSize = Math.min(containerRect.width, containerRect.height) || 320;
 
       // Scene
       const scene = new THREE.Scene();

@@ -54,7 +54,6 @@ export function PageReveal() {
         : Promise.resolve(undefined);
 
     const FONT_WAIT_CAP_MS = 1400;
-    let loadTimer: ReturnType<typeof setTimeout> | undefined;
     let cancelled = false;
 
     const finishSplash = () => {
@@ -68,7 +67,7 @@ export function PageReveal() {
       setDone(true);
     };
 
-    loadTimer = setTimeout(() => {
+    const loadTimer = setTimeout(() => {
       const cap = new Promise<void>((r) => {
         setTimeout(r, FONT_WAIT_CAP_MS);
       });
@@ -77,7 +76,7 @@ export function PageReveal() {
 
     return () => {
       cancelled = true;
-      if (loadTimer !== undefined) clearTimeout(loadTimer);
+      clearTimeout(loadTimer);
     };
   }, [reduced]);
 

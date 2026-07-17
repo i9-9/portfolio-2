@@ -5,16 +5,21 @@ export const PROJECT_SCREENSHOT_MOBILE_MAX_WIDTH = 767;
 
 export function isMobileScreenshotViewport(): boolean {
   if (typeof window === "undefined") return false;
-  return window.matchMedia(`(max-width: ${PROJECT_SCREENSHOT_MOBILE_MAX_WIDTH}px)`).matches;
+  return window.matchMedia(
+    `(max-width: ${PROJECT_SCREENSHOT_MOBILE_MAX_WIDTH}px)`,
+  ).matches;
 }
 
-export function getProjectPreview(project: Project, mobile = isMobileScreenshotViewport()) {
+export function getProjectPreview(
+  project: Project,
+  mobile = isMobileScreenshotViewport(),
+) {
   return mobile ? project.previewImageMobile : project.previewImage;
 }
 
-export function getProjectPreviewVideo(project: Project, mobile = isMobileScreenshotViewport()) {
-  if (mobile) {
-    return project.previewVideoMobile ?? project.previewVideo;
-  }
-  return project.previewVideoDesktop ?? project.previewVideo;
+export function getProjectPreviewVideo(
+  project: Project,
+  mobile = isMobileScreenshotViewport(),
+) {
+  return mobile ? project.previewVideoMobile : project.previewVideoDesktop;
 }

@@ -11,7 +11,6 @@ export interface Project {
   year: number;
   name: string;
   anchor: string;
-  image: string;
   previewImage: string;
   /** Mobile viewport preview (390px) for transitions and listings */
   previewImageMobile: string;
@@ -19,8 +18,6 @@ export interface Project {
   previewVideoMobile?: string;
   /** Optional looping video — desktop viewport (case study hero, hover preview) */
   previewVideoDesktop?: string;
-  /** @deprecated Use previewVideoMobile / previewVideoDesktop */
-  previewVideo?: string;
   /** Brand logo for route transition overlay */
   logo: string;
   /** Hero image for /work/[slug] case study — desktop viewport */
@@ -42,7 +39,6 @@ export const projects: Project[] = [
     year: 2025,
     name: "Hey Bristol",
     anchor: "https://heybristol.com",
-    image: "/projects-heybristol/heybristol_macbook_mockup.png",
     previewImage: "/projects-v2/heybristol.png",
     previewImageMobile: "/projects-v2/heybristol-mobile.png",
     previewVideoMobile: "/projects-v2/heybristol-preview-mobile.mp4",
@@ -61,7 +57,6 @@ export const projects: Project[] = [
     year: 2025,
     name: "Kostüme",
     anchor: "https://www.kostumeweb.net",
-    image: "/projects-landing/kostume/jul:24/4 - Macbook mockup.png",
     previewImage: "/projects-v2/kostume.png",
     previewImageMobile: "/projects-v2/kostume-mobile.png",
     previewVideoMobile: "/projects-v2/kostume-preview-mobile.mp4",
@@ -80,7 +75,6 @@ export const projects: Project[] = [
     year: 2025,
     name: "Ursula Benavidez",
     anchor: "https://www.ursulabenavidez.com/",
-    image: "/projects/ursulabenavidez.png",
     previewImage: "/projects-v2/ursulabenavidez.png",
     previewImageMobile: "/projects-v2/ursulabenavidez-mobile.png",
     previewVideoMobile: "/projects-v2/ursulabenavidez-preview-mobile.mp4",
@@ -99,7 +93,6 @@ export const projects: Project[] = [
     year: 2026,
     name: "El Desenfreno",
     anchor: "https://eldesenfreno.com",
-    image: "/projects-eldesenfreno/el_desenfreno_macbook_mockup.png",
     previewImage: "/projects-v2/eldesenfreno.png",
     previewImageMobile: "/projects-v2/eldesenfreno-mobile.png",
     previewVideoMobile: "/projects-v2/eldesenfreno-preview-mobile.mp4",
@@ -118,7 +111,6 @@ export const projects: Project[] = [
     year: 2025,
     name: "Grupo Frali",
     anchor: "https://www.grupofrali.com/",
-    image: "/projects-v2/grupofrali.png",
     previewImage: "/projects-v2/grupofrali.png",
     previewImageMobile: "/projects-v2/grupofrali-mobile.png",
     previewVideoMobile: "/projects-v2/grupofrali-preview-mobile.mp4",

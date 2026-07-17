@@ -110,6 +110,33 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const { handoff: splashHandoff } = useSplashHandoff();
   const heroLive = splashHandoff || !!heroReduced;
 
+  /** Defer p5/Three until after first paint so LCP/TBT aren't blocked by canvas libs. */
+  const [heavyVisualsReady, setHeavyVisualsReady] = useState(false);
+  useEffect(() => {
+    if (!heroLive) return;
+
+    let idleId: number | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let cancelled = false;
+
+    const enable = () => {
+      if (!cancelled) setHeavyVisualsReady(true);
+    };
+
+    const ric = window.requestIdleCallback?.bind(window);
+    if (ric) {
+      idleId = ric(enable, { timeout: 1800 });
+    } else {
+      timeoutId = setTimeout(enable, 200);
+    }
+
+    return () => {
+      cancelled = true;
+      if (idleId !== undefined) window.cancelIdleCallback?.(idleId);
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
+    };
+  }, [heroLive]);
+
   // /#contact from case study CTA — scroll once #contact is mounted, open modal
   useEffect(() => {
     let cancelScroll: (() => void) | undefined;
@@ -186,9 +213,15 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
       <section className="hero-band relative isolate flex flex-col overflow-hidden px-4 lg:px-6">
         {showGraphicDesktopHero ? (
-          <GraphicDesktopHero />
-        ) : (
+          heavyVisualsReady ? (
+            <GraphicDesktopHero />
+          ) : (
+            <GraphicHeroFallback />
+          )
+        ) : heavyVisualsReady && !heroReduced ? (
           <HeroHalftoneP5 className="pointer-events-none z-0" />
+        ) : (
+          <HeroHalftoneFallback className="pointer-events-none z-0" />
         )}
         <div
           className={cn(
@@ -306,13 +339,17 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           transition={{ duration: 1.1, delay: 0.24, ease: EASE_OUT_EXPO }}
           className="lg:col-span-3 lg:col-start-10"
         >
-          <Suspense
-            fallback={
-              <div className="w-full aspect-square bg-muted/50 rounded-lg animate-pulse" />
-            }
-          >
-            <GeometricFlowCard />
-          </Suspense>
+          {aboutInView ? (
+            <Suspense
+              fallback={
+                <div className="w-full aspect-square bg-muted/50 rounded-lg animate-pulse" />
+              }
+            >
+              <GeometricFlowCard />
+            </Suspense>
+          ) : (
+            <div className="w-full aspect-square bg-muted/50 rounded-lg" aria-hidden />
+          )}
         </motion.div>
       </section>
 

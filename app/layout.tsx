@@ -6,7 +6,10 @@ import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { Analytics } from "@vercel/analytics/react";
 import { helveticaNow, helveticaNowText, inter, aggie } from "@/lib/fonts";
 
-// Viewport configuration for mobile optimization
+const siteTitle = 'Ivan Nevares — graphic design & front end development'
+const siteDescription =
+  'Graphic design and front end development. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.'
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -19,9 +22,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://inevares.com'),
-  title: 'Ivan Nevares — graphic design & front end development',
-  description:
-    'Graphic design and front end development. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
+  title: siteTitle,
+  description: siteDescription,
   keywords: [
     'Ivan Nevares',
     'graphic design',
@@ -32,9 +34,8 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Ivan Nevares' }],
   openGraph: {
-    title: 'Ivan Nevares — graphic design & front end development',
-    description:
-      'Graphic design and front end development. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
+    title: siteTitle,
+    description: siteDescription,
     url: 'https://inevares.com',
     siteName: 'Ivan Nevares Portfolio',
     locale: 'en_US',
@@ -59,9 +60,8 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
-    title: 'Ivan Nevares — graphic design & front end development',
-    description:
-      'Graphic design and front end development. Wohl Studio and freelance. Graphic Design at UBA. Based in Buenos Aires, Argentina — local and international clients.',
+    title: siteTitle,
+    description: siteDescription,
     card: 'summary_large_image',
   },
 }
@@ -80,7 +80,6 @@ export default function RootLayout({
     >
       <head>
         <link rel="icon" href="/favicon_v2.ico" />
-        {/* Preconnect to external domains for faster resource loading */}
         <link rel="preconnect" href="https://vitals.vercel-insights.com" />
         <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
       </head>

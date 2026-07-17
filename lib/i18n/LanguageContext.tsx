@@ -13,11 +13,11 @@ import { translations } from "./translations";
 
 const LANG_STORAGE_KEY = "portfolio-lang";
 
-interface LanguageContextType {
+type LanguageContextType = {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
-}
+};
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined,
@@ -52,61 +52,64 @@ async function languageFromGeo(): Promise<Language> {
   }
 }
 
+function applyLanguage(
+  lang: Language,
+  setLanguageState: (lang: Language) => void,
+) {
+  setLanguageState(lang);
+  persistLanguage(lang);
+}
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("es");
 
+  // Sync path: stored preference → browser (no network).
   useLayoutEffect(() => {
     const stored = readStoredLanguage();
     if (stored) {
       setLanguageState(stored);
       return;
     }
-
     const fromBrowser = languageFromBrowser();
-    if (fromBrowser) {
-      setLanguageState(fromBrowser);
-      persistLanguage(fromBrowser);
-    }
+    if (fromBrowser) applyLanguage(fromBrowser, setLanguageState);
   }, []);
 
+  // Async fallback: geo only when nothing was stored/detected yet.
   useEffect(() => {
-    if (readStoredLanguage()) return;
-
-    const fromBrowser = languageFromBrowser();
-    if (fromBrowser) return;
+    if (readStoredLanguage() || languageFromBrowser()) return;
 
     let cancelled = false;
     void languageFromGeo().then((lang) => {
       if (cancelled || readStoredLanguage()) return;
-      setLanguageState(lang);
-      persistLanguage(lang);
+      applyLanguage(lang, setLanguageState);
     });
-
     return () => {
       cancelled = true;
     };
   }, []);
 
   const setLanguage = useCallback((lang: Language) => {
-    setLanguageState(lang);
-    persistLanguage(lang);
+    applyLanguage(lang, setLanguageState);
   }, []);
 
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
 
-  const t = (key: string) => {
-    const keys = key.split(".");
-    let value: unknown = translations[language];
+  const t = useCallback(
+    (key: string) => {
+      const keys = key.split(".");
+      let value: unknown = translations[language];
 
-    for (const k of keys) {
-      if (value === undefined || value === null) return key;
-      value = (value as Record<string, unknown>)[k];
-    }
+      for (const k of keys) {
+        if (value === undefined || value === null) return key;
+        value = (value as Record<string, unknown>)[k];
+      }
 
-    return typeof value === "string" ? value : key;
-  };
+      return typeof value === "string" ? value : key;
+    },
+    [language],
+  );
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>

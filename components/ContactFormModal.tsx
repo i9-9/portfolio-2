@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
+import { Dialog, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,7 +88,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
       } else {
         setSubmitStatus("error");
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -289,7 +289,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                   disabled={isSubmitting}
                   className="h-12 w-full text-base font-medium tracking-wide transition-opacity md:h-14"
                 >
-                  {isSubmitting ? t('form.sending') || "Sending..." : t('form.send')}
+                  {isSubmitting ? t('form.sending') : t('form.send')}
                 </Button>
               </div>
             </form>

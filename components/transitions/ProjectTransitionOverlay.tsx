@@ -77,7 +77,6 @@ function TransitionLogo({
   className?: string;
 }) {
   return (
-    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
       alt={alt}
@@ -213,7 +212,7 @@ function TransitionCenterContent({
 
 function LetterboxTransition({
   phase,
-  previewImage,
+  previewImage: _previewImage,
   backdrop,
   logo,
   logoAlt,
@@ -293,7 +292,7 @@ function LetterboxTransition({
 
 function CurtainTransition({
   phase,
-  previewImage,
+  previewImage: _previewImage,
   backdrop,
   logo,
   logoAlt,
@@ -359,7 +358,6 @@ function TransitionPreview({
   className?: string;
 }) {
   return (
-    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
       alt={alt}
@@ -441,7 +439,7 @@ function ExpandTransition({
 
 function SlicesTransition({
   phase,
-  previewImage,
+  previewImage: _previewImage,
   backdrop,
   logo,
   logoAlt,
@@ -498,7 +496,7 @@ function SlicesTransition({
 
 function GridTransition({
   phase,
-  previewImage,
+  previewImage: _previewImage,
   backdrop,
   logo,
   logoAlt,
@@ -553,7 +551,7 @@ function GridTransition({
 /** Wordmark — quiet fade, baseline settle, slight horizontal breathe. */
 function TypographicTransition({
   phase,
-  previewImage,
+  previewImage: _previewImage,
   backdrop,
   logo,
   logoAlt,

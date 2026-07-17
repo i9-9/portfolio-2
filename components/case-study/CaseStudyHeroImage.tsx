@@ -5,15 +5,14 @@ import Image from "next/image";
 import type { Project } from "@/app/data/projects";
 
 const DESKTOP_MQ = "(min-width: 768px)";
+const MEDIA_CLASS = "absolute inset-0 h-full w-full object-cover object-top";
 
 function CaseStudyHeroVideo({
   src,
   poster,
-  className,
 }: {
   src: string;
   poster: string;
-  className?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
 
@@ -40,8 +39,21 @@ function CaseStudyHeroVideo({
       muted
       playsInline
       preload="auto"
-      className={className}
+      className={MEDIA_CLASS}
       aria-hidden
+    />
+  );
+}
+
+function CaseStudyHeroStill({ src, alt }: { src: string; alt: string }) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className="object-cover object-top"
+      sizes="100vw"
+      priority
     />
   );
 }
@@ -69,56 +81,24 @@ export function CaseStudyHeroImage({
 }) {
   const isDesktop = useIsDesktop();
 
-  // SSR / pre-hydration: single poster so we never double-fetch media.
+  // SSR / pre-hydration: single poster — never double-fetch media.
   if (isDesktop === null) {
-    return (
-      <Image
-        src={project.caseStudyHeroMobile}
-        alt={alt}
-        fill
-        className="object-cover object-top"
-        sizes="100vw"
-        priority
-      />
-    );
+    return <CaseStudyHeroStill src={project.caseStudyHeroMobile} alt={alt} />;
   }
 
-  if (isDesktop) {
-    const desktopVideo =
-      project.previewVideoDesktop ?? project.previewVideo;
-    return desktopVideo ? (
-      <CaseStudyHeroVideo
-        src={desktopVideo}
-        poster={project.caseStudyHero}
-        className="absolute inset-0 h-full w-full object-cover object-top"
-      />
-    ) : (
-      <Image
-        src={project.caseStudyHero}
-        alt={alt}
-        fill
-        className="object-cover object-top"
-        sizes="100vw"
-        priority
-      />
-    );
+  const video = isDesktop
+    ? project.previewVideoDesktop
+    : project.previewVideoMobile;
+  const poster = isDesktop
+    ? project.caseStudyHero
+    : project.caseStudyHeroMobile;
+  const still = isDesktop
+    ? project.caseStudyHero
+    : project.caseStudyHeroMobile;
+
+  if (video) {
+    return <CaseStudyHeroVideo src={video} poster={poster} />;
   }
 
-  const mobileVideo = project.previewVideoMobile ?? project.previewVideo;
-  return mobileVideo ? (
-    <CaseStudyHeroVideo
-      src={mobileVideo}
-      poster={project.caseStudyHeroMobile}
-      className="absolute inset-0 h-full w-full object-cover object-top"
-    />
-  ) : (
-    <Image
-      src={project.caseStudyHeroMobile}
-      alt={alt}
-      fill
-      className="object-cover object-top"
-      sizes="100vw"
-      priority
-    />
-  );
+  return <CaseStudyHeroStill src={still} alt={alt} />;
 }

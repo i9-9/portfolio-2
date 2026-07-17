@@ -19,7 +19,7 @@ import {
 import { HamburgerMenu } from './ui/hamburger-menu';
 import { cn } from '@/lib/utils';
 import { editorialNavType } from '@/lib/editorial-cta';
-import { EASE_CINEMATIC, EASE_OUT_EXPO, MOBILE_MENU_CONTENT_DELAY, MOBILE_MENU_NAME_COLOR_DELAY, MOBILE_MENU_NAME_COLOR_DURATION, MOBILE_MENU_PANEL_CLOSE_DURATION } from '@/lib/motion/easing';
+import { EASE_OUT_EXPO, MOBILE_MENU_CONTENT_DELAY, MOBILE_MENU_PANEL_CLOSE_DURATION } from '@/lib/motion/easing';
 import {
   ClipRevealItem,
   clipRevealShellVariants,
