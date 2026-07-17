@@ -13,6 +13,7 @@
     "capture:heybristol-preview": "node scripts/capture-heybristol-preview-video.mjs",
     "capture:ursulabenavidez-preview": "node scripts/capture-ursulabenavidez-preview-video.mjs",
     "capture:desenfreno-preview": "node scripts/capture-desenfreno-preview-video.mjs",
+    "thumbs:dg": "node scripts/generate-dg-thumbs.mjs",
     "analyze": "cross-env ANALYZE=true next build",
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
     "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build"

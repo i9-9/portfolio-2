@@ -2,26 +2,23 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
+const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg']);
+
 export async function GET() {
   try {
     const dgPath = path.join(process.cwd(), 'public', 'dg');
-    
-    // Check if directory exists
+
     if (!fs.existsSync(dgPath)) {
       return NextResponse.json({ images: [] });
     }
 
-    // Read directory contents
-    const files = fs.readdirSync(dgPath);
-    
-    // Filter for image files only
-    const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'];
-    const imageFiles = files.filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return imageExtensions.includes(ext);
-    });
+    const imageFiles = fs
+      .readdirSync(dgPath, { withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name)
+      .filter((file) => IMAGE_EXTENSIONS.has(path.extname(file).toLowerCase()));
 
-    // Shuffle the images array
+    // Shuffle so each visit gets a fresh desktop layout seed set
     const shuffledImages = imageFiles.sort(() => Math.random() - 0.5);
 
     return NextResponse.json({ images: shuffledImages });

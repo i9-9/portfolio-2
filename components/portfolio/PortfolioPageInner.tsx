@@ -4,7 +4,7 @@ import { useState, lazy, Suspense, useRef, useEffect, useLayoutEffect } from "re
 import dynamic from "next/dynamic";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { getProjectBySlug } from "@/app/data/projects";
-import Footer from "@/components/Footer";
+import BottomSpacer from "@/components/BottomSpacer";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import {
   editorialFooterMuted,
@@ -452,7 +452,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         </motion.div>
       </section>
 
-      <Footer />
+      <BottomSpacer />
 
       {contactModalLoaded ? (
         <ContactFormModal

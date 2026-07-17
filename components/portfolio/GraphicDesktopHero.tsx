@@ -42,6 +42,15 @@ function displayName(filename: string): string {
   return filename.replace(/\.[^.]+$/, "");
 }
 
+/** Card preview — pre-generated via `npm run thumbs:dg` (440px JPEG). */
+function dgThumbSrc(filename: string): string {
+  return `/dg/thumbs/${encodeURIComponent(displayName(filename))}.jpg`;
+}
+
+function dgFullSrc(filename: string): string {
+  return `/dg/${encodeURIComponent(filename)}`;
+}
+
 export function GraphicDesktopHero({ className }: { className?: string }) {
   const [images, setImages] = useState<string[]>([]);
   const [offset, setOffset] = useState<Record<string, { dx: number; dy: number }>>({});
@@ -447,7 +456,7 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
                   }}
                 >
                   <img
-                    src={`/dg/${openFile}`}
+                    src={dgFullSrc(openFile)}
                     alt={displayName(openFile)}
                     className="block h-full max-h-full w-auto max-w-full object-contain"
                     decoding="async"
@@ -516,14 +525,18 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
                   </span>
                 </div>
                 <div className="w-full cursor-zoom-in bg-muted leading-none">
-                  {/* Native img so each file keeps its intrinsic aspect ratio at the card width */}
+                  {/* Thumb for cards (~440px); full asset only in the lightbox */}
                   <img
-                    src={`/dg/${item.name}`}
+                    src={dgThumbSrc(item.name)}
                     alt=""
                     className="block h-auto w-full max-w-full select-none"
                     draggable={false}
                     loading="lazy"
                     decoding="async"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = dgFullSrc(item.name);
+                    }}
                   />
                 </div>
               </div>

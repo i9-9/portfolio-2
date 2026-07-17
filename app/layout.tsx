@@ -38,7 +38,14 @@ export const metadata: Metadata = {
     url: 'https://inevares.com',
     siteName: 'Ivan Nevares Portfolio',
     locale: 'en_US',
+    alternateLocale: ['es_AR'],
     type: 'website',
+  },
+  alternates: {
+    languages: {
+      en: 'https://inevares.com',
+      es: 'https://inevares.com',
+    },
   },
   robots: {
     index: true,

@@ -8,9 +8,8 @@ import React, {
   useLayoutEffect,
   useState,
 } from "react";
+import { languageFromBrowser, type Language } from "./detectLanguage";
 import { translations } from "./translations";
-
-type Language = "en" | "es";
 
 const LANG_STORAGE_KEY = "portfolio-lang";
 
@@ -24,30 +23,73 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined,
 );
 
-function readStoredLanguage(): Language {
+function readStoredLanguage(): Language | null {
   try {
     const stored = window.localStorage.getItem(LANG_STORAGE_KEY);
     if (stored === "en" || stored === "es") return stored;
   } catch {
     /* private mode / quota */
   }
-  return "es";
+  return null;
+}
+
+function persistLanguage(lang: Language) {
+  try {
+    window.localStorage.setItem(LANG_STORAGE_KEY, lang);
+  } catch {
+    /* private mode / quota */
+  }
+}
+
+async function languageFromGeo(): Promise<Language> {
+  try {
+    const res = await fetch("/api/locale");
+    if (!res.ok) return "en";
+    const data = (await res.json()) as { language?: string };
+    return data.language === "es" ? "es" : "en";
+  } catch {
+    return "en";
+  }
 }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("es");
 
   useLayoutEffect(() => {
-    setLanguageState(readStoredLanguage());
+    const stored = readStoredLanguage();
+    if (stored) {
+      setLanguageState(stored);
+      return;
+    }
+
+    const fromBrowser = languageFromBrowser();
+    if (fromBrowser) {
+      setLanguageState(fromBrowser);
+      persistLanguage(fromBrowser);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (readStoredLanguage()) return;
+
+    const fromBrowser = languageFromBrowser();
+    if (fromBrowser) return;
+
+    let cancelled = false;
+    void languageFromGeo().then((lang) => {
+      if (cancelled || readStoredLanguage()) return;
+      setLanguageState(lang);
+      persistLanguage(lang);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
-    try {
-      window.localStorage.setItem(LANG_STORAGE_KEY, lang);
-    } catch {
-      /* private mode / quota */
-    }
+    persistLanguage(lang);
   }, []);
 
   useEffect(() => {
