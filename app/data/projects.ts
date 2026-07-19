@@ -5,12 +5,16 @@ export type ProjectSlug =
   | "desenfreno"
   | "grupofrali";
 
+export type ProjectDiscipline = "web" | "graphic" | "both";
+
 export interface Project {
   id: number;
   slug: ProjectSlug;
   year: number;
   name: string;
   anchor: string;
+  /** Primary discipline: web development, graphic design, or both */
+  discipline: ProjectDiscipline;
   previewImage: string;
   /** Mobile viewport preview (390px) for transitions and listings */
   previewImageMobile: string;
@@ -39,6 +43,7 @@ export const projects: Project[] = [
     year: 2025,
     name: "Hey Bristol",
     anchor: "https://heybristol.com",
+    discipline: "both",
     previewImage: "/projects-v2/heybristol.png",
     previewImageMobile: "/projects-v2/heybristol-mobile.png",
     previewVideoMobile: "/projects-v2/heybristol-preview-mobile.mp4",
@@ -57,6 +62,7 @@ export const projects: Project[] = [
     year: 2025,
     name: "Kostüme",
     anchor: "https://www.kostumeweb.net",
+    discipline: "web",
     previewImage: "/projects-v2/kostume.png",
     previewImageMobile: "/projects-v2/kostume-mobile.png",
     previewVideoMobile: "/projects-v2/kostume-preview-mobile.mp4",
@@ -75,6 +81,7 @@ export const projects: Project[] = [
     year: 2025,
     name: "Ursula Benavidez",
     anchor: "https://www.ursulabenavidez.com/",
+    discipline: "both",
     previewImage: "/projects-v2/ursulabenavidez.png",
     previewImageMobile: "/projects-v2/ursulabenavidez-mobile.png",
     previewVideoMobile: "/projects-v2/ursulabenavidez-preview-mobile.mp4",
@@ -93,6 +100,7 @@ export const projects: Project[] = [
     year: 2026,
     name: "El Desenfreno",
     anchor: "https://eldesenfreno.com",
+    discipline: "graphic",
     previewImage: "/projects-v2/eldesenfreno.png",
     previewImageMobile: "/projects-v2/eldesenfreno-mobile.png",
     previewVideoMobile: "/projects-v2/eldesenfreno-preview-mobile.mp4",
@@ -111,6 +119,7 @@ export const projects: Project[] = [
     year: 2025,
     name: "Grupo Frali",
     anchor: "https://www.grupofrali.com/",
+    discipline: "web",
     previewImage: "/projects-v2/grupofrali.png",
     previewImageMobile: "/projects-v2/grupofrali-mobile.png",
     previewVideoMobile: "/projects-v2/grupofrali-preview-mobile.mp4",

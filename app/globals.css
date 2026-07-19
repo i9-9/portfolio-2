@@ -97,6 +97,11 @@
     /* Grid overlay specbook — φ steps below micro */
     --type-grid-label: calc(var(--type-micro) / var(--phi));
     --type-grid-num: calc(var(--type-grid-label) / var(--phi));
+
+    /* Bauhaus semantic colors (Kandinsky color-form theory) */
+    --bauhaus-blue: #0066CC;     /* Circle → Blue (infinity, serenity) */
+    --bauhaus-red: #DC143C;      /* Square → Red (stability, matter) */
+    --bauhaus-yellow: #FFD700;   /* Triangle → Yellow (dynamism, energy) */
     
     /* Line Heights */
     --leading-none: 1;

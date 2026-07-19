@@ -33,6 +33,9 @@ import { ScrollProgress } from "@/components/portfolio/ScrollProgress";
 import { CustomCursor } from "@/components/portfolio/CustomCursor";
 import { AnimatedLine } from "@/components/portfolio/AnimatedLine";
 import { ProjectRow } from "@/components/portfolio/ProjectRow";
+import { ProjectGrid } from "@/components/portfolio/ProjectGrid";
+import { ProjectList } from "@/components/portfolio/ProjectList";
+import { DisciplineFilter, type DisciplineFilterValue } from "@/components/portfolio/DisciplineFilter";
 import { PROJECT_ROWS } from "@/components/portfolio/projectRows";
 
 const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
@@ -88,6 +91,9 @@ const ContactFormModal = dynamic(
 
 export type V2ContentMode = "web" | "graphic";
 
+/** Bauhaus view modes — semantic correspondence with geometric forms */
+export type BauhausViewMode = "flow" | "grid" | "list";
+
 const WOHL_STUDIO_URL = "https://wohl.co/";
 
 /** Work-list dividers — slower than nav so the L→R draw reads clearly. */
@@ -99,6 +105,8 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const [contactModalLoaded, setContactModalLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [viewMode, setViewMode] = useState<BauhausViewMode>("flow");
+  const [disciplineFilter, setDisciplineFilter] = useState<DisciplineFilterValue>("all");
   const { t, language } = useLanguage();
 
   useLayoutEffect(() => {
@@ -205,6 +213,13 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
   const isEn = language === "en";
 
+  const filteredProjects = PROJECT_ROWS.filter(({ key }) => {
+    if (disciplineFilter === "all") return true;
+    const project = getProjectBySlug(key);
+    if (!project) return false;
+    return project.discipline === disciplineFilter || project.discipline === "both";
+  });
+
   return (
     <div className="min-h-screen bg-background lg:cursor-none relative">
       <PageReveal />
@@ -252,20 +267,54 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
             <div
               className="relative z-30 mt-auto flex justify-end gap-3"
-              aria-hidden
+              role="group"
+              aria-label="View mode controls"
             >
-              <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
-                <span className="block size-[40%] rounded-full bg-current" />
-              </div>
-              <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
-                <span className="block size-[40%] bg-current" />
-              </div>
-              <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
+              <button
+                type="button"
+                onClick={() => setViewMode("flow")}
+                className={cn(
+                  "group flex size-12 items-center justify-center border-2 transition-all duration-500 lg:size-14",
+                  viewMode === "flow"
+                    ? "border-[var(--bauhaus-blue)] text-[var(--bauhaus-blue)] scale-105"
+                    : "border-foreground/50 text-foreground hover:scale-105 hover:border-[var(--bauhaus-blue)] hover:text-[var(--bauhaus-blue)]"
+                )}
+                aria-label="Flow view (circular, continuous)"
+                aria-pressed={viewMode === "flow"}
+              >
+                <span className="block size-[40%] rounded-full bg-current transition-colors duration-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("grid")}
+                className={cn(
+                  "group flex size-12 items-center justify-center border-2 transition-all duration-500 lg:size-14",
+                  viewMode === "grid"
+                    ? "border-[var(--bauhaus-red)] text-[var(--bauhaus-red)] scale-105"
+                    : "border-foreground/50 text-foreground hover:scale-105 hover:border-[var(--bauhaus-red)] hover:text-[var(--bauhaus-red)]"
+                )}
+                aria-label="Grid view (square, structured)"
+                aria-pressed={viewMode === "grid"}
+              >
+                <span className="block size-[40%] bg-current transition-colors duration-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("list")}
+                className={cn(
+                  "group flex size-12 items-center justify-center border-2 transition-all duration-500 lg:size-14",
+                  viewMode === "list"
+                    ? "border-[var(--bauhaus-yellow)] text-[var(--bauhaus-yellow)] scale-105"
+                    : "border-foreground/50 text-foreground hover:scale-105 hover:border-[var(--bauhaus-yellow)] hover:text-[var(--bauhaus-yellow)]"
+                )}
+                aria-label="List view (triangular, directional)"
+                aria-pressed={viewMode === "list"}
+              >
                 <span
-                  className="block size-[40%] bg-current"
+                  className="block size-[40%] bg-current transition-colors duration-500"
                   style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
                 />
-              </div>
+              </button>
             </div>
           </>
         )}
@@ -286,35 +335,64 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             {t("work.title")}
           </motion.p>
 
-          <div>
-            {PROJECT_ROWS.map(
-              ({ key, metricEn, metricEs }, i) => {
-                const project = getProjectBySlug(key);
-                if (!project) return null;
-                return (
-                  <div key={key}>
-                    {i > 0 ? (
-                      <AnimatedLine
+          <DisciplineFilter
+            active={disciplineFilter}
+            onChange={setDisciplineFilter}
+            labels={{
+              all: t("work.filterAll"),
+              web: t("work.filterWeb"),
+              graphic: t("work.filterGraphic"),
+            }}
+            inView={workInView}
+          />
+
+          {viewMode === "flow" ? (
+            <div>
+              {filteredProjects.map(
+                ({ key, metricEn, metricEs }, i) => {
+                  const project = getProjectBySlug(key);
+                  if (!project) return null;
+                  return (
+                    <div key={key}>
+                      {i > 0 ? (
+                        <AnimatedLine
+                          inView={workInView}
+                          delay={(i - 1) * WORK_LINE_STAGGER}
+                          duration={WORK_LINE_DURATION}
+                        />
+                      ) : null}
+                      <ProjectRow
+                        slug={key}
+                        index={i + 1}
+                        name={project.name}
+                        category={t(`work.${key}.title` as Parameters<typeof t>[0])}
+                        metric={isEn ? metricEn : metricEs}
+                        year={project.year}
+                        delay={i * 0.06}
                         inView={workInView}
-                        delay={(i - 1) * WORK_LINE_STAGGER}
-                        duration={WORK_LINE_DURATION}
                       />
-                    ) : null}
-                    <ProjectRow
-                      slug={key}
-                      index={i + 1}
-                      name={project.name}
-                      category={t(`work.${key}.title` as Parameters<typeof t>[0])}
-                      metric={isEn ? metricEn : metricEs}
-                      year={project.year}
-                      delay={i * 0.06}
-                      inView={workInView}
-                    />
-                  </div>
-                );
-              },
-            )}
-          </div>
+                    </div>
+                  );
+                },
+              )}
+            </div>
+          ) : viewMode === "grid" ? (
+            <ProjectGrid
+              projectKeys={filteredProjects.map((r) => r.key)}
+              inView={workInView}
+            />
+          ) : (
+            <ProjectList
+              projectKeys={filteredProjects.map((r) => r.key)}
+              categories={Object.fromEntries(
+                filteredProjects.map(({ key }) => [
+                  key,
+                  t(`work.${key}.title` as Parameters<typeof t>[0]),
+                ])
+              )}
+              inView={workInView}
+            />
+          )}
         </section>
       ) : null}
 
