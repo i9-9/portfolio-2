@@ -254,18 +254,30 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
               className="relative z-30 mt-auto flex justify-end gap-3"
               aria-hidden
             >
-              <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
-                <span className="block size-[40%] rounded-full bg-current" />
-              </div>
-              <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
-                <span className="block size-[40%] bg-current" />
-              </div>
-              <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
+              <button
+                type="button"
+                className="group flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground transition-all duration-500 hover:scale-105 hover:border-[var(--bauhaus-blue)] hover:text-[var(--bauhaus-blue)] lg:size-14"
+                aria-label="Bauhaus circle"
+              >
+                <span className="block size-[40%] rounded-full bg-current transition-colors duration-500" />
+              </button>
+              <button
+                type="button"
+                className="group flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground transition-all duration-500 hover:scale-105 hover:border-[var(--bauhaus-red)] hover:text-[var(--bauhaus-red)] lg:size-14"
+                aria-label="Bauhaus square"
+              >
+                <span className="block size-[40%] bg-current transition-colors duration-500" />
+              </button>
+              <button
+                type="button"
+                className="group flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground transition-all duration-500 hover:scale-105 hover:border-[var(--bauhaus-yellow)] hover:text-[var(--bauhaus-yellow)] lg:size-14"
+                aria-label="Bauhaus triangle"
+              >
                 <span
-                  className="block size-[40%] bg-current"
+                  className="block size-[40%] bg-current transition-colors duration-500"
                   style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
                 />
-              </div>
+              </button>
             </div>
           </>
         )}
