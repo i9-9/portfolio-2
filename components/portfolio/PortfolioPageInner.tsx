@@ -223,49 +223,52 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         ) : (
           <HeroHalftoneFallback className="pointer-events-none z-0" />
         )}
-        <div
-          className={cn(
-            "relative z-30",
-            showGraphicDesktopHero && "pointer-events-none",
-          )}
-        >
-          <h1 className="hero-title-stack font-helveticaNowDisplayBold text-name-hero tracking-[-0.02em]">
-            <SplashClipReveal
-              live={heroLive}
-              index={heroRevealIndex(splashNavItemCount, 0)}
-              reduced={heroReduced}
+        {!showGraphicDesktopHero && (
+          <>
+            <div
+              className={cn(
+                "relative z-30",
+              )}
             >
-              <span className="hero-name optical-edge-start">Ivan Nevares</span>
-            </SplashClipReveal>
-            <SplashClipReveal
-              live={heroLive}
-              index={heroRevealIndex(splashNavItemCount, 1)}
-              reduced={heroReduced}
-            >
-              <span className="text-hero-subtitle block font-helveticaNowTextRegular text-muted-foreground tracking-normal leading-none">
-                {t("hero.subtitle")}
-              </span>
-            </SplashClipReveal>
-          </h1>
-        </div>
+              <h1 className="hero-title-stack font-helveticaNowDisplayBold text-name-hero tracking-[-0.02em]">
+                <SplashClipReveal
+                  live={heroLive}
+                  index={heroRevealIndex(splashNavItemCount, 0)}
+                  reduced={heroReduced}
+                >
+                  <span className="hero-name optical-edge-start">Ivan Nevares</span>
+                </SplashClipReveal>
+                <SplashClipReveal
+                  live={heroLive}
+                  index={heroRevealIndex(splashNavItemCount, 1)}
+                  reduced={heroReduced}
+                >
+                  <span className="text-hero-subtitle block font-helveticaNowTextRegular text-muted-foreground tracking-normal leading-none">
+                    {t("hero.subtitle")}
+                  </span>
+                </SplashClipReveal>
+              </h1>
+            </div>
 
-        <div
-          className="relative z-30 mt-auto flex justify-end gap-3"
-          aria-hidden
-        >
-          <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
-            <span className="block size-[40%] rounded-full bg-current" />
-          </div>
-          <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
-            <span className="block size-[40%] bg-current" />
-          </div>
-          <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
-            <span
-              className="block size-[40%] bg-current"
-              style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
-            />
-          </div>
-        </div>
+            <div
+              className="relative z-30 mt-auto flex justify-end gap-3"
+              aria-hidden
+            >
+              <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
+                <span className="block size-[40%] rounded-full bg-current" />
+              </div>
+              <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
+                <span className="block size-[40%] bg-current" />
+              </div>
+              <div className="flex size-12 items-center justify-center border-2 border-foreground/50 text-foreground lg:size-14">
+                <span
+                  className="block size-[40%] bg-current"
+                  style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
+                />
+              </div>
+            </div>
+          </>
+        )}
       </section>
 
       <div ref={sep1Ref}>
