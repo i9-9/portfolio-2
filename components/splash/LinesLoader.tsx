@@ -12,7 +12,7 @@ export function LinesLoader() {
       aria-hidden
     >
       {Array.from({ length: LINE_COUNT }, (_, i) => (
-        <div key={i} className="relative h-px w-full shrink-0 overflow-hidden bg-border/50">
+        <div key={i} className="relative h-[2px] w-full shrink-0 overflow-hidden bg-border/50">
           <motion.div
             className="absolute inset-y-0 w-[22%] bg-foreground"
             initial={{ x: "-100%" }}
