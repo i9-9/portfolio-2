@@ -35,6 +35,7 @@ import { AnimatedLine } from "@/components/portfolio/AnimatedLine";
 import { ProjectRow } from "@/components/portfolio/ProjectRow";
 import { ProjectGrid } from "@/components/portfolio/ProjectGrid";
 import { ProjectList } from "@/components/portfolio/ProjectList";
+import { DisciplineFilter, type DisciplineFilterValue } from "@/components/portfolio/DisciplineFilter";
 import { PROJECT_ROWS } from "@/components/portfolio/projectRows";
 
 const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
@@ -105,6 +106,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [viewMode, setViewMode] = useState<BauhausViewMode>("flow");
+  const [disciplineFilter, setDisciplineFilter] = useState<DisciplineFilterValue>("all");
   const { t, language } = useLanguage();
 
   useLayoutEffect(() => {
@@ -210,6 +212,13 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   };
 
   const isEn = language === "en";
+
+  const filteredProjects = PROJECT_ROWS.filter(({ key }) => {
+    if (disciplineFilter === "all") return true;
+    const project = getProjectBySlug(key);
+    if (!project) return false;
+    return project.discipline === disciplineFilter || project.discipline === "both";
+  });
 
   return (
     <div className="min-h-screen bg-background lg:cursor-none relative">
@@ -326,9 +335,20 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             {t("work.title")}
           </motion.p>
 
+          <DisciplineFilter
+            active={disciplineFilter}
+            onChange={setDisciplineFilter}
+            labels={{
+              all: t("work.filterAll"),
+              web: t("work.filterWeb"),
+              graphic: t("work.filterGraphic"),
+            }}
+            inView={workInView}
+          />
+
           {viewMode === "flow" ? (
             <div>
-              {PROJECT_ROWS.map(
+              {filteredProjects.map(
                 ({ key, metricEn, metricEs }, i) => {
                   const project = getProjectBySlug(key);
                   if (!project) return null;
@@ -358,14 +378,14 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             </div>
           ) : viewMode === "grid" ? (
             <ProjectGrid
-              projectKeys={PROJECT_ROWS.map((r) => r.key)}
+              projectKeys={filteredProjects.map((r) => r.key)}
               inView={workInView}
             />
           ) : (
             <ProjectList
-              projectKeys={PROJECT_ROWS.map((r) => r.key)}
+              projectKeys={filteredProjects.map((r) => r.key)}
               categories={Object.fromEntries(
-                PROJECT_ROWS.map(({ key }) => [
+                filteredProjects.map(({ key }) => [
                   key,
                   t(`work.${key}.title` as Parameters<typeof t>[0]),
                 ])
