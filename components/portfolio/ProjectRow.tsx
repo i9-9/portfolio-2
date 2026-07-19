@@ -196,7 +196,7 @@ export function ProjectRow({
           </motion.p>
 
           <motion.p
-            className="relative z-10 col-start-2 row-start-2 min-w-0 text-type-0 font-helveticaNowTextRegular text-muted-foreground mt-0.5 [@media(hover:hover)]:group-hover:text-background/50 transition-colors duration-500 lg:col-start-3 lg:col-span-6"
+            className="relative z-10 col-start-2 row-start-2 min-w-0 text-type-project-subtitle font-helveticaNowTextRegular text-muted-foreground mt-0.5 [@media(hover:hover)]:group-hover:text-background/50 transition-colors duration-500 lg:col-start-3 lg:col-span-6"
             animate={{ x: hovered ? 12 : 0 }}
             transition={{ duration: 0.6, delay: 0.04, ease: EASE_OUT_EXPO }}
           >

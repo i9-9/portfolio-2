@@ -84,7 +84,7 @@ export function PageReveal() {
     <AnimatePresence>
       {!done && (
         <motion.div
-          className="fixed inset-0 z-[10000] bg-background select-none"
+          className="fixed inset-0 z-[10000] min-h-dvh bg-background select-none"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: SPLASH_EXIT_MS / 1000, ease: EASE_CINEMATIC }}

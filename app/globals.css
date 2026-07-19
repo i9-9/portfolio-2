@@ -87,6 +87,7 @@
     --hero-gap-title-subtitle: var(--space-3);
     --hero-gap-subtitle-floor: calc(var(--grid-row) * 2);
     --type-project-name: var(--type-2);      /* work row titles */
+    --type-project-subtitle: calc(var(--type-base) / sqrt(var(--phi))); /* half-step between micro and type-0 */
     --type-case-title: 2.5rem;               /* case study headline — mobile matches landing h1 */
     --type-case-section: var(--type-2);      /* Desafío, Decisión clave, Resultado */
     --type-body: var(--type-0);
@@ -427,6 +428,7 @@ html {
   .text-type-grid-label { font-size: var(--type-grid-label); }
   .text-type-0 { font-size: var(--type-0); }
   .text-type-project { font-size: var(--type-project-name); }
+  .text-type-project-subtitle { font-size: var(--type-project-subtitle); }
   .text-type-case-title { font-size: var(--type-case-title); }
 
   /* Overrides base `h2` label styles (0.563rem uppercase) on case study pages */

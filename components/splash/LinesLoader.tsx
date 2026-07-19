@@ -3,18 +3,16 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const LINE_COUNT = 14;
-const LINE_GAP = "calc(var(--grid-row) / 4)";
+const LINE_COUNT = 24;
 
 export function LinesLoader() {
   return (
     <div
-      className="absolute inset-0 flex flex-col justify-center px-4 lg:px-6"
-      style={{ gap: LINE_GAP }}
+      className="absolute inset-0 flex h-full min-h-dvh flex-col justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:px-6"
       aria-hidden
     >
       {Array.from({ length: LINE_COUNT }, (_, i) => (
-        <div key={i} className="relative h-px w-full overflow-hidden bg-border/50">
+        <div key={i} className="relative h-px w-full shrink-0 overflow-hidden bg-border/50">
           <motion.div
             className="absolute inset-y-0 w-[22%] bg-foreground"
             initial={{ x: "-100%" }}
@@ -22,7 +20,7 @@ export function LinesLoader() {
             transition={{
               duration: 1.25,
               repeat: Infinity,
-              delay: i * 0.065,
+              delay: i * 0.045,
               ease: [0.45, 0, 0.15, 1],
             }}
           />
@@ -42,7 +40,7 @@ export function LinesLoaderScreen({
   return (
     <div
       className={cn(
-        "fixed inset-0 bg-background select-none",
+        "fixed inset-0 min-h-dvh bg-background select-none",
         zClassName,
         className,
       )}
