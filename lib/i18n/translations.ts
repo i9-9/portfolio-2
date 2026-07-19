@@ -22,7 +22,6 @@ export const translations = {
     },
     work: {
       title: "Selected Work",
-      filterAll: "All",
       filterGraphic: "Graphic",
       filterWeb: "Web",
       kostume: { title: "Fashion e‑commerce" },
@@ -91,7 +90,6 @@ export const translations = {
     },
     work: {
       title: "Proyectos",
-      filterAll: "Todos",
       filterGraphic: "Gráfico",
       filterWeb: "Web",
       kostume: { title: "E‑commerce de moda" },
