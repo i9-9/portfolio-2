@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const LINE_COUNT = 24;
+const LINE_COUNT = 40;
 
 export function LinesLoader() {
   return (
