@@ -51,12 +51,20 @@ function dgFullSrc(filename: string): string {
   return `/dg/${encodeURIComponent(filename)}`;
 }
 
-export function GraphicDesktopHero({ className }: { className?: string }) {
+export function GraphicDesktopHero({
+  className,
+  onReady,
+}: {
+  className?: string;
+  onReady?: () => void;
+}) {
   const [images, setImages] = useState<string[]>([]);
   const [offset, setOffset] = useState<Record<string, { dx: number; dy: number }>>({});
   const [zBoost, setZBoost] = useState<Record<string, number>>({});
   const [openFile, setOpenFile] = useState<string | null>(null);
   const [portalReady, setPortalReady] = useState(false);
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
 
   const zCounter = useRef(200);
   const dragging = useRef<string | null>(null);
@@ -75,12 +83,20 @@ export function GraphicDesktopHero({ className }: { className?: string }) {
   useEffect(() => setPortalReady(true), []);
 
   useEffect(() => {
+    let cancelled = false;
     fetch("/api/graphics-images")
       .then((r) => r.json())
       .then((d: { images?: string[] }) => {
+        if (cancelled) return;
         if (d.images?.length) setImages(d.images.slice(0, MAX_FILES));
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) onReadyRef.current?.();
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const goAdjacent = useCallback((delta: number) => {

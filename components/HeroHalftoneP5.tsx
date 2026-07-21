@@ -16,12 +16,24 @@ type Dot = {
 };
 
 /** Square grid halftone + pointer repel; DPR capped for sharp dots without 3× cost. */
-export function HeroHalftoneP5({ className }: { className?: string }) {
+export function HeroHalftoneP5({
+  className,
+  onReady,
+}: {
+  className?: string;
+  onReady?: () => void;
+}) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
 
   useEffect(() => {
-    if (reduced || !wrapRef.current) return;
+    if (reduced) {
+      onReadyRef.current?.();
+      return;
+    }
+    if (!wrapRef.current) return;
 
     const container = wrapRef.current;
     let disposed = false;
@@ -118,6 +130,7 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
       const sketch = (p: P5) => {
         let smx = pointer.x;
         let smy = pointer.y;
+        let signaledReady = false;
 
         p.setup = () => {
           p.createCanvas(1, 1);
@@ -168,6 +181,11 @@ export function HeroHalftoneP5({ className }: { className?: string }) {
             d.y += d.vy;
 
             p.circle(d.x, d.y, d.baseR * 2);
+          }
+
+          if (!signaledReady && !disposed) {
+            signaledReady = true;
+            onReadyRef.current?.();
           }
         };
       };

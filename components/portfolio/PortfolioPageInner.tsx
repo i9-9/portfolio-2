@@ -13,7 +13,10 @@ import {
 } from "@/lib/editorial-cta";
 import { Toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
-import { useSplashHandoff } from "@/lib/splash/SplashHandoffContext";
+import {
+  SPLASH_SESSION_KEY,
+  useSplashHandoff,
+} from "@/lib/splash/SplashHandoffContext";
 import {
   landingHashId,
   scrollToLandingHashReliable,
@@ -113,13 +116,39 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
   const showGraphicDesktopHero = v2Mode === "graphic";
   const heroReduced = useReducedMotion();
-  const { handoff: splashHandoff } = useSplashHandoff();
+  const {
+    handoff: splashHandoff,
+    notifyHeroVisualReady,
+  } = useSplashHandoff();
   const heroLive = splashHandoff || !!heroReduced;
 
-  /** Defer p5/Three until after first paint so LCP/TBT aren't blocked by canvas libs. */
+  /**
+   * During first-visit splash: mount p5/graphic under the overlay so the loader
+   * can wait for a real first frame. On skip (session / reduced motion): idle-defer.
+   */
   const [heavyVisualsReady, setHeavyVisualsReady] = useState(false);
-  useEffect(() => {
-    if (!heroLive) return;
+  useLayoutEffect(() => {
+    if (heroReduced === null) return;
+
+    let skipSplash = !!heroReduced;
+    try {
+      skipSplash =
+        skipSplash ||
+        window.sessionStorage.getItem(SPLASH_SESSION_KEY) === "1";
+    } catch {
+      skipSplash = true;
+    }
+
+    if (!skipSplash) {
+      setHeavyVisualsReady(true);
+      return;
+    }
+
+    if (heroReduced) {
+      notifyHeroVisualReady();
+      setHeavyVisualsReady(true);
+      return;
+    }
 
     let idleId: number | undefined;
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -141,7 +170,19 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       if (idleId !== undefined) window.cancelIdleCallback?.(idleId);
       if (timeoutId !== undefined) clearTimeout(timeoutId);
     };
-  }, [heroLive]);
+  }, [heroReduced, notifyHeroVisualReady]);
+
+  /** Static fallbacks still count as hero-ready for the splash gate. */
+  useEffect(() => {
+    if (!heavyVisualsReady) return;
+    if (showGraphicDesktopHero) return;
+    if (heroReduced) notifyHeroVisualReady();
+  }, [
+    heavyVisualsReady,
+    showGraphicDesktopHero,
+    heroReduced,
+    notifyHeroVisualReady,
+  ]);
 
   // /#contact from case study CTA — scroll once #contact is mounted, open modal
   useEffect(() => {
@@ -220,12 +261,15 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       <section className="hero-band relative isolate flex flex-col overflow-hidden px-4 lg:px-6">
         {showGraphicDesktopHero ? (
           heavyVisualsReady ? (
-            <GraphicDesktopHero />
+            <GraphicDesktopHero onReady={notifyHeroVisualReady} />
           ) : (
             <GraphicHeroFallback />
           )
         ) : heavyVisualsReady && !heroReduced ? (
-          <HeroHalftoneP5 className="pointer-events-none z-0" />
+          <HeroHalftoneP5
+            className="pointer-events-none z-0"
+            onReady={notifyHeroVisualReady}
+          />
         ) : (
           <HeroHalftoneFallback className="pointer-events-none z-0" />
         )}

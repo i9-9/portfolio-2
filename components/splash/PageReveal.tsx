@@ -3,6 +3,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
+  SPLASH_FONT_CAP_MS,
+  SPLASH_MAX_MS,
+  SPLASH_MIN_MS,
   SPLASH_SESSION_KEY,
   useSplashHandoff,
 } from "@/lib/splash/SplashHandoffContext";
@@ -10,16 +13,19 @@ import { EASE_CINEMATIC } from "@/lib/motion/easing";
 import { LinesLoader } from "@/components/splash/LinesLoader";
 
 const SPLASH_EXIT_MS = 950;
-const SPLASH_LOAD_MS = 1400;
 
-/** Loader: horizontal lines sweep left → right, then waits for fonts (capped). */
+/** Real loader: lines UI until fonts + hero visual are ready (min dwell, hard cap). */
 export function PageReveal() {
   const reduced = useReducedMotion();
-  const { notifyHandoff } = useSplashHandoff();
+  const { notifyHandoff, heroVisualReady } = useSplashHandoff();
   const handoffRef = useRef(notifyHandoff);
   handoffRef.current = notifyHandoff;
 
   const [done, setDone] = useState(false);
+  const [minDone, setMinDone] = useState(false);
+  const [fontsDone, setFontsDone] = useState(false);
+  const [capped, setCapped] = useState(false);
+  const finishedRef = useRef(false);
 
   // Skip splash before first paint when reduced motion or already seen this session.
   useLayoutEffect(() => {
@@ -53,32 +59,37 @@ export function PageReveal() {
         ? document.fonts.ready.catch(() => undefined)
         : Promise.resolve(undefined);
 
-    const FONT_WAIT_CAP_MS = 1400;
-    let cancelled = false;
+    const minTimer = setTimeout(() => setMinDone(true), SPLASH_MIN_MS);
+    const maxTimer = setTimeout(() => setCapped(true), SPLASH_MAX_MS);
+    const fontCap = new Promise<void>((r) => {
+      setTimeout(r, SPLASH_FONT_CAP_MS);
+    });
 
-    const finishSplash = () => {
-      if (cancelled) return;
-      try {
-        window.sessionStorage.setItem(SPLASH_SESSION_KEY, "1");
-      } catch {
-        /* private mode / quota */
-      }
-      handoffRef.current?.();
-      setDone(true);
-    };
-
-    const loadTimer = setTimeout(() => {
-      const cap = new Promise<void>((r) => {
-        setTimeout(r, FONT_WAIT_CAP_MS);
-      });
-      void Promise.race([fontsP, cap]).finally(finishSplash);
-    }, SPLASH_LOAD_MS);
+    void Promise.race([fontsP, fontCap]).finally(() => setFontsDone(true));
 
     return () => {
-      cancelled = true;
-      clearTimeout(loadTimer);
+      clearTimeout(minTimer);
+      clearTimeout(maxTimer);
     };
   }, [reduced]);
+
+  useEffect(() => {
+    if (done || finishedRef.current) return;
+    if (reduced !== false) return;
+
+    const ready =
+      capped || (minDone && fontsDone && heroVisualReady);
+    if (!ready) return;
+
+    finishedRef.current = true;
+    try {
+      window.sessionStorage.setItem(SPLASH_SESSION_KEY, "1");
+    } catch {
+      /* private mode / quota */
+    }
+    handoffRef.current?.();
+    setDone(true);
+  }, [done, reduced, minDone, fontsDone, heroVisualReady, capped]);
 
   return (
     <AnimatePresence>

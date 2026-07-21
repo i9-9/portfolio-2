@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, Suspense } from 'react';
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  Suspense,
+  type ReactNode,
+} from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
@@ -35,6 +42,9 @@ const NAV_SHOW_CV = false;
 const NAV_LINE_DURATION = MOBILE_MENU_PANEL_CLOSE_DURATION;
 /** Case study: nav slides down over this scroll distance (matches --nav-height). */
 const CASE_STUDY_NAV_REVEAL_PX = 64;
+
+/** Instrument-style abacus pill — spring follow between nav items. */
+const ABACUS_PILL_SPRING = { type: "spring" as const, stiffness: 420, damping: 32, mass: 0.75 };
 
 function readPageScrollY() {
   if (typeof window === "undefined") return 0;
@@ -108,19 +118,158 @@ function navLinkClass(active: boolean, isMobile = false) {
   );
 }
 
-function NavSeparator({ className }: { className?: string }) {
-  return (
-    <span
-      className={cn("mx-2.5 lg:mx-3 text-nav-link text-muted-foreground/35 select-none", className)}
-      aria-hidden
-    >
-      ·
-    </span>
+/** Desktop abacus label — color flips via parent when the sliding pill is over it. */
+function navAbacusLinkClass(className?: string) {
+  return cn(
+    editorialNavType,
+    navInteractiveFocus,
+    "relative z-[1] block px-2.5 py-[0.2em] leading-none whitespace-nowrap",
+    "text-inherit transition-colors duration-200",
+    className,
   );
 }
 
-function LanguageToggle({ isMobile = false }: { isMobile?: boolean }) {
+type NavEntry = { key: string; node: ReactNode; active?: boolean };
+
+type AbacusPill = { x: number; width: number; height: number; opacity: number };
+
+/**
+ * Instrument-style nav: soft tracks + sliding foreground highlight
+ * (Are.na block 24973941). Text inverts on the focused item.
+ */
+function NavAbacusList({
+  entries,
+  measureKey,
+  reducedMotion,
+}: {
+  entries: NavEntry[];
+  /** Remeasure when labels or active item change. */
+  measureKey: string;
+  reducedMotion: boolean | null;
+}) {
+  const itemRefs = useRef(new Map<string, HTMLElement>());
+  const [hoverKey, setHoverKey] = useState<string | null>(null);
+  const [pill, setPill] = useState<AbacusPill>({
+    x: 0,
+    width: 0,
+    height: 0,
+    opacity: 0,
+  });
+
+  const activeKey = entries.find((entry) => entry.active)?.key ?? null;
+  const focusKey = hoverKey ?? activeKey;
+
+  useLayoutEffect(() => {
+    if (!focusKey) {
+      setPill((prev) => (prev.opacity === 0 ? prev : { ...prev, opacity: 0 }));
+      return;
+    }
+    const el = itemRefs.current.get(focusKey);
+    if (!el) return;
+    const next: AbacusPill = {
+      x: el.offsetLeft,
+      width: el.offsetWidth,
+      height: el.offsetHeight,
+      opacity: 1,
+    };
+    setPill((prev) =>
+      prev.x === next.x &&
+      prev.width === next.width &&
+      prev.height === next.height &&
+      prev.opacity === next.opacity
+        ? prev
+        : next,
+    );
+  }, [focusKey, measureKey]);
+
+  return (
+    <ul
+      className="relative flex flex-row items-center gap-1"
+      onMouseLeave={() => setHoverKey(null)}
+    >
+      <motion.span
+        aria-hidden
+        className="pointer-events-none absolute top-0 left-0 z-0 bg-foreground"
+        initial={false}
+        animate={{
+          x: pill.x,
+          width: Math.max(pill.width, 0),
+          height: Math.max(pill.height, 0),
+          opacity: pill.opacity,
+        }}
+        transition={reducedMotion ? { duration: 0 } : ABACUS_PILL_SPRING}
+      />
+      {entries.map((entry, i) => {
+        const focused = entry.key === focusKey;
+        return (
+          <li
+            key={entry.key}
+            ref={(el) => {
+              if (el) itemRefs.current.set(entry.key, el);
+              else itemRefs.current.delete(entry.key);
+            }}
+            className={cn(
+              "relative z-[1]",
+              focused ? "text-background" : "text-foreground",
+              i === entries.length - 1 && "optical-edge-end",
+            )}
+            onMouseEnter={() => setHoverKey(entry.key)}
+          >
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-foreground/10"
+            />
+            {entry.node}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function LanguageToggle({
+  isMobile = false,
+  abacus = false,
+}: {
+  isMobile?: boolean;
+  abacus?: boolean;
+}) {
   const { language, setLanguage } = useLanguage();
+
+  if (abacus) {
+    const itemClass = cn(navInteractiveFocus, "leading-none");
+    /** Selected lang — filled “pressed” block (white ink on foreground). */
+    const pressedClass = "bg-foreground text-background";
+    return (
+      <span
+        className={navAbacusLinkClass("inline-flex items-baseline gap-x-1.5")}
+        role="group"
+        aria-label="Language"
+      >
+        {language === "en" ? (
+          <span aria-current="true" className={cn("px-1", pressedClass)}>
+            En
+          </span>
+        ) : (
+          <button type="button" onClick={() => setLanguage("en")} className={itemClass}>
+            En
+          </button>
+        )}
+        <span className="select-none opacity-45" aria-hidden>
+          ·
+        </span>
+        {language === "es" ? (
+          <span aria-current="true" className={cn("px-1", pressedClass)}>
+            Es
+          </span>
+        ) : (
+          <button type="button" onClick={() => setLanguage("es")} className={itemClass}>
+            Es
+          </button>
+        )}
+      </span>
+    );
+  }
 
   const shellClass = cn(
     "inline-flex items-baseline",
@@ -298,14 +447,11 @@ function NavBarInner() {
   const NavItems = ({
     isMobile = false,
     onMobileClose,
-    revealIndexOffset = 1,
   }: {
     isMobile?: boolean;
     onMobileClose?: () => void;
-    revealIndexOffset?: number;
   }) => {
-    type NavEntry = { key: string; node: React.ReactNode; active?: boolean };
-
+    const abacus = !isMobile;
     const entries: NavEntry[] = [];
 
     if (isV2) {
@@ -317,7 +463,9 @@ function NavBarInner() {
             href={v2WebHref}
             onClick={() => onMobileClose?.()}
             className={cn(
-              navLinkClass(v2WebActive, isMobile),
+              abacus
+                ? navAbacusLinkClass()
+                : navLinkClass(v2WebActive, isMobile),
               isMobile && "text-xl min-h-[52px]",
             )}
           >
@@ -333,7 +481,9 @@ function NavBarInner() {
             href={v2GraphicHref}
             onClick={() => onMobileClose?.()}
             className={cn(
-              navLinkClass(v2Graphic, isMobile),
+              abacus
+                ? navAbacusLinkClass()
+                : navLinkClass(v2Graphic, isMobile),
               isMobile && "text-xl min-h-[52px]",
             )}
           >
@@ -348,6 +498,7 @@ function NavBarInner() {
         ? [
             {
               id: 'cv' as const,
+              active: false,
               element: isMobile ? (
                 <a
                   href={`/CV_Ivan_Nevares_${language.toUpperCase()}.pdf`}
@@ -360,7 +511,7 @@ function NavBarInner() {
                 <div className="relative group">
                   <button
                     type="button"
-                    className={navLinkClass(false, false)}
+                    className={abacus ? navAbacusLinkClass() : navLinkClass(false, false)}
                   >
                     {t('nav.cv')}
                   </button>
@@ -390,10 +541,11 @@ function NavBarInner() {
         : []),
       {
         id: 'theme',
+        active: false,
         element: (
           <button
             onClick={toggleTheme}
-            className={navLinkClass(false, isMobile)}
+            className={abacus ? navAbacusLinkClass() : navLinkClass(false, isMobile)}
           >
             {t(`nav.theme.${theme}`)}
           </button>
@@ -401,14 +553,20 @@ function NavBarInner() {
       },
       {
         id: 'language',
-        element: <LanguageToggle isMobile={isMobile} />,
+        active: false,
+        element: <LanguageToggle isMobile={isMobile} abacus={abacus} />,
       },
       {
         id: 'grid',
+        active: isGridVisible,
         element: (
           <button
             onClick={toggleGrid}
-            className={navLinkClass(isGridVisible, isMobile)}
+            className={
+              abacus
+                ? navAbacusLinkClass()
+                : navLinkClass(isGridVisible, isMobile)
+            }
           >
             Grid
           </button>
@@ -417,13 +575,13 @@ function NavBarInner() {
     ];
 
     utilityItems.forEach((item) => {
-      entries.push({ key: item.id, node: item.element, active: item.id === 'grid' && isGridVisible });
+      entries.push({ key: item.id, node: item.element, active: item.active });
     });
 
     const utilityStart = isV2 ? 2 : 0;
 
     if (isMobile) {
-      const mobileChildren: React.ReactNode[] = [
+      const mobileChildren: ReactNode[] = [
         <motion.div
           key="menu-line-top"
           className="h-px w-full origin-left bg-border"
@@ -469,24 +627,11 @@ function NavBarInner() {
     }
 
     return (
-      <ul className="flex flex-row items-baseline">
-        {entries.map((entry, i) => (
-          <li
-            key={entry.key}
-            className={cn("flex items-center", i === entries.length - 1 && "optical-edge-end")}
-          >
-            {i > 0 ? <NavSeparator /> : null}
-            <SplashClipReveal
-              live={splashRevealLive}
-              index={revealIndexOffset + i}
-              reduced={reducedMotion}
-              active={splashRevealActive}
-            >
-              {entry.node}
-            </SplashClipReveal>
-          </li>
-        ))}
-      </ul>
+      <NavAbacusList
+        entries={entries}
+        measureKey={`${theme}-${language}-${isGridVisible}-${v2WebActive}-${v2Graphic}-${t('work.filterWeb')}-${t('work.filterGraphic')}-${t(`nav.theme.${theme}`)}`}
+        reducedMotion={reducedMotion}
+      />
     );
   };
 
@@ -549,7 +694,7 @@ function NavBarInner() {
             aria-label={t('nav.mobileMenuTitle')}
           >
             <div className="hidden lg:block">
-              <NavItems revealIndexOffset={1} />
+              <NavItems />
             </div>
 
             <div className="lg:hidden flex items-center gap-3">

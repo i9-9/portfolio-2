@@ -4,11 +4,12 @@
  *
  * Prerequisites: `npm run dev` (http://localhost:3000/)
  *
- *   node scripts/record-portfolio-video.mjs
+ *   node scripts/record-portfolio-video.mjs [desktop|mobile|both]
  *
- * Layout = viewport size (MacBook Pro 14" default: 1512×982).
- * Playwright must use deviceScaleFactor 1 and recordVideo.size === viewport
- * (DPR > 1 here causes gray letterboxing). Retina upscale is done in ffmpeg.
+ * Hybrid capture:
+ *   1) Splash — Playwright recordVideo (smooth Framer Motion lines)
+ *   2) Journey — retina JPEG frames (sharp scroll / type)
+ *   then ffmpeg concat.
  */
 import { chromium } from "playwright";
 import { spawnSync } from "node:child_process";
@@ -20,23 +21,42 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const ORIGIN = process.env.ORIGIN ?? "http://localhost:3000";
-/** MacBook Pro 14" default window — controls site layout. */
-const VIEWPORT_W = Number(process.env.WIDTH ?? 1512);
-const VIEWPORT_H = Number(process.env.HEIGHT ?? 982);
-/** Lanczos upscale after capture (2 = 3024×1964). Set 1 to keep viewport size. */
-const UPSCALE = Number(process.env.UPSCALE ?? 2);
-const OUT_W = VIEWPORT_W * UPSCALE;
-const OUT_H = VIEWPORT_H * UPSCALE;
-const HERO_HOLD_MS = Number(process.env.HERO_HOLD_MS ?? 1_400);
-const SCROLL_MS = Number(process.env.SCROLL_MS ?? 7_500);
-const HOLD_BOTTOM_MS = Number(process.env.HOLD_BOTTOM_MS ?? 350);
+const HERO_HOLD_MS = Number(process.env.HERO_HOLD_MS ?? 1_600);
+const SCROLL_MS = Number(process.env.SCROLL_MS ?? 10_000);
+const HOLD_BOTTOM_MS = Number(process.env.HOLD_BOTTOM_MS ?? 1_200);
 const SKIP_SPLASH = process.env.SKIP_SPLASH === "1";
-const CRF = process.env.CRF ?? "8";
-const MOUSE_INTERVAL_MS = Number(process.env.MOUSE_INTERVAL_MS ?? 33);
+/** Matches PageReveal SPLASH_EXIT_MS — keep recording through the fade-out. */
+const SPLASH_EXIT_MS = Number(process.env.SPLASH_EXIT_MS ?? 950);
+const SPLASH_SETTLE_MS = Number(process.env.SPLASH_SETTLE_MS ?? 400);
+const CRF = process.env.CRF ?? "4";
+const X264_PRESET = process.env.X264_PRESET ?? "veryslow";
+const FPS = Number(process.env.FPS ?? 30);
+const JPEG_Q = Number(process.env.JPEG_Q ?? 92);
 
 const OUT_DIR = path.resolve(ROOT, "public", "recordings");
-const OUT_WEBM = path.join(OUT_DIR, "portfolio-fullscreen.webm");
-const OUT_MP4 = path.join(OUT_DIR, "portfolio-fullscreen.mp4");
+
+const PRESETS = {
+  desktop: {
+    viewport: { width: 1512, height: 982 },
+    dpr: Number(process.env.DESKTOP_DPR ?? 2),
+    isMobile: false,
+    hasTouch: false,
+    outBase: "portfolio-desktop",
+    userAgent:
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
+      "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+  },
+  mobile: {
+    viewport: { width: 390, height: 844 },
+    dpr: Number(process.env.MOBILE_DPR ?? 3),
+    isMobile: true,
+    hasTouch: true,
+    outBase: "portfolio-mobile",
+    userAgent:
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 " +
+      "(KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+  },
+};
 
 const SPLASH_KEY = "v2-splash-seen";
 
@@ -47,7 +67,6 @@ const LAUNCH_ARGS = [
   "--disable-features=CalculateNativeWinOcclusion",
 ];
 
-/** Smooth sine ease — less aggressive than cubic, reads more fluid on scroll. */
 const easeScroll = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
 
 function mouseAtProgress(layout, width, height, progress, rowPhase) {
@@ -83,7 +102,6 @@ function mouseAtProgress(layout, width, height, progress, rowPhase) {
   };
 }
 
-/** Disable Lenis + drive scroll on a timer (rAF can stall in headless record). */
 async function prepareNativeScroll(page) {
   await page.evaluate(() => {
     document.documentElement.classList.remove("lenis", "lenis-smooth");
@@ -91,72 +109,6 @@ async function prepareNativeScroll(page) {
     document.body.style.height = "auto";
     document.body.style.overflow = "visible";
   });
-}
-
-/** rAF scroll in the page (60fps) + Playwright mouse in parallel. */
-async function runScroll(page, layout, width, height, scrollMs) {
-  const scrollPromise = page.evaluate(
-    ({ duration, maxScroll }) =>
-      new Promise((resolve) => {
-        const ease = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
-        const t0 = performance.now();
-        const tick = () => {
-          const t = Math.min(1, (performance.now() - t0) / duration);
-          window.scrollTo(0, maxScroll * ease(t));
-          if (t < 1) window.setTimeout(tick, 1000 / 60);
-          else resolve(undefined);
-        };
-        tick();
-      }),
-    { duration: scrollMs, maxScroll: layout.maxScroll },
-  );
-
-  const mousePromise = (async () => {
-    const t0 = Date.now();
-    let rowPhase = 0;
-    while (Date.now() - t0 < scrollMs) {
-      const progress = Math.min(1, (Date.now() - t0) / scrollMs);
-      const { x, y, onRow } = mouseAtProgress(
-        layout,
-        width,
-        height,
-        progress,
-        rowPhase,
-      );
-      if (onRow) rowPhase += MOUSE_INTERVAL_MS;
-      else rowPhase = 0;
-      await page.mouse.move(x, y);
-      await page.waitForTimeout(MOUSE_INTERVAL_MS);
-    }
-  })();
-
-  await Promise.all([scrollPromise, mousePromise]);
-}
-
-/**
- * Hero hold at scroll 0, then one continuous eased scroll to the footer.
- */
-async function journey(page, width, height, layout, heroHoldMs, scrollMs) {
-  const heroSteps = Math.max(10, Math.round(heroHoldMs / MOUSE_INTERVAL_MS));
-
-  for (let i = 0; i <= heroSteps; i++) {
-    const t = i / heroSteps;
-    const x = width * (0.22 + 0.56 * (0.5 + 0.5 * Math.sin(t * Math.PI * 2)));
-    const y = height * (0.28 + 0.38 * (0.5 + 0.5 * Math.sin(t * Math.PI * 4)));
-    await page.mouse.move(x, y);
-    await page.waitForTimeout(MOUSE_INTERVAL_MS);
-  }
-
-  await runScroll(page, layout, width, height, scrollMs);
-}
-
-async function waitForSplash(page) {
-  await page.waitForFunction(
-    (key) => window.sessionStorage.getItem(key) === "1",
-    SPLASH_KEY,
-    { timeout: 12_000 },
-  );
-  await page.waitForTimeout(550);
 }
 
 async function readLayout(page) {
@@ -184,31 +136,8 @@ async function readLayout(page) {
   });
 }
 
-(async () => {
-  await fs.mkdir(OUT_DIR, { recursive: true });
-
-  const browser = await chromium.launch({
-    headless: true,
-    args: LAUNCH_ARGS,
-  });
-
-  const context = await browser.newContext({
-    viewport: { width: VIEWPORT_W, height: VIEWPORT_H },
-    deviceScaleFactor: 1,
-    reducedMotion: "no-preference",
-    hasTouch: false,
-    isMobile: false,
-    recordVideo: {
-      dir: OUT_DIR,
-      size: { width: VIEWPORT_W, height: VIEWPORT_H },
-    },
-    colorScheme: "light",
-    userAgent:
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
-      "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-  });
-
-  await context.addInitScript((key) => {
+function applyVisibilityInit(context) {
+  return context.addInitScript((key) => {
     try {
       window.sessionStorage.removeItem(key);
     } catch {
@@ -223,85 +152,382 @@ async function readLayout(page) {
       get: () => false,
     });
   }, SPLASH_KEY);
+}
 
-  if (SKIP_SPLASH) {
-    await context.addInitScript((key) => {
-      try {
-        window.sessionStorage.setItem(key, "1");
-      } catch {
-        /* ignore */
-      }
-    }, SPLASH_KEY);
+function applySkipSplash(context) {
+  return context.addInitScript((key) => {
+    try {
+      window.sessionStorage.setItem(key, "1");
+    } catch {
+      /* ignore */
+    }
+  }, SPLASH_KEY);
+}
+
+function encodeX264(inputArgs, outMp4) {
+  const pixFmt = process.env.PIX_FMT ?? "yuv420p";
+  const ffArgs = [
+    "-y",
+    ...inputArgs,
+    "-c:v",
+    "libx264",
+    "-preset",
+    X264_PRESET,
+    "-profile:v",
+    pixFmt === "yuv444p" ? "high444" : "high",
+    "-pix_fmt",
+    pixFmt,
+    "-crf",
+    String(CRF),
+    "-tune",
+    "animation",
+    "-movflags",
+    "+faststart",
+    outMp4,
+  ];
+  const ff = spawnSync("ffmpeg", ffArgs, { stdio: "inherit" });
+  if (ff.status !== 0) throw new Error(`ffmpeg failed → ${outMp4}`);
+}
+
+async function grabFrame(page, framesDir, index) {
+  const file = path.join(
+    framesDir,
+    `frame-${String(index).padStart(5, "0")}.jpg`,
+  );
+  await page.screenshot({
+    path: file,
+    type: "jpeg",
+    quality: JPEG_Q,
+    animations: "allow",
+  });
+  return index + 1;
+}
+
+async function captureJourneyFrames(
+  page,
+  framesDir,
+  startIndex,
+  width,
+  height,
+  layout,
+  movePointer,
+) {
+  let index = startIndex;
+  const frameMs = 1000 / FPS;
+  const heroFrames = Math.max(1, Math.round(HERO_HOLD_MS / frameMs));
+  const scrollFrames = Math.max(1, Math.round(SCROLL_MS / frameMs));
+  const holdFrames = Math.max(1, Math.round(HOLD_BOTTOM_MS / frameMs));
+
+  for (let i = 0; i <= heroFrames; i++) {
+    const t = i / heroFrames;
+    if (movePointer) {
+      const x = width * (0.22 + 0.56 * (0.5 + 0.5 * Math.sin(t * Math.PI * 2)));
+      const y = height * (0.28 + 0.38 * (0.5 + 0.5 * Math.sin(t * Math.PI * 4)));
+      await page.mouse.move(x, y);
+    }
+    await page.evaluate(() => window.scrollTo(0, 0));
+    index = await grabFrame(page, framesDir, index);
   }
+
+  let rowPhase = 0;
+  for (let i = 0; i <= scrollFrames; i++) {
+    const progress = i / scrollFrames;
+    const scrollY = layout.maxScroll * easeScroll(progress);
+    await page.evaluate((y) => window.scrollTo(0, y), scrollY);
+    if (movePointer) {
+      const { x, y, onRow } = mouseAtProgress(
+        layout,
+        width,
+        height,
+        progress,
+        rowPhase,
+      );
+      if (onRow) rowPhase += frameMs;
+      else rowPhase = 0;
+      await page.mouse.move(x, y);
+    }
+    index = await grabFrame(page, framesDir, index);
+  }
+
+  // Hard-land on the true bottom, then hold so the ending doesn’t feel cut.
+  await page.evaluate((y) => window.scrollTo(0, y), layout.maxScroll);
+  for (let i = 0; i < holdFrames; i++) {
+    index = await grabFrame(page, framesDir, index);
+  }
+
+  return index;
+}
+
+/** Smooth splash via Chromium screencast (Framer Motion stays real-time). */
+async function recordSplashClip(preset, splashMp4) {
+  const { width, height } = preset.viewport;
+  const dpr = preset.dpr;
+  const outW = width * dpr;
+  const outH = height * dpr;
+  const tmpDir = path.join(OUT_DIR, `.splash-${preset.outBase}`);
+  await fs.rm(tmpDir, { recursive: true, force: true });
+  await fs.mkdir(tmpDir, { recursive: true });
+
+  const browser = await chromium.launch({ headless: true, args: LAUNCH_ARGS });
+  const context = await browser.newContext({
+    viewport: { width, height },
+    deviceScaleFactor: dpr,
+    reducedMotion: "no-preference",
+    hasTouch: preset.hasTouch,
+    isMobile: preset.isMobile,
+    colorScheme: "light",
+    userAgent: preset.userAgent,
+    recordVideo: {
+      dir: tmpDir,
+      size: { width: outW, height: outH },
+    },
+  });
+  await applyVisibilityInit(context);
 
   const page = await context.newPage();
-  console.log(
-    `→ ${ORIGIN} (capture ${VIEWPORT_W}×${VIEWPORT_H}, export ${OUT_W}×${OUT_H}, crf=${CRF})`,
-  );
-
+  console.log("  splash: recording live screencast…");
   await page.goto(ORIGIN, { waitUntil: "domcontentloaded", timeout: 60_000 });
 
-  if (!SKIP_SPLASH) {
-    console.log("  waiting for splash…");
-    await waitForSplash(page);
-  }
-
-  await page.evaluate(() => document.fonts?.ready?.catch(() => undefined));
-  await page.waitForTimeout(400);
-
-  const layout = await readLayout(page);
-  console.log(
-    `  journey: hero ${HERO_HOLD_MS / 1000}s → scroll ${SCROLL_MS / 1000}s (${layout.rows.length} rows)…`,
+  await page.waitForFunction(
+    (key) => window.sessionStorage.getItem(key) === "1",
+    SPLASH_KEY,
+    { timeout: 15_000 },
   );
+  // PageReveal sets the key then fades out for SPLASH_EXIT_MS — keep rolling.
+  await page.waitForTimeout(SPLASH_EXIT_MS + SPLASH_SETTLE_MS);
 
-  await prepareNativeScroll(page);
-  await page.mouse.move(VIEWPORT_W * 0.5, VIEWPORT_H * 0.42);
-  await journey(page, VIEWPORT_W, VIEWPORT_H, layout, HERO_HOLD_MS, SCROLL_MS);
-  await page.waitForTimeout(HOLD_BOTTOM_MS);
+  // Confirm overlay is gone (or nearly) before cutting.
+  await page
+    .waitForFunction(
+      () => !document.querySelector('[aria-label="Loading"]'),
+      null,
+      { timeout: 3_000 },
+    )
+    .catch(() => undefined);
 
   const video = page.video();
   await page.close();
   await context.close();
   await browser.close();
 
-  if (!video) throw new Error("No video recorded");
+  if (!video) throw new Error("No splash video");
+  const webm = await video.path();
+  const stableWebm = path.join(tmpDir, "splash.webm");
+  await fs.rename(webm, stableWebm);
 
-  const rawPath = await video.path();
-  await fs.rename(rawPath, OUT_WEBM);
-  console.log(`  webm → ${OUT_WEBM}`);
+  encodeX264(["-i", stableWebm, "-r", String(FPS)], splashMp4);
+  await fs.rm(tmpDir, { recursive: true, force: true });
 
-  const ffArgs = [
-    "-y",
-    "-i",
-    OUT_WEBM,
-    ...(UPSCALE !== 1
-      ? ["-vf", `scale=${OUT_W}:${OUT_H}:flags=lanczos`]
-      : []),
-    "-c:v",
-    "libx264",
-    "-preset",
-    "slow",
-    "-profile:v",
-    "high",
-    "-level",
-    "5.1",
-    "-pix_fmt",
-    "yuv420p",
-    "-crf",
-    String(CRF),
-    "-movflags",
-    "+faststart",
-    OUT_MP4,
-  ];
+  const probe = spawnSync(
+    "ffprobe",
+    [
+      "-v",
+      "error",
+      "-show_entries",
+      "format=duration",
+      "-of",
+      "default=noprint_wrappers=1:nokey=1",
+      splashMp4,
+    ],
+    { encoding: "utf8" },
+  );
+  console.log(`  splash: ${splashMp4} (~${Number(probe.stdout).toFixed(1)}s)`);
+}
 
-  const ff = spawnSync("ffmpeg", ffArgs, { stdio: "inherit" });
-  if (ff.status !== 0) {
-    console.warn("  ffmpeg failed — webm is still available");
-  } else {
-    const { size } = await fs.stat(OUT_MP4);
-    console.log(
-      `  mp4  → ${OUT_MP4} (${(size / 1024 / 1024).toFixed(1)} MB, ${OUT_W}×${OUT_H})`,
+async function recordJourneyClip(preset, journeyMp4) {
+  const { width, height } = preset.viewport;
+  const dpr = preset.dpr;
+  const outW = width * dpr;
+  const outH = height * dpr;
+  const framesDir = path.join(OUT_DIR, `.frames-${preset.outBase}`);
+  const movePointer = !preset.isMobile;
+
+  await fs.rm(framesDir, { recursive: true, force: true });
+  await fs.mkdir(framesDir, { recursive: true });
+
+  const browser = await chromium.launch({ headless: true, args: LAUNCH_ARGS });
+  const context = await browser.newContext({
+    viewport: { width, height },
+    deviceScaleFactor: dpr,
+    reducedMotion: "no-preference",
+    hasTouch: preset.hasTouch,
+    isMobile: preset.isMobile,
+    colorScheme: "light",
+    userAgent: preset.userAgent,
+  });
+  await applyVisibilityInit(context);
+  await applySkipSplash(context);
+
+  const page = await context.newPage();
+  console.log("  journey: capturing retina frames…");
+  await page.goto(ORIGIN, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await page.evaluate(() => document.fonts?.ready?.catch(() => undefined));
+  // Let hero canvas / layout settle after skipped splash.
+  await page.waitForTimeout(800);
+
+  await prepareNativeScroll(page);
+  let layout = await readLayout(page);
+  // Re-measure once more after a tick — images/fonts can still grow the page.
+  await page.waitForTimeout(300);
+  layout = await readLayout(page);
+
+  if (layout.maxScroll < 100) {
+    throw new Error(
+      `Journey maxScroll too small (${layout.maxScroll}) — page may not have loaded`,
     );
+  }
+
+  console.log(
+    `  journey: maxScroll=${Math.round(layout.maxScroll)}px, ${layout.rows.length} rows, hero ${HERO_HOLD_MS}ms + scroll ${SCROLL_MS}ms + hold ${HOLD_BOTTOM_MS}ms`,
+  );
+
+  if (movePointer) {
+    await page.mouse.move(width * 0.5, height * 0.42);
+  }
+
+  const frameCount = await captureJourneyFrames(
+    page,
+    framesDir,
+    0,
+    width,
+    height,
+    layout,
+    movePointer,
+  );
+
+  await page.close();
+  await context.close();
+  await browser.close();
+
+  const pattern = path.join(framesDir, "frame-%05d.jpg");
+  encodeX264(["-framerate", String(FPS), "-i", pattern], journeyMp4);
+  await fs.rm(framesDir, { recursive: true, force: true });
+
+  console.log(
+    `  journey: ${frameCount} frames @${FPS}fps → ${journeyMp4} (${outW}×${outH})`,
+  );
+}
+
+async function concatClips(splashMp4, journeyMp4, outMp4) {
+  const listFile = path.join(OUT_DIR, `.concat-${path.basename(outMp4)}.txt`);
+  // Re-encode concat so timebases/fps match cleanly (copy can glitch at the join).
+  const absSplash = splashMp4.replaceAll("'", "'\\''");
+  const absJourney = journeyMp4.replaceAll("'", "'\\''");
+  await fs.writeFile(
+    listFile,
+    `file '${absSplash}'\nfile '${absJourney}'\n`,
+    "utf8",
+  );
+
+  const pixFmt = process.env.PIX_FMT ?? "yuv420p";
+  const ff = spawnSync(
+    "ffmpeg",
+    [
+      "-y",
+      "-f",
+      "concat",
+      "-safe",
+      "0",
+      "-i",
+      listFile,
+      "-c:v",
+      "libx264",
+      "-preset",
+      X264_PRESET,
+      "-profile:v",
+      "high",
+      "-pix_fmt",
+      pixFmt,
+      "-crf",
+      String(CRF),
+      "-tune",
+      "animation",
+      "-r",
+      String(FPS),
+      "-movflags",
+      "+faststart",
+      outMp4,
+    ],
+    { stdio: "inherit" },
+  );
+  await fs.rm(listFile, { force: true });
+  if (ff.status !== 0) throw new Error(`ffmpeg concat failed → ${outMp4}`);
+}
+
+async function recordPreset(presetKey) {
+  const preset = PRESETS[presetKey];
+  const { width, height } = preset.viewport;
+  const dpr = preset.dpr;
+  const outW = width * dpr;
+  const outH = height * dpr;
+  const outMp4 = path.join(OUT_DIR, `${preset.outBase}.mp4`);
+  const splashMp4 = path.join(OUT_DIR, `.${preset.outBase}-splash.mp4`);
+  const journeyMp4 = path.join(OUT_DIR, `.${preset.outBase}-journey.mp4`);
+
+  console.log(
+    `→ ${presetKey}: ${ORIGIN} (css ${width}×${height} @${dpr}x → ${outW}×${outH}, ${FPS}fps, crf=${CRF})`,
+  );
+
+  if (!SKIP_SPLASH) {
+    await recordSplashClip(preset, splashMp4);
+  }
+  await recordJourneyClip(preset, journeyMp4);
+
+  if (SKIP_SPLASH) {
+    await fs.copyFile(journeyMp4, outMp4);
+  } else {
+    console.log("  concat splash + journey…");
+    await concatClips(splashMp4, journeyMp4, outMp4);
+  }
+
+  await fs.rm(splashMp4, { force: true });
+  await fs.rm(journeyMp4, { force: true });
+
+  const { size } = await fs.stat(outMp4);
+  const probe = spawnSync(
+    "ffprobe",
+    [
+      "-v",
+      "error",
+      "-show_entries",
+      "format=duration",
+      "-of",
+      "default=noprint_wrappers=1:nokey=1",
+      outMp4,
+    ],
+    { encoding: "utf8" },
+  );
+  console.log(
+    `  mp4 → ${outMp4} (${(size / 1024 / 1024).toFixed(1)} MB, ${outW}×${outH}, ~${Number(probe.stdout).toFixed(1)}s)`,
+  );
+
+  if (presetKey === "desktop") {
+    const legacyMp4 = path.join(OUT_DIR, "portfolio-fullscreen.mp4");
+    await fs.copyFile(outMp4, legacyMp4);
+    console.log(`  also → ${legacyMp4}`);
+  }
+}
+
+(async () => {
+  const arg = (process.argv[2] ?? "both").toLowerCase();
+  const keys =
+    arg === "both"
+      ? ["desktop", "mobile"]
+      : arg === "desktop" || arg === "mobile"
+        ? [arg]
+        : null;
+
+  if (!keys) {
+    console.error(
+      "Usage: node scripts/record-portfolio-video.mjs [desktop|mobile|both]",
+    );
+    process.exit(1);
+  }
+
+  await fs.mkdir(OUT_DIR, { recursive: true });
+
+  for (const key of keys) {
+    await recordPreset(key);
   }
 })().catch((err) => {
   console.error(err);

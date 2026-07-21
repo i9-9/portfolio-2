@@ -32,4 +32,10 @@ yarn-error.log*
 .vercel
 
 # generated portfolio recordings
-/public/recordings/portfolio-fullscreen.*
+/public/recordings/portfolio-*.mp4
+/public/recordings/portfolio-*.webm
+/public/recordings/.frames-*
+/public/recordings/.splash-*
+/public/recordings/.*-splash.mp4
+/public/recordings/.*-journey.mp4
+/public/recordings/.concat-*
