@@ -28,7 +28,7 @@
     --input: 0 0% 89.8%;
     --ring: 0 0% 12%;
     --radius: 0.5rem;
-    --nav: 0 0% 96%;
+    --nav: 0 0% 98%;
 
     /* Spacing System - Swiss Grid Based */
     --space-unit: 0.25rem;
@@ -72,15 +72,15 @@
     --type-6: calc(var(--type-base) * var(--phi-6));
 
     /* Semantic aliases — hierarchy preserved via φ steps */
-    --type-nav-link: var(--type-0);          /* labels, UI, body */
+    --type-nav-link: var(--type-0);          /* labels, UI, body (editorial CTAs) */
     --type-name-nav: var(--type-1);          /* nav / splash name */
-    /* Hero — fluid subtitle, name = subtitle × φ⁴ at every viewport */
+    /* Hero — fluid subtitle, name = subtitle × φ³ at every viewport */
     --type-hero-subtitle: clamp(
       var(--type-0),
       calc(0.85vw + 0.55rem),
       var(--type-name-nav)
     );
-    --type-name-hero: calc(var(--type-hero-subtitle) * var(--phi-4));
+    --type-name-hero: calc(var(--type-hero-subtitle) * var(--phi-3));
     /* Hero vertical rhythm — micro-unit 16px; spacing 1 : 4 : 8 (16 / 64 / 128) */
     --hero-rhythm-unit: var(--space-4);
     --hero-gap-nav-title: var(--grid-row);
@@ -98,11 +98,6 @@
     --type-grid-label: calc(var(--type-micro) / var(--phi));
     --type-grid-num: calc(var(--type-grid-label) / var(--phi));
 
-    /* Bauhaus semantic colors (Kandinsky color-form theory) */
-    --bauhaus-blue: #0066CC;     /* Circle → Blue (infinity, serenity) */
-    --bauhaus-red: #DC143C;      /* Square → Red (stability, matter) */
-    --bauhaus-yellow: #FFD700;   /* Triangle → Yellow (dynamism, energy) */
-    
     /* Line Heights */
     --leading-none: 1;
     --leading-tight: 1.25;
@@ -152,7 +147,7 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
-    --nav: 0 0% 10%;
+    --nav: 0 0% 8%;
   }
 
   /* Thin scrollbar */
@@ -199,7 +194,7 @@
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
     --ring: 0 0% 12%;
-    --nav: 0 0% 96%;
+    --nav: 0 0% 98%;
     color: hsl(var(--foreground));
     background-color: hsl(var(--background));
   }
@@ -222,7 +217,7 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
-    --nav: 0 0% 10%;
+    --nav: 0 0% 8%;
     color: hsl(var(--foreground));
     background-color: hsl(var(--background));
   }
@@ -293,7 +288,29 @@
 }
 
 .nav-bar-inner {
-  @apply grid-container items-center;
+  @apply grid-container;
+  align-items: baseline;
+  /*
+   * Metric context = Display Bold at name size. `1ex` / `1cap` on children
+   * resolve against this font so link caps match the name’s x-height.
+   * Cap-height band centered in the nav module; baseline alignment preserved.
+   * line-height: 0 kills inherited struts on wrappers (SplashClipReveal, etc.).
+   */
+  font-family: var(--font-helvetica-now), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: var(--type-name-nav);
+  line-height: 0;
+  box-sizing: border-box;
+  padding-block: calc((var(--nav-height) - 1cap) / 2);
+}
+
+.nav-bar-inner .text-name-nav {
+  font-size: 1em;
+}
+
+/* 1cap(link) = 1ex(name) — same ink height as lowercase in “Ivan Nevares” */
+.nav-bar-inner .nav-link-type {
+  font-size: calc(1em * 1ex / 1cap);
 }
 
 .nav-shell .nav-bar-inner {
@@ -405,15 +422,26 @@ html {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--hero-gap-title-subtitle);
+    /*
+     * Metric context = Display Bold at hero name size so 1cap/1ex on
+     * children resolve like .nav-bar-inner (name ↔ subtitle rhythm).
+     */
+    font-family: var(--font-helvetica-now), "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: var(--type-name-hero);
+    line-height: 0;
   }
 
   .hero-title-stack .hero-name {
     display: block;
-    line-height: 0.92;
+    font-size: 1em;
   }
 
+  /* Subtitle caps hug the same optical band as nav-link ↔ name x-height */
   .hero-title-stack .text-hero-subtitle {
-    margin-top: calc(var(--type-name-hero) * -0.03);
+    display: block;
+    font-size: var(--type-hero-subtitle);
+    font-weight: 400;
   }
 
   /* Trim Display Bold sidebearings at layout edges — scales with font-size */
@@ -425,12 +453,23 @@ html {
     margin-inline-end: -0.05em;
   }
 
+  /*
+   * Hug cap-height → alphabetic baseline (not the em-square).
+   * Prefer display: inline-block|block — inline-flex ignores trim sizing;
+   * for flex shells, pair with h-[1cap] items-center.
+   */
+  .glyph-center {
+    line-height: 1;
+    text-box: trim-both cap alphabetic;
+  }
+
   .text-nav-link {
     font-size: var(--type-nav-link);
   }
 
   .text-type-micro { font-size: var(--type-micro); }
   .text-type-grid-label { font-size: var(--type-grid-label); }
+  .text-type-grid-num { font-size: var(--type-grid-num); }
   .text-type-0 { font-size: var(--type-0); }
   .text-type-project { font-size: var(--type-project-name); }
   .text-type-project-subtitle { font-size: var(--type-project-subtitle); }
@@ -584,6 +623,198 @@ html {
     }
   }
 
+}
+
+/* —— Grid system overlay (Shift+G) — Swiss modules + Figma-style rulers —— */
+.grid-overlay {
+  --grid-rule: hsl(0 0% 50% / 0.14);
+  --grid-rule-strong: hsl(0 0% 50% / 0.22);
+  --grid-fill: hsl(0 0% 50% / 0.03);
+  --guide: hsl(0 72% 52% / 0.45);
+  --guide-accent: hsl(192 70% 45% / 0.55);
+  --ruler-size: 11px;
+  --ruler-bg: #f0f0f0;
+  --ruler-edge: #d4d4d4;
+  --ruler-tick: #8a8a8a;
+  --ruler-num: #6e6e6e;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.dark .grid-overlay {
+  --grid-rule: hsl(0 0% 100% / 0.08);
+  --grid-rule-strong: hsl(0 0% 100% / 0.14);
+  --grid-fill: hsl(0 0% 100% / 0.025);
+  --guide: hsl(0 70% 62% / 0.4);
+  --guide-accent: hsl(192 80% 60% / 0.5);
+  --ruler-bg: #2c2c2c;
+  --ruler-edge: #1e1e1e;
+  --ruler-tick: #8c8c8c;
+  --ruler-num: #a0a0a0;
+}
+
+.grid-overlay__modules {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--grid-row) - 1px),
+    var(--grid-rule) calc(var(--grid-row) - 1px),
+    var(--grid-rule) var(--grid-row)
+  );
+}
+
+.grid-overlay__margin {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-color: var(--grid-rule-strong);
+  border-style: solid;
+  border-width: 0;
+}
+
+.grid-overlay__margin--start {
+  left: 0;
+  border-right-width: 1px;
+}
+
+.grid-overlay__margin--end {
+  right: 0;
+  border-left-width: 1px;
+}
+
+.grid-overlay__cols {
+  height: 100%;
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .grid-overlay__cols {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.grid-overlay__cols-inner {
+  display: grid;
+  height: 100%;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .grid-overlay__cols-inner {
+    gap: 1.5rem;
+  }
+}
+
+.grid-overlay__col {
+  height: 100%;
+  border-left: 1px solid var(--grid-rule);
+  border-right: 1px solid var(--grid-rule);
+  background: var(--grid-fill);
+}
+
+.grid-guide {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--guide);
+}
+
+.grid-guide--accent {
+  border-top-color: var(--guide-accent);
+}
+
+.grid-guide__label {
+  position: absolute;
+  left: calc(var(--ruler-size) + 4px);
+  transform: translateY(-100%);
+  padding: 0 3px;
+  font-family: var(--font-helvetica-now-text), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 7px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--guide);
+}
+
+.grid-guide--accent .grid-guide__label {
+  color: var(--guide-accent);
+}
+
+/* Figma / Illustrator rulers */
+.grid-ruler {
+  position: absolute;
+  z-index: 10;
+  background: var(--ruler-bg);
+  box-sizing: border-box;
+}
+
+.grid-ruler--corner {
+  top: 0;
+  left: 0;
+  width: var(--ruler-size);
+  height: var(--ruler-size);
+  border-right: 1px solid var(--ruler-edge);
+  border-bottom: 1px solid var(--ruler-edge);
+}
+
+.grid-ruler--x {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--ruler-size);
+  border-bottom: 1px solid var(--ruler-edge);
+}
+
+.grid-ruler--y {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--ruler-size);
+  border-right: 1px solid var(--ruler-edge);
+}
+
+.grid-ruler__tick {
+  position: absolute;
+  background: var(--ruler-tick);
+  opacity: 0.85;
+}
+
+.grid-ruler--x .grid-ruler__tick {
+  bottom: 0;
+  width: 1px;
+}
+
+.grid-ruler--y .grid-ruler__tick {
+  right: 0;
+  height: 1px;
+}
+
+.grid-ruler__num {
+  position: absolute;
+  font-family: var(--font-helvetica-now-text), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 7px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--ruler-num);
+  user-select: none;
+}
+
+.grid-ruler__num--x {
+  top: 1px;
+}
+
+.grid-ruler__num--y {
+  left: 1px;
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: left center;
 }
 
 

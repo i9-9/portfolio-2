@@ -36,8 +36,6 @@ import { ScrollProgress } from "@/components/portfolio/ScrollProgress";
 import { CustomCursor } from "@/components/portfolio/CustomCursor";
 import { AnimatedLine } from "@/components/portfolio/AnimatedLine";
 import { ProjectRow } from "@/components/portfolio/ProjectRow";
-import { ProjectGrid } from "@/components/portfolio/ProjectGrid";
-import { ProjectList } from "@/components/portfolio/ProjectList";
 import { PROJECT_ROWS } from "@/components/portfolio/projectRows";
 
 const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
@@ -45,7 +43,10 @@ const GeometricFlowCard = lazy(() => import("@/components/GeometricFlowCard"));
 function HeroHalftoneFallback({ className }: { className?: string }) {
   return (
     <div
-      className={cn("absolute inset-0 overflow-hidden pointer-events-none z-0", className)}
+      className={cn(
+        "pointer-events-none absolute inset-0 z-0 overflow-hidden",
+        className,
+      )}
       aria-hidden
       style={{
         backgroundImage:
@@ -93,9 +94,6 @@ const ContactFormModal = dynamic(
 
 export type V2ContentMode = "web" | "graphic";
 
-/** Bauhaus view modes — semantic correspondence with geometric forms */
-export type BauhausViewMode = "flow" | "grid" | "list";
-
 const WOHL_STUDIO_URL = "https://wohl.co/";
 
 /** Work-list dividers — slower than nav so the L→R draw reads clearly. */
@@ -107,7 +105,6 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const [contactModalLoaded, setContactModalLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [viewMode, setViewMode] = useState<BauhausViewMode>("flow");
   const { t, language } = useLanguage();
 
   useLayoutEffect(() => {
@@ -271,87 +268,31 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             onReady={notifyHeroVisualReady}
           />
         ) : (
-          <HeroHalftoneFallback className="pointer-events-none z-0" />
+          <HeroHalftoneFallback />
         )}
         {!showGraphicDesktopHero && (
-          <>
-            <div
-              className={cn(
-                "relative z-30",
-              )}
-            >
-              <h1 className="hero-title-stack font-helveticaNowDisplayBold text-name-hero tracking-[-0.02em]">
-                <SplashClipReveal
-                  live={heroLive}
-                  index={heroRevealIndex(splashNavItemCount, 0)}
-                  reduced={heroReduced}
-                >
-                  <span className="hero-name optical-edge-start">Ivan Nevares</span>
-                </SplashClipReveal>
-                <SplashClipReveal
-                  live={heroLive}
-                  index={heroRevealIndex(splashNavItemCount, 1)}
-                  reduced={heroReduced}
-                >
-                  <span className="text-hero-subtitle block font-helveticaNowTextRegular text-muted-foreground tracking-normal leading-none">
-                    {t("hero.subtitle")}
-                  </span>
-                </SplashClipReveal>
-              </h1>
-            </div>
-
-            <div
-              className="relative z-30 mt-auto flex justify-end gap-3"
-              role="group"
-              aria-label="View mode controls"
-            >
-              <button
-                type="button"
-                onClick={() => setViewMode("flow")}
-                className={cn(
-                  "group flex size-12 items-center justify-center border-2 transition-all duration-500 lg:size-14",
-                  viewMode === "flow"
-                    ? "border-[var(--bauhaus-blue)] text-[var(--bauhaus-blue)] scale-105"
-                    : "border-foreground/50 text-foreground hover:scale-105 hover:border-[var(--bauhaus-blue)] hover:text-[var(--bauhaus-blue)]"
-                )}
-                aria-label="Flow view (circular, continuous)"
-                aria-pressed={viewMode === "flow"}
+          <div className="relative z-30">
+            <h1 className="hero-title-stack font-helveticaNowDisplayBold text-name-hero tracking-[-0.02em]">
+              <SplashClipReveal
+                live={heroLive}
+                index={heroRevealIndex(splashNavItemCount, 0)}
+                reduced={heroReduced}
               >
-                <span className="block size-[40%] rounded-full bg-current transition-colors duration-500" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("grid")}
-                className={cn(
-                  "group flex size-12 items-center justify-center border-2 transition-all duration-500 lg:size-14",
-                  viewMode === "grid"
-                    ? "border-[var(--bauhaus-red)] text-[var(--bauhaus-red)] scale-105"
-                    : "border-foreground/50 text-foreground hover:scale-105 hover:border-[var(--bauhaus-red)] hover:text-[var(--bauhaus-red)]"
-                )}
-                aria-label="Grid view (square, structured)"
-                aria-pressed={viewMode === "grid"}
+                <span className="hero-name glyph-center optical-edge-start bg-foreground pl-[0.08em] pr-[0.02em] text-background">
+                  Ivan Nevares
+                </span>
+              </SplashClipReveal>
+              <SplashClipReveal
+                live={heroLive}
+                index={heroRevealIndex(splashNavItemCount, 1)}
+                reduced={heroReduced}
               >
-                <span className="block size-[40%] bg-current transition-colors duration-500" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("list")}
-                className={cn(
-                  "group flex size-12 items-center justify-center border-2 transition-all duration-500 lg:size-14",
-                  viewMode === "list"
-                    ? "border-[var(--bauhaus-yellow)] text-[var(--bauhaus-yellow)] scale-105"
-                    : "border-foreground/50 text-foreground hover:scale-105 hover:border-[var(--bauhaus-yellow)] hover:text-[var(--bauhaus-yellow)]"
-                )}
-                aria-label="List view (triangular, directional)"
-                aria-pressed={viewMode === "list"}
-              >
-                <span
-                  className="block size-[40%] bg-current transition-colors duration-500"
-                  style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
-                />
-              </button>
-            </div>
-          </>
+                <span className="text-hero-subtitle glyph-center bg-foreground pl-[0.08em] pr-[0.02em] text-background font-helveticaNowTextRegular tracking-normal">
+                  {t("hero.subtitle")}
+                </span>
+              </SplashClipReveal>
+            </h1>
+          </div>
         )}
       </section>
 
@@ -365,58 +306,43 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             initial={{ opacity: 0 }}
             animate={workInView ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.85, ease: EASE_OUT_EXPO }}
-            className={cn(editorialNavType, "mb-6 text-foreground")}
+            className={cn(
+              editorialNavType,
+              "glyph-center mb-6 inline-block bg-foreground pl-[0.08em] pr-[0.02em] text-background",
+            )}
           >
             {t("work.title")}
           </motion.p>
 
-          {viewMode === "flow" ? (
-            <div>
-              {PROJECT_ROWS.map(
-                ({ key, metricEn, metricEs }, i) => {
-                  const project = getProjectBySlug(key);
-                  if (!project) return null;
-                  return (
-                    <div key={key}>
-                      {i > 0 ? (
-                        <AnimatedLine
-                          inView={workInView}
-                          delay={(i - 1) * WORK_LINE_STAGGER}
-                          duration={WORK_LINE_DURATION}
-                        />
-                      ) : null}
-                      <ProjectRow
-                        slug={key}
-                        index={i + 1}
-                        name={project.name}
-                        category={t(`work.${key}.title` as Parameters<typeof t>[0])}
-                        metric={isEn ? metricEn : metricEs}
-                        year={project.year}
-                        delay={i * 0.06}
+          <div>
+            {PROJECT_ROWS.map(
+              ({ key, metricEn, metricEs }, i) => {
+                const project = getProjectBySlug(key);
+                if (!project) return null;
+                return (
+                  <div key={key}>
+                    {i > 0 ? (
+                      <AnimatedLine
                         inView={workInView}
+                        delay={(i - 1) * WORK_LINE_STAGGER}
+                        duration={WORK_LINE_DURATION}
                       />
-                    </div>
-                  );
-                },
-              )}
-            </div>
-          ) : viewMode === "grid" ? (
-            <ProjectGrid
-              projectKeys={PROJECT_ROWS.map((r) => r.key)}
-              inView={workInView}
-            />
-          ) : (
-            <ProjectList
-              projectKeys={PROJECT_ROWS.map((r) => r.key)}
-              categories={Object.fromEntries(
-                PROJECT_ROWS.map(({ key }) => [
-                  key,
-                  t(`work.${key}.title` as Parameters<typeof t>[0]),
-                ])
-              )}
-              inView={workInView}
-            />
-          )}
+                    ) : null}
+                    <ProjectRow
+                      slug={key}
+                      index={i + 1}
+                      name={project.name}
+                      category={t(`work.${key}.title` as Parameters<typeof t>[0])}
+                      metric={isEn ? metricEn : metricEs}
+                      year={project.year}
+                      delay={i * 0.06}
+                      inView={workInView}
+                    />
+                  </div>
+                );
+              },
+            )}
+          </div>
         </section>
       ) : null}
 
@@ -433,7 +359,10 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           initial={{ opacity: 0, y: 16 }}
           animate={aboutInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, ease: EASE_OUT_EXPO }}
-          className={cn(editorialNavType, "lg:col-span-2 self-start text-foreground")}
+          className={cn(
+            editorialNavType,
+            "glyph-center lg:col-span-2 self-start inline-block w-fit bg-foreground pl-[0.08em] pr-[0.02em] text-background",
+          )}
         >
           {t("about.title")}
         </motion.p>
@@ -497,12 +426,12 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
               contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
             }
             transition={{ duration: 1, delay: 0.08, ease: EASE_OUT_EXPO }}
-            className="mb-10 flex flex-wrap items-center gap-x-5 gap-y-3"
+            className="mb-10 flex w-full flex-wrap items-center gap-x-5 gap-y-3"
           >
             <p
               className={cn(
                 editorialNavType,
-                "max-w-[min(100%,42rem)] text-foreground",
+                "glyph-center inline-block max-w-[min(100%,42rem)] bg-foreground pl-[0.08em] pr-[0.02em] text-background",
               )}
             >
               {t("contact.kicker")}
@@ -512,10 +441,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
               aria-hidden
             />
             <p
-              className={cn(
-                editorialNavType,
-                "tabular-nums text-muted-foreground",
-              )}
+              className="optical-edge-end ml-auto shrink-0 font-helveticaNowDisplayBold normal-case tracking-[-0.02em] text-type-micro tabular-nums text-muted-foreground"
             >
               {t("contact.stamp")}
             </p>

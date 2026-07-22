@@ -66,28 +66,11 @@ function scrollPageToTop() {
   window.scrollTo(0, 0);
 }
 
-const NAV_NAME_COLORS = {
-  dark: { closed: "hsl(0 0% 94%)", open: "hsl(0 0% 0%)" },
-  light: { closed: "hsl(0 0% 12%)", open: "hsl(0 0% 100%)" },
-} as const;
-
-function NavNameLink({
-  href,
-  isMenuOpen,
-  theme,
-}: {
-  href: string;
-  isMenuOpen: boolean;
-  theme: "light" | "dark";
-}) {
-  const colors = NAV_NAME_COLORS[theme];
-  const target = isMenuOpen ? colors.open : colors.closed;
-
+function NavNameLink({ href }: { href: string }) {
   return (
     <a
       href={href}
-      className="optical-edge-start text-name-nav leading-none tracking-[-0.02em] font-helveticaNowDisplayBold truncate"
-      style={{ color: target }}
+      className="optical-edge-start glyph-center inline-block bg-foreground pl-[0.08em] pr-[0.02em] text-background text-name-nav tracking-[-0.02em] font-helveticaNowDisplayBold truncate"
     >
       Ivan Nevares
     </a>
@@ -96,12 +79,12 @@ function NavNameLink({
 
 /** Shared shell — divider lives in `.nav-shell` CSS, not Tailwind border classes */
 const NAV_SHELL_BASE = "fixed top-0 left-0 right-0 z-[100] nav-shell";
-const NAV_SHELL_CLASS = cn(NAV_SHELL_BASE, "bg-nav/80 backdrop-blur-sm");
+const NAV_SHELL_CLASS = cn(NAV_SHELL_BASE, "bg-background");
 const MOBILE_MENU_INVERTED = "mobile-menu-inverted text-foreground";
 
 const navLabel = cn(
   editorialNavType,
-  "leading-none transition-colors duration-300 whitespace-nowrap",
+  "glyph-center transition-colors duration-300 whitespace-nowrap",
 );
 
 const navInteractiveFocus =
@@ -123,8 +106,8 @@ function navAbacusLinkClass(className?: string) {
   return cn(
     editorialNavType,
     navInteractiveFocus,
-    "relative z-[1] block px-2.5 py-[0.2em] leading-none whitespace-nowrap",
-    "text-inherit transition-colors duration-200",
+    "nav-link-type glyph-center relative z-[1] block w-fit px-0 py-0 whitespace-nowrap",
+    "[color:inherit] transition-colors duration-200",
     className,
   );
 }
@@ -184,7 +167,7 @@ function NavAbacusList({
 
   return (
     <ul
-      className="relative flex flex-row items-center gap-1"
+      className="relative flex flex-row items-baseline gap-1"
       onMouseLeave={() => setHoverKey(null)}
     >
       <motion.span
@@ -209,7 +192,7 @@ function NavAbacusList({
               else itemRefs.current.delete(entry.key);
             }}
             className={cn(
-              "relative z-[1]",
+              "relative z-[1] leading-[0]",
               focused ? "text-background" : "text-foreground",
               i === entries.length - 1 && "optical-edge-end",
             )}
@@ -237,17 +220,21 @@ function LanguageToggle({
   const { language, setLanguage } = useLanguage();
 
   if (abacus) {
-    const itemClass = cn(navInteractiveFocus, "leading-none");
+    const itemClass = cn(
+      navInteractiveFocus,
+      "glyph-center inline-block",
+    );
     /** Selected lang — filled “pressed” block (white ink on foreground). */
-    const pressedClass = "bg-foreground text-background";
+    const pressedClass =
+      "glyph-center inline-block px-0 bg-foreground text-background";
     return (
       <span
-        className={navAbacusLinkClass("inline-flex items-baseline gap-x-1.5")}
+        className={navAbacusLinkClass("!flex h-[1cap] items-center gap-x-1.5")}
         role="group"
         aria-label="Language"
       >
         {language === "en" ? (
-          <span aria-current="true" className={cn("px-1", pressedClass)}>
+          <span aria-current="true" className={pressedClass}>
             En
           </span>
         ) : (
@@ -259,7 +246,7 @@ function LanguageToggle({
           ·
         </span>
         {language === "es" ? (
-          <span aria-current="true" className={cn("px-1", pressedClass)}>
+          <span aria-current="true" className={pressedClass}>
             Es
           </span>
         ) : (
@@ -272,7 +259,7 @@ function LanguageToggle({
   }
 
   const shellClass = cn(
-    "inline-flex items-baseline",
+    "inline-flex items-center",
     isMobile && "flex w-full min-h-[44px] items-center py-3",
   );
 
@@ -666,7 +653,7 @@ function NavBarInner() {
                 MOBILE_MENU_INVERTED,
               )
             : cn(
-                "bg-nav/80 backdrop-blur-sm max-lg:duration-[var(--mobile-menu-panel-close-duration)]",
+                "bg-background max-lg:duration-[var(--mobile-menu-panel-close-duration)]",
                 isCaseStudy &&
                   !caseStudyNavInteractive &&
                   !isMobileMenuOpen &&
@@ -682,15 +669,11 @@ function NavBarInner() {
             active={splashRevealActive}
             className="col-span-6 lg:col-span-3"
           >
-            <NavNameLink
-              href={homeHref}
-              isMenuOpen={isMobileMenuOpen}
-              theme={theme}
-            />
+            <NavNameLink href={homeHref} />
           </SplashClipReveal>
 
           <nav
-            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end min-w-0"
+            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end items-baseline min-w-0"
             aria-label={t('nav.mobileMenuTitle')}
           >
             <div className="hidden lg:block">

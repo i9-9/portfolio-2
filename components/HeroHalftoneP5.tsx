@@ -10,12 +10,10 @@ type Dot = {
   by: number;
   x: number;
   y: number;
-  vx: number;
-  vy: number;
   baseR: number;
 };
 
-/** Square grid halftone + pointer repel; DPR capped for sharp dots without 3× cost. */
+/** Square grid halftone + φ-scaled pointer whisper; DPR capped for sharp dots. */
 export function HeroHalftoneP5({
   className,
   onReady,
@@ -90,17 +88,24 @@ export function HeroHalftoneP5({
         }
       };
 
-      const SPACING = 17;
-      const REPEL_RADIUS = 195;
-      /** Max radial push — kept modest vs SPACING so the grid stays readable */
-      const REPEL_MAX = 38;
+      /**
+       * φ numerology — mirrors `--phi` / type scale in globals.css.
+       * Tight editorial stamp: small field, micro push, crisp falloff.
+       */
+      const PHI = 1.6180339887;
+      const PHI2 = PHI * PHI;
+      const PHI3 = PHI2 * PHI;
+      const TYPE_BASE_PX = 14; // --type-base
+      const SPACING = TYPE_BASE_PX * Math.sqrt(PHI); // ≈ 17.81
+      /** Influence field — spacing × φ³ (~4 cells); local, graphic */
+      const REPEL_RADIUS = SPACING * PHI3;
+      /** Max radial push — spacing × φ (~1.6 cells); present without excess */
+      const REPEL_MAX = SPACING * PHI;
       /** Cap draw rate — halftone no necesita 60fps */
       const TARGET_FPS = 24;
-      /** Cursor smoothing so repulsion doesn’t “tear” on fast moves */
-      const POINTER_LERP = 0.22;
-      /** Velocity integration toward target (spring-ish, smoother than single lerp) */
-      const SPRING_K = 0.11;
-      const SPRING_FRICTION = 0.86;
+      /** Cursor + dots: exponential ease, 1/√φ — snappy, no bounce */
+      const POINTER_LERP = 1 / Math.sqrt(PHI);
+      const DOT_LERP = 1 / Math.sqrt(PHI);
 
       let dots: Dot[] = [];
       let cw = 0;
@@ -122,7 +127,7 @@ export function HeroHalftoneP5({
             const t = Math.pow(by / ch, 0.72);
             const wobble = 0.88 + 0.12 * Math.sin(ix * 0.55 + iy * 0.31);
             const baseR = (p.lerp(0.75, 2.95, t) * wobble * SPACING) / 7.25;
-            dots.push({ bx, by, x: bx, y: by, vx: 0, vy: 0, baseR });
+            dots.push({ bx, by, x: bx, y: by, baseR });
           }
         }
       };
@@ -165,20 +170,16 @@ export function HeroHalftoneP5({
             const d2 = dx * dx + dy * dy;
             if (d2 > 0 && d2 < R2) {
               const dist = Math.sqrt(d2);
-              /** Smoothstep on normalized radius — softer rim than quadratic (R-dist)²/R² */
+              /** Ease by φ — crisp rim without killing the core push */
               const t = 1 - dist / R;
-              const f = t * t * (3 - 2 * t);
+              const f = Math.pow(t, PHI);
               const push = f * REPEL_MAX;
               tx += (dx / dist) * push;
               ty += (dy / dist) * push;
             }
 
-            d.vx += (tx - d.x) * SPRING_K;
-            d.vy += (ty - d.y) * SPRING_K;
-            d.vx *= SPRING_FRICTION;
-            d.vy *= SPRING_FRICTION;
-            d.x += d.vx;
-            d.y += d.vy;
+            d.x += (tx - d.x) * DOT_LERP;
+            d.y += (ty - d.y) * DOT_LERP;
 
             p.circle(d.x, d.y, d.baseR * 2);
           }
@@ -258,8 +259,9 @@ export function HeroHalftoneP5({
     };
   }, [reduced]);
 
-  /** Static grid matches p5 `SPACING` when motion is reduced (p5 sketch is skipped). */
+  /** Static grid matches p5 pitch (type-base × √φ) when motion is reduced. */
   if (reduced) {
+    const spacingPx = 14 * Math.sqrt(1.6180339887);
     return (
       <div
         className={cn("absolute inset-0 overflow-hidden", className)}
@@ -267,7 +269,7 @@ export function HeroHalftoneP5({
         style={{
           backgroundImage:
             "radial-gradient(circle at center, hsl(var(--foreground) / 0.16) 1.1px, transparent 1.2px)",
-          backgroundSize: "17px 17px",
+          backgroundSize: `${spacingPx}px ${spacingPx}px`,
         }}
       />
     );
