@@ -278,7 +278,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 index={heroRevealIndex(splashNavItemCount, 0)}
                 reduced={heroReduced}
               >
-                <span className="hero-name glyph-center optical-edge-start bg-foreground pl-[0.08em] pr-[0.02em] text-background">
+                <span className="hero-name glyph-center optical-edge-start bg-foreground pl-[0.08em] pr-[0.02em] py-[0.12em] text-background">
                   Ivan Nevares
                 </span>
               </SplashClipReveal>
@@ -287,7 +287,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 index={heroRevealIndex(splashNavItemCount, 1)}
                 reduced={heroReduced}
               >
-                <span className="text-hero-subtitle glyph-center bg-foreground pl-[0.08em] pr-[0.02em] text-background font-helveticaNowTextRegular tracking-normal">
+                <span className="text-hero-subtitle glyph-center bg-foreground pl-[0.08em] pr-[0.02em] py-[0.12em] text-background font-helveticaNowTextRegular tracking-normal">
                   {t("hero.subtitle")}
                 </span>
               </SplashClipReveal>
@@ -308,7 +308,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             transition={{ duration: 0.85, ease: EASE_OUT_EXPO }}
             className={cn(
               editorialNavType,
-              "glyph-center mb-6 inline-block bg-foreground pl-[0.08em] pr-[0.02em] text-background",
+              "glyph-center mb-6 inline-block bg-foreground pl-[0.08em] pr-[0.02em] py-[0.15em] text-background",
             )}
           >
             {t("work.title")}
@@ -361,7 +361,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           transition={{ duration: 1, ease: EASE_OUT_EXPO }}
           className={cn(
             editorialNavType,
-            "glyph-center lg:col-span-2 self-start inline-block w-fit bg-foreground pl-[0.08em] pr-[0.02em] text-background",
+            "glyph-center lg:col-span-2 self-start inline-block w-fit bg-foreground pl-[0.08em] pr-[0.02em] py-[0.15em] text-background",
           )}
         >
           {t("about.title")}
@@ -431,7 +431,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             <p
               className={cn(
                 editorialNavType,
-                "glyph-center inline-block max-w-[min(100%,42rem)] bg-foreground pl-[0.08em] pr-[0.02em] text-background",
+                "glyph-center inline-block max-w-[min(100%,42rem)] bg-foreground pl-[0.08em] pr-[0.02em] py-[0.15em] text-background",
               )}
             >
               {t("contact.kicker")}

@@ -70,7 +70,7 @@ function NavNameLink({ href }: { href: string }) {
   return (
     <a
       href={href}
-      className="optical-edge-start glyph-center inline-block bg-foreground pl-[0.08em] pr-[0.02em] text-background text-name-nav tracking-[-0.02em] font-helveticaNowDisplayBold truncate"
+      className="optical-edge-start glyph-center inline-block bg-foreground pl-[0.08em] pr-[0.02em] py-[0.12em] text-background text-name-nav tracking-[-0.02em] font-helveticaNowDisplayBold truncate"
     >
       Ivan Nevares
     </a>
