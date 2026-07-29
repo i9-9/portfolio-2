@@ -14,6 +14,13 @@ export const EASE_GOLDEN = [0.618, 0, 0.382, 1] as const;
  */
 export const FOOTER_PARALLAX_TRAVEL = "-100%";
 
+/**
+ * Mobile parallax travel — reduced to -50% for better performance and less
+ * visual jarring on smaller screens. Full -100% travel can cause jank on
+ * mobile due to larger pixel distances and weaker GPUs.
+ */
+export const MOBILE_PARALLAX_TRAVEL = "-50%";
+
 /** Loader exit, nav slide — slow cinematic ease. */
 export const EASE_CINEMATIC = [0.87, 0, 0.13, 1] as const;
 

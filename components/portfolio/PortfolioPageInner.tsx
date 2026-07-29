@@ -27,7 +27,7 @@ import {
   scrollToLandingHashReliable,
 } from "@/lib/scroll/landingHash";
 import { getLandingLenis } from "@/lib/scroll/lenisStore";
-import { EASE_OUT_EXPO, FOOTER_PARALLAX_TRAVEL } from "@/lib/motion/easing";
+import { EASE_OUT_EXPO, FOOTER_PARALLAX_TRAVEL, MOBILE_PARALLAX_TRAVEL } from "@/lib/motion/easing";
 import {
   heroRevealIndex,
   SplashClipReveal,
@@ -227,6 +227,16 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
   const splashNavItemCount = isLgNav ? SPLASH_NAV_ITEMS_LG : SPLASH_NAV_ITEMS_SM;
 
+  /** Detect mobile for reduced parallax travel distance */
+  const [isMobile, setIsMobile] = useState(false);
+  useLayoutEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const workRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef<HTMLElement | null>(null);
@@ -242,26 +252,30 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const sep3InView = useInView(sep3Ref, { once: true, margin: "-5%" });
 
   /**
-   * Work section parallax — same effect as footer: the work content
-   * counter-translates 1:1 against scroll (100% travel, linear), appearing
-   * pinned behind the hero while it lifts away. Scroll-locked: no spring,
-   * no ease — smoothing comes from Lenis.
+   * Work section parallax — optimized for all devices. Uses reduced travel
+   * on mobile (-50%) for better performance. Forces GPU acceleration via
+   * translate3d. Scroll-locked: no spring, no ease — smoothing comes from Lenis.
    */
   const { scrollYProgress: workProgress } = useScroll({
     target: workRef,
     offset: ["start end", "end end"],
   });
+  const parallaxTravel = isMobile ? MOBILE_PARALLAX_TRAVEL : FOOTER_PARALLAX_TRAVEL;
   const workParallaxY = useTransform(
     workProgress,
     [0, 1],
-    [FOOTER_PARALLAX_TRAVEL, "0%"],
+    [parallaxTravel, "0%"],
+  );
+  // Convert to translate3d for GPU acceleration
+  const workTransform = useTransform(
+    workParallaxY,
+    (y) => `translate3d(0, ${y}, 0)`
   );
 
   /**
-   * About section parallax — same effect: the about content
-   * counter-translates 1:1 against scroll (100% travel, linear), appearing
-   * pinned behind the work section while it lifts away. Scroll-locked: no spring,
-   * no ease — smoothing comes from Lenis.
+   * About section parallax — optimized for all devices. Uses reduced travel
+   * on mobile (-50%) for better performance. Forces GPU acceleration via
+   * translate3d. Scroll-locked: no spring, no ease — smoothing comes from Lenis.
    */
   const { scrollYProgress: aboutProgress } = useScroll({
     target: aboutRef,
@@ -270,14 +284,18 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const aboutParallaxY = useTransform(
     aboutProgress,
     [0, 1],
-    [FOOTER_PARALLAX_TRAVEL, "0%"],
+    [parallaxTravel, "0%"],
+  );
+  // Convert to translate3d for GPU acceleration
+  const aboutTransform = useTransform(
+    aboutParallaxY,
+    (y) => `translate3d(0, ${y}, 0)`
   );
 
   /**
-   * Footer reveal — the inner content counter-translates 1:1 against scroll
-   * (100% travel, linear), so it reads as pinned behind the page while the
-   * section above lifts away like a curtain. Scroll-locked: no spring, no
-   * ease — smoothing comes from Lenis, so it always tracks the mousewheel.
+   * Footer reveal — optimized for all devices. Uses reduced travel
+   * on mobile (-50%) for better performance. Forces GPU acceleration via
+   * translate3d. Scroll-locked: no spring, no ease — smoothing comes from Lenis.
    */
   const { scrollYProgress: footerProgress } = useScroll({
     target: contactRef,
@@ -286,7 +304,12 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const footerParallaxY = useTransform(
     footerProgress,
     [0, 1],
-    [FOOTER_PARALLAX_TRAVEL, "0%"],
+    [parallaxTravel, "0%"],
+  );
+  // Convert to translate3d for GPU acceleration
+  const footerTransform = useTransform(
+    footerParallaxY,
+    (y) => `translate3d(0, ${y}, 0)`
   );
 
   const copyEmail = async () => {
@@ -356,7 +379,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       {v2Mode === "web" ? (
         <section id="work" ref={workRef} className="relative overflow-hidden">
           <motion.div
-            style={heroReduced ? undefined : { y: workParallaxY, willChange: "transform" }}
+            style={heroReduced ? undefined : { transform: workTransform }}
             className="px-4 lg:px-6 py-28"
           >
             <motion.p
@@ -414,7 +437,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         className="relative overflow-hidden"
       >
         <motion.div
-          style={heroReduced ? undefined : { y: aboutParallaxY, willChange: "transform" }}
+          style={heroReduced ? undefined : { transform: aboutTransform }}
           className="px-4 lg:px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12"
         >
           <motion.p
@@ -485,7 +508,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         />
 
         <motion.div
-          style={heroReduced ? undefined : { y: footerParallaxY, willChange: "transform" }}
+          style={heroReduced ? undefined : { transform: footerTransform }}
           className="relative z-[1] flex flex-1 flex-col"
         >
           <div className="relative flex flex-1 flex-col justify-between gap-12 px-4 pt-[var(--space-16)] pb-[var(--space-12)] lg:gap-16 lg:px-6 lg:pt-[var(--space-24)] lg:pb-[var(--space-16)]">

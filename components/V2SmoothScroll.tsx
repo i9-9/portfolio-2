@@ -46,11 +46,13 @@ export function V2SmoothScroll({ children }: { children: ReactNode }) {
       if (cancelled) return;
 
       lenis = new Lenis({
-        /** Higher lerp = closer to native scroll, less “floating” lag. */
+        /** Higher lerp = closer to native scroll, less "floating" lag. */
         lerp: 0.14,
         wheelMultiplier: 1,
         touchMultiplier: 1.1,
         smoothWheel: true,
+        /** Disable smooth scroll on touch for better native feel and performance on mobile */
+        syncTouch: false,
         autoRaf: true,
         anchors: true,
       });
