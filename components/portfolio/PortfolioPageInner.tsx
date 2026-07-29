@@ -217,9 +217,13 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   }, []);
 
   const [isLgNav, setIsLgNav] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(true);
   useLayoutEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
-    const update = () => setIsLgNav(mq.matches);
+    const update = () => {
+      setIsLgNav(mq.matches);
+      setIsDesktop(mq.matches);
+    };
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
@@ -246,10 +250,12 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
    * (100% travel, linear), so it reads as pinned behind the page while the
    * section above lifts away like a curtain. Scroll-locked: no spring, no
    * ease — smoothing comes from Lenis, so it always tracks the mousewheel.
+   * Disabled on mobile (<1024px) to prevent scroll jank and elastic bounce conflicts.
    */
   const { scrollYProgress: footerProgress } = useScroll({
     target: contactRef,
     offset: ["start end", "end end"],
+    layoutEffect: false,
   });
   const footerParallaxY = useTransform(
     footerProgress,
@@ -443,7 +449,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         />
 
         <motion.div
-          style={heroReduced ? undefined : { y: footerParallaxY, willChange: "transform" }}
+          style={heroReduced || !isDesktop ? undefined : { y: footerParallaxY, willChange: "transform" }}
           className="relative z-[1] flex flex-1 flex-col"
         >
           <div className="relative flex flex-1 flex-col justify-between gap-12 px-4 pt-[var(--space-16)] pb-[var(--space-12)] lg:gap-16 lg:px-6 lg:pt-[var(--space-24)] lg:pb-[var(--space-16)]">
@@ -578,11 +584,13 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             )}
           </motion.div>
 
-          {/* Extends the marquee band downward so the spring settle never flashes a gap. */}
-          <div
-            className="absolute inset-x-0 top-full h-[45vh] bg-[#DFFF4D]"
-            aria-hidden
-          />
+          {/* Extends the marquee band downward so the spring settle never flashes a gap. Desktop only. */}
+          {isDesktop && (
+            <div
+              className="absolute inset-x-0 top-full h-[45vh] bg-[#DFFF4D]"
+              aria-hidden
+            />
+          )}
         </motion.div>
       </footer>
 
