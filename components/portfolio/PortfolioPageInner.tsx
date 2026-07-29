@@ -258,6 +258,22 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   );
 
   /**
+   * About section parallax — same effect: the about content
+   * counter-translates 1:1 against scroll (100% travel, linear), appearing
+   * pinned behind the work section while it lifts away. Scroll-locked: no spring,
+   * no ease — smoothing comes from Lenis.
+   */
+  const { scrollYProgress: aboutProgress } = useScroll({
+    target: aboutRef,
+    offset: ["start end", "end end"],
+  });
+  const aboutParallaxY = useTransform(
+    aboutProgress,
+    [0, 1],
+    [FOOTER_PARALLAX_TRAVEL, "0%"],
+  );
+
+  /**
    * Footer reveal — the inner content counter-translates 1:1 against scroll
    * (100% travel, linear), so it reads as pinned behind the page while the
    * section above lifts away like a curtain. Scroll-locked: no spring, no
@@ -395,57 +411,62 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       <section
         id="about"
         ref={aboutRef}
-        className="px-4 lg:px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12"
+        className="relative overflow-hidden"
       >
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={aboutInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: EASE_OUT_EXPO }}
-          className={cn(
-            editorialNavType,
-            "glyph-center lg:col-span-2 self-start inline-block w-fit bg-foreground pl-[0.08em] pr-[0.02em] py-[0.15em] text-background",
-          )}
-        >
-          {t("about.title")}
-        </motion.p>
-
-        <motion.p
-          className="lg:col-span-4 text-type-body font-helveticaNowTextRegular text-muted-foreground leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={aboutInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.1, delay: 0.12, ease: EASE_OUT_EXPO }}
-        >
-          {t("about.p1")}
-          <a
-            href={WOHL_STUDIO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-foreground/90 underline decoration-muted-foreground/50 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground/50"
-          >
-            {t("contact.blurbWohl")}
-          </a>
-          {t("about.p2")}
-          <br />
-          {t("about.freelance")}
-        </motion.p>
-
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={aboutInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.1, delay: 0.24, ease: EASE_OUT_EXPO }}
-          className="lg:col-span-3 lg:col-start-10"
+          style={heroReduced ? undefined : { y: aboutParallaxY, willChange: "transform" }}
+          className="px-4 lg:px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12"
         >
-          {aboutInView ? (
-            <Suspense
-              fallback={
-                <div className="w-full aspect-square bg-muted/50 animate-pulse" />
-              }
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={aboutInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1, ease: EASE_OUT_EXPO }}
+            className={cn(
+              editorialNavType,
+              "glyph-center lg:col-span-2 self-start inline-block w-fit bg-foreground pl-[0.08em] pr-[0.02em] py-[0.15em] text-background",
+            )}
+          >
+            {t("about.title")}
+          </motion.p>
+
+          <motion.p
+            className="lg:col-span-4 text-type-body font-helveticaNowTextRegular text-muted-foreground leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={aboutInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1.1, delay: 0.12, ease: EASE_OUT_EXPO }}
+          >
+            {t("about.p1")}
+            <a
+              href={WOHL_STUDIO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground/90 underline decoration-muted-foreground/50 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground/50"
             >
-              <GeometricFlowCard />
-            </Suspense>
-          ) : (
-            <div className="w-full aspect-square bg-muted/50" aria-hidden />
-          )}
+              {t("contact.blurbWohl")}
+            </a>
+            {t("about.p2")}
+            <br />
+            {t("about.freelance")}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={aboutInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1.1, delay: 0.24, ease: EASE_OUT_EXPO }}
+            className="lg:col-span-3 lg:col-start-10"
+          >
+            {aboutInView ? (
+              <Suspense
+                fallback={
+                  <div className="w-full aspect-square bg-muted/50 animate-pulse" />
+                }
+              >
+                <GeometricFlowCard />
+              </Suspense>
+            ) : (
+              <div className="w-full aspect-square bg-muted/50" aria-hidden />
+            )}
+          </motion.div>
         </motion.div>
       </section>
 
