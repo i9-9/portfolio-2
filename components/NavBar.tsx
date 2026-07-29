@@ -106,7 +106,7 @@ function navAbacusLinkClass(className?: string) {
   return cn(
     editorialNavType,
     navInteractiveFocus,
-    "nav-link-type glyph-center relative z-[1] block w-fit px-0 py-0 whitespace-nowrap",
+    "nav-link-type glyph-center relative z-[1] block w-fit pl-[0.08em] pr-[0.02em] py-[0.12em] whitespace-nowrap",
     "[color:inherit] transition-colors duration-200",
     className,
   );
