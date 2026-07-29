@@ -217,9 +217,13 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   }, []);
 
   const [isLgNav, setIsLgNav] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(true);
   useLayoutEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
-    const update = () => setIsLgNav(mq.matches);
+    const update = () => {
+      setIsLgNav(mq.matches);
+      setIsDesktop(mq.matches);
+    };
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
@@ -443,7 +447,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         />
 
         <motion.div
-          style={heroReduced ? undefined : { y: footerParallaxY, willChange: "transform" }}
+          style={heroReduced || !isDesktop ? undefined : { y: footerParallaxY, willChange: "transform" }}
           className="relative z-[1] flex flex-1 flex-col"
         >
           <div className="relative flex flex-1 flex-col justify-between gap-12 px-4 pt-[var(--space-16)] pb-[var(--space-12)] lg:gap-16 lg:px-6 lg:pt-[var(--space-24)] lg:pb-[var(--space-16)]">
