@@ -667,7 +667,7 @@ function NavBarInner() {
             index={0}
             reduced={reducedMotion}
             active={splashRevealActive}
-            className="col-span-6 lg:col-span-3"
+            className="col-span-6 lg:col-span-3 flex items-center"
           >
             <NavNameLink href={homeHref} />
           </SplashClipReveal>
@@ -686,6 +686,7 @@ function NavBarInner() {
                 index={1}
                 reduced={reducedMotion}
                 active={splashRevealActive}
+                className="flex items-center"
               >
                 <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                   <button
