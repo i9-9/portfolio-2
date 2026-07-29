@@ -222,11 +222,11 @@ function LanguageToggle({
   if (abacus) {
     const itemClass = cn(
       navInteractiveFocus,
-      "glyph-center inline-block",
+      "glyph-center inline-block pl-[0.08em] pr-[0.02em] py-[0.12em] bg-foreground/10 text-foreground hover:bg-foreground/20 transition-colors",
     );
     /** Selected lang — filled “pressed” block (white ink on foreground). */
     const pressedClass =
-      "glyph-center inline-block px-0 bg-foreground text-background";
+      "glyph-center inline-block pl-[0.08em] pr-[0.02em] py-[0.12em] bg-foreground text-background";
     return (
       <span
         className={navAbacusLinkClass("!flex h-[1cap] items-center gap-x-1.5")}
