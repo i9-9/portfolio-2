@@ -402,7 +402,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             className="text-foreground/90 underline decoration-muted-foreground/50 underline-offset-2 transition-colors hover:text-foreground hover:decoration-foreground/50"
           >
             {t("contact.blurbWohl")}
-          </a>{" "}
+          </a>
           {t("about.p2")}
           <br />
           {t("about.freelance")}
@@ -455,7 +455,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
               transition={{ duration: 1, delay: 0.08, ease: EASE_OUT_EXPO }}
               className="flex w-full flex-wrap items-center gap-x-5 gap-y-3"
             >
-              <div className="inline-block bg-[hsl(0_0%_18%)] px-[0.15em] pt-[0.22em] pb-[0.32em] text-[hsl(0_0%_98%)] text-name-nav leading-[1.05] tracking-[-0.02em] font-helveticaNowDisplayBold normal-case">
+              <div className="inline-block bg-foreground px-[0.15em] py-[0.12em] text-background text-name-nav leading-[1.05] tracking-[-0.02em] font-helveticaNowDisplayBold normal-case">
                 <span className="block">{t("contact.kickerLine1")}</span>
                 <span className="block">{t("contact.kickerLine2")}</span>
               </div>

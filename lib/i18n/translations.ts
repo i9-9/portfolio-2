@@ -38,7 +38,7 @@ export const translations = {
       socialNav: "Social & profiles",
       kickerLine1: "Graphic design · Front End Development",
       kickerLine2: "Buenos Aires, Argentina",
-      stamp: "MMXXVI · BUE",
+      stamp: "MMXXVI · BS AS.",
       blurbWohl: "Wohl Studio",
       marquee:
         "Graphic design · Front End Development · ivannevares9@gmail.com · ",
@@ -108,7 +108,7 @@ export const translations = {
       socialNav: "Redes y perfiles",
       kickerLine1: "Diseño gráfico · Desarrollo Front End",
       kickerLine2: "Buenos Aires, Argentina",
-      stamp: "MMXXVI · BUE",
+      stamp: "MMXXVI · BS AS.",
       blurbWohl: "Wohl Studio",
       marquee:
         "Diseño gráfico · Desarrollo Front End · ivannevares9@gmail.com · ",
