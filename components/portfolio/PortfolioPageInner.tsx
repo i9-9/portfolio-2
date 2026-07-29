@@ -428,14 +428,15 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             transition={{ duration: 1, delay: 0.08, ease: EASE_OUT_EXPO }}
             className="mb-10 flex w-full flex-wrap items-center gap-x-5 gap-y-3"
           >
-            <p
+            <div
               className={cn(
                 editorialNavType,
                 "glyph-center inline-block max-w-[min(100%,42rem)] bg-foreground pl-[0.08em] pr-[0.02em] py-[0.15em] text-background",
               )}
             >
-              {t("contact.kicker")}
-            </p>
+              <p>{t("contact.kickerLine1")}</p>
+              <p>{t("contact.kickerLine2")}</p>
+            </div>
             <span
               className="hidden h-px min-w-[3rem] flex-1 bg-foreground/25 sm:block"
               aria-hidden

@@ -35,7 +35,8 @@ export const translations = {
       mailCopyFailed: "Couldn’t copy — select the address manually",
       elsewhere: "Elsewhere",
       socialNav: "Social & profiles",
-      kicker: "Graphic design · Front End Development · Buenos Aires, Argentina",
+      kickerLine1: "Graphic design · Front End Development",
+      kickerLine2: "Buenos Aires, Argentina",
       stamp: "MMXXVI · BUE",
       blurbWohl: "Wohl Studio",
       marquee:
@@ -103,7 +104,8 @@ export const translations = {
       mailCopyFailed: "No se pudo copiar — seleccioná el mail a mano",
       elsewhere: "También en",
       socialNav: "Redes y perfiles",
-      kicker: "Diseño gráfico · Desarrollo Front End · Buenos Aires, Argentina",
+      kickerLine1: "Diseño gráfico · Desarrollo Front End",
+      kickerLine2: "Buenos Aires, Argentina",
       stamp: "MMXXVI · BUE",
       blurbWohl: "Wohl Studio",
       marquee:
