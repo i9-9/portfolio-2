@@ -13,13 +13,13 @@ function MenuLines({ className }: { className?: string }) {
     <>
       <span
         className={cn(
-          "absolute left-0 top-[6px] h-[1.5px] w-full bg-current",
+          "absolute left-0 top-[8.5px] h-[1.5px] w-full bg-current",
           className,
         )}
       />
       <span
         className={cn(
-          "absolute left-0 top-[15px] h-[1.5px] w-full bg-current",
+          "absolute left-0 top-[14px] h-[1.5px] w-full bg-current",
           className,
         )}
       />
