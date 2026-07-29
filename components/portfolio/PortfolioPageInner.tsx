@@ -227,16 +227,6 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
 
   const splashNavItemCount = isLgNav ? SPLASH_NAV_ITEMS_LG : SPLASH_NAV_ITEMS_SM;
 
-  /** Disable parallax on mobile to prevent jank and flickering */
-  const [isMobile, setIsMobile] = useState(false);
-  useLayoutEffect(() => {
-    const mq = window.matchMedia("(max-width: 1023px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
   const workRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef<HTMLElement | null>(null);
@@ -366,7 +356,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       {v2Mode === "web" ? (
         <section id="work" ref={workRef} className="relative overflow-hidden">
           <motion.div
-            style={heroReduced || isMobile ? undefined : { y: workParallaxY, willChange: "transform" }}
+            style={heroReduced ? undefined : { y: workParallaxY, willChange: "transform" }}
             className="px-4 lg:px-6 py-28"
           >
             <motion.p
@@ -424,7 +414,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         className="relative overflow-hidden"
       >
         <motion.div
-          style={heroReduced || isMobile ? undefined : { y: aboutParallaxY, willChange: "transform" }}
+          style={heroReduced ? undefined : { y: aboutParallaxY, willChange: "transform" }}
           className="px-4 lg:px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12"
         >
           <motion.p
@@ -495,7 +485,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         />
 
         <motion.div
-          style={heroReduced || isMobile ? undefined : { y: footerParallaxY, willChange: "transform" }}
+          style={heroReduced ? undefined : { y: footerParallaxY, willChange: "transform" }}
           className="relative z-[1] flex flex-1 flex-col"
         >
           <div className="relative flex flex-1 flex-col justify-between gap-12 px-4 pt-[var(--space-16)] pb-[var(--space-12)] lg:gap-16 lg:px-6 lg:pt-[var(--space-24)] lg:pb-[var(--space-16)]">
