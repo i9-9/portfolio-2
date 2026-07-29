@@ -431,7 +431,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             <div
               className={cn(
                 editorialNavType,
-                "glyph-center inline-block max-w-[min(100%,42rem)] bg-foreground pl-[0.08em] pr-[0.02em] py-[0.15em] text-background",
+                "glyph-center inline-block max-w-[min(100%,42rem)] bg-foreground px-[0.15em] py-[0.15em] text-background",
               )}
             >
               <p>{t("contact.kickerLine1")}</p>

@@ -70,7 +70,7 @@ function NavNameLink({ href }: { href: string }) {
   return (
     <a
       href={href}
-      className="optical-edge-start glyph-center inline-block bg-foreground pl-[0.08em] pr-[0.02em] py-[0.12em] text-background text-name-nav tracking-[-0.02em] font-helveticaNowDisplayBold truncate"
+      className="optical-edge-start glyph-center inline-block bg-foreground px-[0.15em] py-[0.12em] text-background text-name-nav tracking-[-0.02em] font-helveticaNowDisplayBold truncate"
     >
       Ivan Nevares
     </a>
@@ -106,7 +106,7 @@ function navAbacusLinkClass(className?: string) {
   return cn(
     editorialNavType,
     navInteractiveFocus,
-    "nav-link-type glyph-center relative z-[1] block w-fit pl-[0.08em] pr-[0.02em] py-[0.12em] whitespace-nowrap",
+    "nav-link-type glyph-center relative z-[1] block w-fit px-[0.15em] py-[0.12em] whitespace-nowrap",
     "[color:inherit] transition-colors duration-200",
     className,
   );
@@ -222,11 +222,11 @@ function LanguageToggle({
   if (abacus) {
     const itemClass = cn(
       navInteractiveFocus,
-      "glyph-center inline-block pl-[0.08em] pr-[0.02em] py-[0.12em] bg-foreground/10 text-foreground hover:bg-foreground/20 transition-colors",
+      "glyph-center inline-block px-[0.15em] py-[0.12em] bg-foreground/10 text-foreground hover:bg-foreground/20 transition-colors",
     );
     /** Selected lang — filled “pressed” block (white ink on foreground). */
     const pressedClass =
-      "glyph-center inline-block pl-[0.08em] pr-[0.02em] py-[0.12em] bg-foreground text-background";
+      "glyph-center inline-block px-[0.15em] py-[0.12em] bg-foreground text-background";
     return (
       <span
         className={navAbacusLinkClass("!flex h-[1cap] items-center gap-x-1.5")}
