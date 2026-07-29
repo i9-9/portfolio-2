@@ -242,6 +242,22 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const sep3InView = useInView(sep3Ref, { once: true, margin: "-5%" });
 
   /**
+   * Work section parallax — same effect as footer: the work content
+   * counter-translates 1:1 against scroll (100% travel, linear), appearing
+   * pinned behind the hero while it lifts away. Scroll-locked: no spring,
+   * no ease — smoothing comes from Lenis.
+   */
+  const { scrollYProgress: workProgress } = useScroll({
+    target: workRef,
+    offset: ["start end", "end end"],
+  });
+  const workParallaxY = useTransform(
+    workProgress,
+    [0, 1],
+    [FOOTER_PARALLAX_TRAVEL, "0%"],
+  );
+
+  /**
    * Footer reveal — the inner content counter-translates 1:1 against scroll
    * (100% travel, linear), so it reads as pinned behind the page while the
    * section above lifts away like a curtain. Scroll-locked: no spring, no
@@ -322,48 +338,53 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       </div>
 
       {v2Mode === "web" ? (
-        <section id="work" ref={workRef} className="px-4 lg:px-6 py-20">
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={workInView ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.85, ease: EASE_OUT_EXPO }}
-            className={cn(
-              editorialNavType,
-              "glyph-center mb-6 inline-block bg-foreground pl-[0.08em] pr-[0.02em] py-[0.15em] text-background",
-            )}
+        <section id="work" ref={workRef} className="relative overflow-hidden">
+          <motion.div
+            style={heroReduced ? undefined : { y: workParallaxY, willChange: "transform" }}
+            className="px-4 lg:px-6 py-20"
           >
-            {t("work.title")}
-          </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={workInView ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: 0.85, ease: EASE_OUT_EXPO }}
+              className={cn(
+                editorialNavType,
+                "glyph-center mb-6 inline-block bg-foreground pl-[0.08em] pr-[0.02em] py-[0.15em] text-background",
+              )}
+            >
+              {t("work.title")}
+            </motion.p>
 
-          <div>
-            {PROJECT_ROWS.map(
-              ({ key, metricEn, metricEs }, i) => {
-                const project = getProjectBySlug(key);
-                if (!project) return null;
-                return (
-                  <div key={key}>
-                    {i > 0 ? (
-                      <AnimatedLine
+            <div>
+              {PROJECT_ROWS.map(
+                ({ key, metricEn, metricEs }, i) => {
+                  const project = getProjectBySlug(key);
+                  if (!project) return null;
+                  return (
+                    <div key={key}>
+                      {i > 0 ? (
+                        <AnimatedLine
+                          inView={workInView}
+                          delay={(i - 1) * WORK_LINE_STAGGER}
+                          duration={WORK_LINE_DURATION}
+                        />
+                      ) : null}
+                      <ProjectRow
+                        slug={key}
+                        index={i + 1}
+                        name={project.name}
+                        category={t(`work.${key}.title` as Parameters<typeof t>[0])}
+                        metric={isEn ? metricEn : metricEs}
+                        year={project.year}
+                        delay={i * 0.06}
                         inView={workInView}
-                        delay={(i - 1) * WORK_LINE_STAGGER}
-                        duration={WORK_LINE_DURATION}
                       />
-                    ) : null}
-                    <ProjectRow
-                      slug={key}
-                      index={i + 1}
-                      name={project.name}
-                      category={t(`work.${key}.title` as Parameters<typeof t>[0])}
-                      metric={isEn ? metricEn : metricEs}
-                      year={project.year}
-                      delay={i * 0.06}
-                      inView={workInView}
-                    />
-                  </div>
-                );
-              },
-            )}
-          </div>
+                    </div>
+                  );
+                },
+              )}
+            </div>
+          </motion.div>
         </section>
       ) : null}
 
