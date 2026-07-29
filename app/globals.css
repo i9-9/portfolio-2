@@ -290,10 +290,11 @@
 .nav-bar-inner {
   @apply grid-container;
   align-items: center;
+  align-content: center;
   /*
    * Metric context = Display Bold at name size. `1ex` / `1cap` on children
    * resolve against this font so link caps match the name’s x-height.
-   * Cap-height band centered in the nav module; baseline alignment preserved.
+   * Name + links are vertically centered in the nav module.
    * line-height: 0 kills inherited struts on wrappers (SplashClipReveal, etc.).
    */
   font-family: var(--font-helvetica-now), "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -301,13 +302,6 @@
   font-size: var(--type-name-nav);
   line-height: 0;
   box-sizing: border-box;
-  padding-block: calc((var(--nav-height) - 1cap) / 2);
-}
-
-@media (min-width: 1024px) {
-  .nav-bar-inner {
-    align-items: baseline;
-  }
 }
 
 .nav-bar-inner .text-name-nav {
@@ -477,6 +471,7 @@ html {
   .text-type-grid-label { font-size: var(--type-grid-label); }
   .text-type-grid-num { font-size: var(--type-grid-num); }
   .text-type-0 { font-size: var(--type-0); }
+  .text-type-3 { font-size: var(--type-3); }
   .text-type-project { font-size: var(--type-project-name); }
   .text-type-project-subtitle { font-size: var(--type-project-subtitle); }
   .text-type-case-title { font-size: var(--type-case-title); }
@@ -636,8 +631,6 @@ html {
   --grid-rule: hsl(0 0% 50% / 0.14);
   --grid-rule-strong: hsl(0 0% 50% / 0.22);
   --grid-fill: hsl(0 0% 50% / 0.03);
-  --guide: hsl(0 72% 52% / 0.45);
-  --guide-accent: hsl(192 70% 45% / 0.55);
   --ruler-size: 11px;
   --ruler-bg: #f0f0f0;
   --ruler-edge: #d4d4d4;
@@ -653,8 +646,6 @@ html {
   --grid-rule: hsl(0 0% 100% / 0.08);
   --grid-rule-strong: hsl(0 0% 100% / 0.14);
   --grid-fill: hsl(0 0% 100% / 0.025);
-  --guide: hsl(0 70% 62% / 0.4);
-  --guide-accent: hsl(192 80% 60% / 0.5);
   --ruler-bg: #2c2c2c;
   --ruler-edge: #1e1e1e;
   --ruler-tick: #8c8c8c;
@@ -724,34 +715,6 @@ html {
   border-left: 1px solid var(--grid-rule);
   border-right: 1px solid var(--grid-rule);
   background: var(--grid-fill);
-}
-
-.grid-guide {
-  position: absolute;
-  left: 0;
-  right: 0;
-  border-top: 1px solid var(--guide);
-}
-
-.grid-guide--accent {
-  border-top-color: var(--guide-accent);
-}
-
-.grid-guide__label {
-  position: absolute;
-  left: calc(var(--ruler-size) + 4px);
-  transform: translateY(-100%);
-  padding: 0 3px;
-  font-family: var(--font-helvetica-now-text), "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 7px;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--guide);
-}
-
-.grid-guide--accent .grid-guide__label {
-  color: var(--guide-accent);
 }
 
 /* Figma / Illustrator rulers */

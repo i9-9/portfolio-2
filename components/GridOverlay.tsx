@@ -6,56 +6,7 @@ interface GridOverlayProps {
   isVisible: boolean;
 }
 
-type TypeGuides = {
-  navBottom: number;
-  baseline: number;
-  xHeight: number;
-  capHeight: number;
-  linkCap: number | null;
-};
-
 type Tick = { pos: number; size: "xs" | "sm" | "md" | "lg" };
-
-function measureTypeGuides(): TypeGuides | null {
-  const header = document.querySelector("header");
-  if (!header) return null;
-
-  const name =
-    header.querySelector<HTMLElement>(".text-name-nav") ??
-    [...header.querySelectorAll("a")].find((a) =>
-      a.textContent?.includes("Ivan"),
-    );
-
-  if (!name) return null;
-
-  const nameRect = name.getBoundingClientRect();
-  const cs = getComputedStyle(name);
-  const headerRect = header.getBoundingClientRect();
-
-  const probe = (unit: "1ex" | "1cap") => {
-    const el = document.createElement("span");
-    el.style.cssText = `position:absolute;visibility:hidden;display:block;pointer-events:none;font-family:${cs.fontFamily};font-weight:${cs.fontWeight};font-size:${cs.fontSize};height:${unit}`;
-    document.body.appendChild(el);
-    const h = el.getBoundingClientRect().height;
-    el.remove();
-    return h;
-  };
-
-  const ex = probe("1ex");
-  const cap = probe("1cap");
-  const baseline = nameRect.bottom;
-  const link = header.querySelector<HTMLElement>(
-    "nav ul a, nav .nav-link-type",
-  );
-
-  return {
-    navBottom: headerRect.bottom,
-    baseline,
-    xHeight: baseline - ex,
-    capHeight: baseline - cap,
-    linkCap: link ? link.getBoundingClientRect().top : null,
-  };
-}
 
 /** Figma-like hierarchy: 10 / 50 / 100 — mapped to module subdivisions. */
 function buildTicks(length: number, module: number): Tick[] {
@@ -77,32 +28,8 @@ function buildTicks(length: number, module: number): Tick[] {
 /** Tick lengths scaled to the slim ruler depth (--ruler-size: 11px). */
 const TICK_H = { xs: 2, sm: 3, md: 5, lg: 7 } as const;
 
-function GuideLine({
-  y,
-  label,
-  accent = false,
-}: {
-  y: number;
-  label: string;
-  accent?: boolean;
-}) {
-  return (
-    <div
-      className={
-        accent
-          ? "grid-guide grid-guide--accent"
-          : "grid-guide"
-      }
-      style={{ top: y }}
-    >
-      <span className="grid-guide__label">{label}</span>
-    </div>
-  );
-}
-
 export function GridOverlay({ isVisible }: GridOverlayProps) {
   const [viewport, setViewport] = useState({ w: 0, h: 0 });
-  const [guides, setGuides] = useState<TypeGuides | null>(null);
   const [modulePx, setModulePx] = useState(64);
 
   useLayoutEffect(() => {
@@ -118,7 +45,6 @@ export function GridOverlay({ isVisible }: GridOverlayProps) {
       document.body.appendChild(probe);
       setModulePx(probe.getBoundingClientRect().height || 64);
       probe.remove();
-      setGuides(measureTypeGuides());
     };
 
     sync();
@@ -159,19 +85,6 @@ export function GridOverlay({ isVisible }: GridOverlayProps) {
           ))}
         </div>
       </div>
-
-      {/* Type guides */}
-      {guides ? (
-        <>
-          <GuideLine y={guides.navBottom} label="nav" />
-          <GuideLine y={guides.capHeight} label="cap" />
-          <GuideLine y={guides.xHeight} label="x-height" />
-          <GuideLine y={guides.baseline} label="baseline" />
-          {guides.linkCap != null ? (
-            <GuideLine y={guides.linkCap} label="link cap" accent />
-          ) : null}
-        </>
-      ) : null}
 
       {/* Figma / Illustrator rulers */}
       <div className="grid-ruler grid-ruler--corner" />

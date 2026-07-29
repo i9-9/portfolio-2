@@ -62,6 +62,9 @@ export function GraphicDesktopHero({
   const [offset, setOffset] = useState<Record<string, { dx: number; dy: number }>>({});
   const [zBoost, setZBoost] = useState<Record<string, number>>({});
   const [openFile, setOpenFile] = useState<string | null>(null);
+  /** The previously viewed asset — shown small to the left of the current one. */
+  const [prevFile, setPrevFile] = useState<string | null>(null);
+  const prevFileRef = useRef<string | null>(null);
   const [portalReady, setPortalReady] = useState(false);
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
@@ -109,6 +112,11 @@ export function GraphicDesktopHero({
       return images[(i + delta + n) % n];
     });
   }, [images]);
+
+  useEffect(() => {
+    if (openFile) setPrevFile(prevFileRef.current);
+    prevFileRef.current = openFile;
+  }, [openFile]);
 
   useEffect(() => {
     if (!openFile) return;
@@ -431,7 +439,7 @@ export function GraphicDesktopHero({
             {/* Editorial-style fullscreen slideshow */}
             <div
               className={cn(
-                "relative flex min-h-0 flex-1 items-center px-4 py-8 lg:px-6 lg:py-12",
+                "relative flex min-h-0 flex-1 items-center gap-6 px-4 py-8 lg:gap-10 lg:px-6 lg:py-12",
                 canNavigate && "cursor-pointer touch-none",
               )}
               onPointerDown={handleViewerPointerDown}
@@ -445,41 +453,69 @@ export function GraphicDesktopHero({
                 transition: viewerSwiping.current ? "none" : "opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
               }}
             >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={openFile}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ 
-                    duration: 0.35,
-                    ease: [0.32, 0.72, 0, 1],
-                  }}
-                  className="relative flex h-full max-h-full max-w-full items-center"
-                  style={{
-                    transform: viewerSwiping.current
-                      ? viewerSwipeDirection.current === "horizontal"
-                        ? `translateX(${viewerSwipeX}px)`
-                        : `translateY(${viewerSwipeY}px)`
-                      : viewerSwipeX !== 0 || viewerSwipeY !== 0
-                      ? viewerSwipeDirection.current === "horizontal"
-                        ? `translateX(${viewerSwipeX}px)`
-                        : `translateY(${viewerSwipeY}px)`
-                      : undefined,
-                    transition: viewerSwiping.current 
-                      ? "none" 
-                      : "transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)",
-                  }}
-                >
-                  <img
-                    src={dgFullSrc(openFile)}
-                    alt={displayName(openFile)}
-                    className="block h-full max-h-full w-auto max-w-full object-contain"
-                    decoding="async"
-                    draggable={false}
-                  />
-                </motion.div>
+              {/* Previous asset — small preview to the left, for orientation */}
+              <AnimatePresence>
+                {prevFile ? (
+                  <motion.div
+                    key={prevFile}
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 0.5, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.85 }}
+                    transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                    className="hidden shrink-0 lg:block"
+                    style={{ width: "16%", maxWidth: 160 }}
+                    aria-hidden
+                  >
+                    <img
+                      src={dgThumbSrc(prevFile)}
+                      alt=""
+                      className="block h-auto max-h-[60vh] w-full rounded-sm object-contain"
+                      draggable={false}
+                    />
+                  </motion.div>
+                ) : null}
               </AnimatePresence>
+
+              {/* Current asset — main, aligned to the right */}
+              <div
+                className="relative flex h-full min-w-0 flex-1 items-center justify-start lg:justify-end"
+                style={{
+                  transform: viewerSwiping.current
+                    ? viewerSwipeDirection.current === "horizontal"
+                      ? `translateX(${viewerSwipeX}px)`
+                      : `translateY(${viewerSwipeY}px)`
+                    : viewerSwipeX !== 0 || viewerSwipeY !== 0
+                    ? viewerSwipeDirection.current === "horizontal"
+                      ? `translateX(${viewerSwipeX}px)`
+                      : `translateY(${viewerSwipeY}px)`
+                    : undefined,
+                  transition: viewerSwiping.current 
+                    ? "none" 
+                    : "transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)",
+                }}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={openFile}
+                    initial={{ opacity: 0, scale: 0.93 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.93 }}
+                    transition={{ 
+                      duration: 0.35,
+                      ease: [0.32, 0.72, 0, 1],
+                    }}
+                    className="relative flex h-full max-h-full max-w-full items-center"
+                  >
+                    <img
+                      src={dgFullSrc(openFile)}
+                      alt={displayName(openFile)}
+                      className="block h-full max-h-full w-auto max-w-full object-contain"
+                      decoding="async"
+                      draggable={false}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
           </motion.div>
         ) : null}

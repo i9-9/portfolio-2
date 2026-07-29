@@ -417,7 +417,7 @@ const GeometricFlowCard = ({ fullScreen = false }: GeometricFlowCardProps) => {
   }
 
   return (
-    <div className="w-full aspect-square bg-background border border-border rounded-lg overflow-hidden p-2 max-w-full box-border">
+    <div className="w-full aspect-square bg-background border border-border overflow-hidden p-2 max-w-full box-border">
       <div className="relative w-full h-full flex items-center justify-center box-border">
         <div
           ref={containerRef}

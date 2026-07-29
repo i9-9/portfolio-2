@@ -20,9 +20,9 @@ function pad(size: EditorialPad) {
   return size === "compact" ? padCompact : padComfortable;
 }
 
-/** Contact footer pair — shared layout/size for mail + message buttons. */
+/** Contact footer pair — shared layout/size for mail + message buttons, one per grid column. */
 export const contactFooterButtonStructure = cn(
-  "flex h-11 w-full min-w-0 max-w-full items-center justify-start gap-2 overflow-hidden text-left sm:w-auto",
+  "flex h-11 w-full min-w-0 max-w-full items-center justify-start gap-2 overflow-hidden text-left",
   editorialNavType,
 );
 

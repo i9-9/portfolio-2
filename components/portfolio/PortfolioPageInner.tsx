@@ -2,9 +2,14 @@
 
 import { useState, lazy, Suspense, useRef, useEffect, useLayoutEffect } from "react";
 import dynamic from "next/dynamic";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { getProjectBySlug } from "@/app/data/projects";
-import BottomSpacer from "@/components/BottomSpacer";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import {
   editorialFooterMuted,
@@ -22,14 +27,14 @@ import {
   scrollToLandingHashReliable,
 } from "@/lib/scroll/landingHash";
 import { getLandingLenis } from "@/lib/scroll/lenisStore";
-import { EASE_OUT_EXPO } from "@/lib/motion/easing";
+import { EASE_OUT_EXPO, FOOTER_PARALLAX_TRAVEL } from "@/lib/motion/easing";
 import {
   heroRevealIndex,
   SplashClipReveal,
   SPLASH_NAV_ITEMS_LG,
   SPLASH_NAV_ITEMS_SM,
 } from "@/lib/motion/clip-reveal";
-import { Mail, MessageSquare, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PageReveal } from "@/components/splash/PageReveal";
 import { ContactFooterMarquee } from "@/components/portfolio/ContactFooterMarquee";
 import { ScrollProgress } from "@/components/portfolio/ScrollProgress";
@@ -236,6 +241,22 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const sep2InView = useInView(sep2Ref, { once: true, margin: "-5%" });
   const sep3InView = useInView(sep3Ref, { once: true, margin: "-5%" });
 
+  /**
+   * Footer reveal — the inner content counter-translates 1:1 against scroll
+   * (100% travel, linear), so it reads as pinned behind the page while the
+   * section above lifts away like a curtain. Scroll-locked: no spring, no
+   * ease — smoothing comes from Lenis, so it always tracks the mousewheel.
+   */
+  const { scrollYProgress: footerProgress } = useScroll({
+    target: contactRef,
+    offset: ["start end", "end end"],
+  });
+  const footerParallaxY = useTransform(
+    footerProgress,
+    [0, 1],
+    [FOOTER_PARALLAX_TRAVEL, "0%"],
+  );
+
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText("ivannevares9@gmail.com");
@@ -368,7 +389,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         </motion.p>
 
         <motion.p
-          className="lg:col-span-6 text-type-body font-helveticaNowTextRegular text-muted-foreground leading-relaxed"
+          className="lg:col-span-4 text-type-body font-helveticaNowTextRegular text-muted-foreground leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={aboutInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1.1, delay: 0.12, ease: EASE_OUT_EXPO }}
@@ -383,6 +404,8 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             {t("contact.blurbWohl")}
           </a>{" "}
           {t("about.p2")}
+          <br />
+          {t("about.freelance")}
         </motion.p>
 
         <motion.div
@@ -394,13 +417,13 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           {aboutInView ? (
             <Suspense
               fallback={
-                <div className="w-full aspect-square bg-muted/50 rounded-lg animate-pulse" />
+                <div className="w-full aspect-square bg-muted/50 animate-pulse" />
               }
             >
               <GeometricFlowCard />
             </Suspense>
           ) : (
-            <div className="w-full aspect-square bg-muted/50 rounded-lg" aria-hidden />
+            <div className="w-full aspect-square bg-muted/50" aria-hidden />
           )}
         </motion.div>
       </section>
@@ -412,134 +435,156 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       <footer
         id="contact"
         ref={contactRef}
-        className="relative overflow-hidden border-t-2 border-foreground/10 px-4 py-24 pb-20 lg:px-6 lg:py-32 lg:pb-24"
+        className="relative flex min-h-[calc(100dvh-var(--nav-height))] flex-col overflow-hidden"
       >
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.17] [background-image:radial-gradient(circle_at_center,rgb(128_128_128/0.35)_1px,transparent_1px)] [background-size:13px_13px] dark:opacity-[0.12] dark:[background-image:radial-gradient(circle_at_center,rgb(255_255_255/0.12)_1px,transparent_1px)]"
           aria-hidden
         />
 
-        <div className="relative z-[1]">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={
-              contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
-            }
-            transition={{ duration: 1, delay: 0.08, ease: EASE_OUT_EXPO }}
-            className="mb-10 flex w-full flex-wrap items-center gap-x-5 gap-y-3"
-          >
-            <div
-              className={cn(
-                editorialNavType,
-                "glyph-center inline-block max-w-[min(100%,42rem)] bg-foreground px-[0.15em] py-[0.15em] text-background",
-              )}
-            >
-              <p>{t("contact.kickerLine1")}</p>
-              <p>{t("contact.kickerLine2")}</p>
-            </div>
-            <span
-              className="hidden h-px min-w-[3rem] flex-1 bg-foreground/25 sm:block"
-              aria-hidden
-            />
-            <p
-              className="optical-edge-end ml-auto shrink-0 font-helveticaNowDisplayBold normal-case tracking-[-0.02em] text-type-micro tabular-nums text-muted-foreground"
-            >
-              {t("contact.stamp")}
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={
-              contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-            }
-            transition={{ duration: 1.05, delay: 0.2, ease: EASE_OUT_EXPO }}
-            className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
-          >
-            <div className="min-w-0 w-full sm:w-auto sm:max-w-full">
-              <button
-                type="button"
-                onClick={copyEmail}
-                className={editorialFooterMuted()}
-                title="ivannevares9@gmail.com"
-              >
-                <Mail className="w-4 h-4 shrink-0" aria-hidden />
-                <span className="truncate">ivannevares9@gmail.com</span>
-              </button>
-            </div>
-            <div className="w-full sm:w-auto sm:max-w-full">
-              <button
-                type="button"
-                onClick={() => setIsContactOpen(true)}
-                className={editorialFooterPrimary()}
-              >
-                <MessageSquare className="w-4 h-4 shrink-0" aria-hidden />
-                {isEn ? "Send a message" : "Enviar mensaje"}
-              </button>
-            </div>
-          </motion.div>
-        </div>
-
-        <motion.nav
-          initial={{ opacity: 0, y: 16 }}
-          animate={contactInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, delay: 0.32, ease: EASE_OUT_EXPO }}
-          className="relative z-[1] mt-12"
-          aria-label={t("contact.socialNav")}
-        >
-          <p className={cn(editorialNavType, "mb-4 text-foreground")}>
-            {t("contact.elsewhere")}
-          </p>
-          <div className="grid grid-cols-12 gap-4 lg:gap-6 font-helveticaNowTextRegular text-type-0 text-muted-foreground">
-            {(
-              [
-                { href: "https://github.com/i9-9", label: "GitHub" },
-                {
-                  href: "https://www.linkedin.com/in/ivan-nevares/",
-                  label: "LinkedIn",
-                },
-                { href: "https://www.behance.net/ivan_nevares", label: "Behance" },
-                { href: "https://dribbble.com/i9i9", label: "Dribbble" },
-              ] as const
-            ).map(({ href, label }) => (
-              <div
-                key={href}
-                className="col-span-6 lg:col-span-1"
-              >
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex w-full items-center gap-1 tracking-[0.06em] transition-colors duration-300 hover:text-foreground"
-                >
-                  {label}
-                  <ArrowRight
-                    className="size-3.5 shrink-0 opacity-60 transition-opacity duration-300 group-hover:opacity-100"
-                    aria-hidden
-                  />
-                </a>
-              </div>
-            ))}
-          </div>
-        </motion.nav>
-
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={contactInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, delay: 0.44, ease: EASE_OUT_EXPO }}
-          className="relative z-[1] mt-20 -mx-4 bg-[#DFFF4D] text-neutral-950 lg:-mx-6 lg:mt-24"
+          style={heroReduced ? undefined : { y: footerParallaxY, willChange: "transform" }}
+          className="relative z-[1] flex flex-1 flex-col"
         >
-          {heroReduced ? (
-            <p className="px-4 py-2.5 text-center font-helveticaNowTextRegular text-type-micro normal-case leading-relaxed tracking-[-0.02em]">
-              {t("contact.marquee")}
-            </p>
-          ) : (
-            <ContactFooterMarquee text={t("contact.marquee")} />
-          )}
+          <div className="relative flex flex-1 flex-col justify-between gap-12 px-4 pt-[var(--space-16)] pb-[var(--space-12)] lg:gap-16 lg:px-6 lg:pt-[var(--space-24)] lg:pb-[var(--space-16)]">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={
+                contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
+              }
+              transition={{ duration: 1, delay: 0.08, ease: EASE_OUT_EXPO }}
+              className="flex w-full flex-wrap items-center gap-x-5 gap-y-3"
+            >
+              <div className="inline-block bg-[hsl(0_0%_18%)] px-[0.15em] pt-[0.22em] pb-[0.32em] text-[hsl(0_0%_98%)] text-name-nav leading-[1.05] tracking-[-0.02em] font-helveticaNowDisplayBold normal-case">
+                <span className="block">{t("contact.kickerLine1")}</span>
+                <span className="block">{t("contact.kickerLine2")}</span>
+              </div>
+              <span
+                className="hidden h-px min-w-[3rem] flex-1 bg-foreground/25 sm:block"
+                aria-hidden
+              />
+              <p
+                className="optical-edge-end ml-auto shrink-0 font-helveticaNowDisplayBold normal-case tracking-[-0.02em] text-type-micro tabular-nums text-muted-foreground"
+              >
+                {t("contact.stamp")}
+              </p>
+            </motion.div>
+
+            <div className="mt-auto flex flex-col gap-4 lg:gap-6">
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={contactInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 1, delay: 0.32, ease: EASE_OUT_EXPO }}
+                className={cn(
+                  editorialNavType,
+                  "glyph-center inline-block w-fit bg-foreground px-[0.15em] py-[0.12em] text-background",
+                )}
+              >
+                {t("contact.elsewhere")}
+              </motion.p>
+
+              <div className="grid grid-cols-12 gap-4 lg:gap-6 lg:items-end">
+                <nav
+                  aria-label={t("contact.socialNav")}
+                  className="contents"
+                >
+                  {(
+                    [
+                      { href: "https://github.com/i9-9", label: "GitHub" },
+                      {
+                        href: "https://www.linkedin.com/in/ivan-nevares/",
+                        label: "LinkedIn",
+                      },
+                      { href: "https://www.behance.net/ivan_nevares", label: "Behance" },
+                      { href: "https://dribbble.com/i9i9", label: "Dribbble" },
+                    ] as const
+                  ).map(({ href, label }, i) => (
+                    <motion.a
+                      key={href}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={contactInView ? { opacity: 1, y: 0 } : {}}
+                      transition={{
+                        duration: 1,
+                        delay: 0.32 + i * 0.04,
+                        ease: EASE_OUT_EXPO,
+                      }}
+                      className={cn(
+                        editorialNavType,
+                        "glyph-center group col-span-6 inline-flex w-fit items-center gap-1 bg-foreground px-[0.15em] py-[0.12em] text-background transition-colors duration-300 hover:bg-foreground/90 lg:col-span-1",
+                      )}
+                    >
+                      {label}
+                      <ArrowRight
+                        className="size-3.5 shrink-0 opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                        aria-hidden
+                      />
+                    </motion.a>
+                  ))}
+                </nav>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={
+                    contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                  }
+                  transition={{ duration: 1.05, delay: 0.2, ease: EASE_OUT_EXPO }}
+                  className="col-span-6 order-first min-w-0 lg:order-none lg:col-span-3 lg:col-start-7"
+                >
+                  <button
+                    type="button"
+                    onClick={copyEmail}
+                    className={editorialFooterMuted()}
+                    title="ivannevares9@gmail.com"
+                  >
+                    <span className="truncate">ivannevares9@gmail.com</span>
+                  </button>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={
+                    contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                  }
+                  transition={{ duration: 1.05, delay: 0.24, ease: EASE_OUT_EXPO }}
+                  className="col-span-6 order-first min-w-0 lg:order-none lg:col-span-3"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setIsContactOpen(true)}
+                    className={editorialFooterPrimary()}
+                  >
+                    {isEn ? "Send a message" : "Enviar mensaje"}
+                  </button>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={contactInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1, delay: 0.44, ease: EASE_OUT_EXPO }}
+            className="relative mt-auto bg-[#DFFF4D] text-neutral-950"
+          >
+            {heroReduced ? (
+              <p className="px-4 py-2.5 text-center font-helveticaNowTextRegular text-type-micro normal-case leading-relaxed tracking-[-0.02em]">
+                {t("contact.marquee")}
+              </p>
+            ) : (
+              <ContactFooterMarquee text={t("contact.marquee")} />
+            )}
+          </motion.div>
+
+          {/* Extends the marquee band downward so the spring settle never flashes a gap. */}
+          <div
+            className="absolute inset-x-0 top-full h-[45vh] bg-[#DFFF4D]"
+            aria-hidden
+          />
         </motion.div>
       </footer>
-
-      <BottomSpacer />
 
       {contactModalLoaded ? (
         <ContactFormModal

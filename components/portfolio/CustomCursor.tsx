@@ -55,10 +55,22 @@ export function CustomCursor() {
       if (raf === 0) raf = requestAnimationFrame(flushMove);
     };
     const onOver = (e: MouseEvent) => {
-      if ((e.target as Element).closest("a, button")) ringScale.set(2);
+      const target = e.target as Element;
+      if (target.closest("[data-cursor=menu]")) {
+        ringScale.set(0);
+        dotOpacity.set(0);
+        return;
+      }
+      if (target.closest("a, button")) ringScale.set(2);
     };
     const onOut = (e: MouseEvent) => {
-      if ((e.target as Element).closest("a, button")) ringScale.set(1);
+      const target = e.target as Element;
+      if (target.closest("[data-cursor=menu]")) {
+        ringScale.set(1);
+        if (isVisible.current) dotOpacity.set(1);
+        return;
+      }
+      if (target.closest("a, button")) ringScale.set(1);
     };
     const onLeave = () => dotOpacity.set(0);
     const onEnter = () => dotOpacity.set(1);

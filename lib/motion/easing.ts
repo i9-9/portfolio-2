@@ -1,6 +1,19 @@
 /** Content reveal — opacity, translateY. Apple-style smooth easing. */
 export const EASE_OUT_EXPO = [0.32, 0.72, 0, 1] as const;
 
+/**
+ * Golden-ratio bezier — control points at 1/φ (0.618) and 1/φ² (0.382).
+ * Even, unhurried in/out for time-based reveals.
+ */
+export const EASE_GOLDEN = [0.618, 0, 0.382, 1] as const;
+
+/**
+ * Footer reveal travel. -100% = full counter-translation: the footer content
+ * appears pinned behind the page while the section above scrolls away.
+ * Lower it (e.g. "-38.2%") for a softer partial parallax instead of a pin.
+ */
+export const FOOTER_PARALLAX_TRAVEL = "-100%";
+
 /** Loader exit, nav slide — slow cinematic ease. */
 export const EASE_CINEMATIC = [0.87, 0, 0.13, 1] as const;
 

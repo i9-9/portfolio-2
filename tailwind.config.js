@@ -73,6 +73,17 @@ module.exports = {
   			md: "calc(var(--radius) - 2px)",
   			sm: "calc(var(--radius) - 4px)"
   		},
+  		transitionDuration: {
+  			350: "350ms",
+  			400: "400ms",
+  			"mobile-menu-open": "var(--mobile-menu-panel-open-duration)",
+  			"mobile-menu-close": "var(--mobile-menu-panel-close-duration)",
+  		},
+  		transitionTimingFunction: {
+  			"out-expo": "cubic-bezier(0.32, 0.72, 0, 1)",
+  			"in-out-smooth": "cubic-bezier(0.76, 0, 0.24, 1)",
+  			"mobile-menu": "var(--mobile-menu-ease)",
+  		},
   		keyframes: {
   			"accordion-down": {
   				from: {

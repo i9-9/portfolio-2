@@ -117,7 +117,7 @@ type NavEntry = { key: string; node: ReactNode; active?: boolean };
 type AbacusPill = { x: number; width: number; height: number; opacity: number };
 
 /**
- * Instrument-style nav: soft tracks + sliding foreground highlight
+ * Instrument-style nav: sliding foreground highlight
  * (Are.na block 24973941). Text inverts on the focused item.
  */
 function NavAbacusList({
@@ -167,7 +167,7 @@ function NavAbacusList({
 
   return (
     <ul
-      className="relative flex flex-row items-baseline gap-1"
+      className="relative flex flex-row items-center gap-1"
       onMouseLeave={() => setHoverKey(null)}
     >
       <motion.span
@@ -198,10 +198,6 @@ function NavAbacusList({
             )}
             onMouseEnter={() => setHoverKey(entry.key)}
           >
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-foreground/10"
-            />
             {entry.node}
           </li>
         );
@@ -229,7 +225,7 @@ function LanguageToggle({
       "glyph-center inline-block px-[0.15em] py-[0.12em] bg-foreground text-background";
     return (
       <span
-        className={navAbacusLinkClass("!flex h-[1cap] items-center gap-x-1.5")}
+        className={navAbacusLinkClass("!flex items-center gap-x-1.5 !py-0")}
         role="group"
         aria-label="Language"
       >
@@ -642,18 +638,18 @@ function NavBarInner() {
             !isMobileMenuOpen &&
             "pointer-events-none",
           isCaseStudy
-            ? "transition-[background-color,box-shadow,backdrop-filter] duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]"
+            ? "transition-[background-color,box-shadow,backdrop-filter] duration-300 ease-in-out-smooth"
             : cn(
-                "transition-[background-color,box-shadow,backdrop-filter] duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]",
-                "max-lg:transition-[background-color,box-shadow,backdrop-filter,transform] max-lg:ease-[cubic-bezier(0.16,1,0.3,1)]",
+                "transition-[background-color,box-shadow,backdrop-filter] duration-300 ease-in-out-smooth",
+                "max-lg:transition-[background-color,box-shadow,backdrop-filter,transform] max-lg:ease-mobile-menu",
               ),
           isMobileMenuOpen
             ? cn(
-                "z-[110] bg-background pointer-events-auto max-lg:duration-[var(--mobile-menu-panel-open-duration)]",
+                "z-[110] bg-background pointer-events-auto max-lg:duration-mobile-menu-open",
                 MOBILE_MENU_INVERTED,
               )
             : cn(
-                "bg-background max-lg:duration-[var(--mobile-menu-panel-close-duration)]",
+                "bg-background max-lg:duration-mobile-menu-close",
                 isCaseStudy &&
                   !caseStudyNavInteractive &&
                   !isMobileMenuOpen &&
@@ -667,13 +663,13 @@ function NavBarInner() {
             index={0}
             reduced={reducedMotion}
             active={splashRevealActive}
-            className="col-span-6 lg:col-span-3 flex items-center"
+            className="col-span-6 lg:col-span-3 flex items-center lg:items-start"
           >
             <NavNameLink href={homeHref} />
           </SplashClipReveal>
 
           <nav
-            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end items-center lg:items-baseline min-w-0"
+            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end lg:justify-start items-center min-w-0"
             aria-label={t('nav.mobileMenuTitle')}
           >
             <div className="hidden lg:block">
@@ -691,10 +687,12 @@ function NavBarInner() {
                 <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                   <button
                     type="button"
+                    data-cursor="menu"
                     onClick={() => setIsMobileMenuOpen((open) => !open)}
                     className={cn(
-                      "flex items-center justify-center size-11 -mr-2",
-                      navInteractiveFocus,
+                      "relative flex items-center justify-center size-11 -mr-2",
+                      "![cursor:none]",
+                      "outline-none focus:outline-none [-webkit-tap-highlight-color:transparent]",
                     )}
                     aria-label={t('nav.mobileMenuTitle')}
                     aria-expanded={isMobileMenuOpen}
