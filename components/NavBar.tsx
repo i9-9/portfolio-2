@@ -673,27 +673,17 @@ function NavBarInner() {
           </SplashClipReveal>
 
           <nav
-            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end items-baseline min-w-0"
+            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end items-center lg:items-baseline min-w-0"
             aria-label={t('nav.mobileMenuTitle')}
           >
             <div className="hidden lg:block">
               <NavItems />
             </div>
 
-            <div className="lg:hidden flex items-center gap-3">
+            <div className="lg:hidden flex items-center">
               <SplashClipReveal
                 live={splashRevealLive}
                 index={1}
-                reduced={reducedMotion}
-                active={splashRevealActive}
-              >
-                <span className={cn(navLabel, "text-nav-link text-muted-foreground")}>
-                  Menu
-                </span>
-              </SplashClipReveal>
-              <SplashClipReveal
-                live={splashRevealLive}
-                index={2}
                 reduced={reducedMotion}
                 active={splashRevealActive}
               >
