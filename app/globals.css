@@ -336,7 +336,7 @@
 .hero-band {
   min-height: calc(100dvh - var(--nav-height) - var(--grid-row));
   padding-top: calc(var(--nav-height) + var(--hero-gap-nav-title));
-  padding-bottom: calc(var(--space-unit) * 10);
+  padding-bottom: calc(var(--space-unit) * 14); /* Increased for mobile */
   box-sizing: border-box;
 }
 
