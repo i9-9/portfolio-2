@@ -409,10 +409,10 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         <AnimatedLine inView={sep3InView} />
       </div>
 
-      <section
+      <footer
         id="contact"
         ref={contactRef}
-        className="relative overflow-hidden px-4 py-16 pb-14 lg:px-6 lg:py-20 lg:pb-16"
+        className="relative overflow-hidden border-t-2 border-foreground/10 px-4 py-24 pb-20 lg:px-6 lg:py-32 lg:pb-24"
       >
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.17] [background-image:radial-gradient(circle_at_center,rgb(128_128_128/0.35)_1px,transparent_1px)] [background-size:13px_13px] dark:opacity-[0.12] dark:[background-image:radial-gradient(circle_at_center,rgb(255_255_255/0.12)_1px,transparent_1px)]"
@@ -527,7 +527,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           initial={{ opacity: 0, y: 8 }}
           animate={contactInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, delay: 0.44, ease: EASE_OUT_EXPO }}
-          className="relative z-[1] mt-16 -mx-4 bg-[#DFFF4D] text-neutral-950 lg:-mx-6"
+          className="relative z-[1] mt-20 -mx-4 bg-[#DFFF4D] text-neutral-950 lg:-mx-6 lg:mt-24"
         >
           {heroReduced ? (
             <p className="px-4 py-2.5 text-center font-helveticaNowTextRegular text-type-micro normal-case leading-relaxed tracking-[-0.02em]">
@@ -537,7 +537,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             <ContactFooterMarquee text={t("contact.marquee")} />
           )}
         </motion.div>
-      </section>
+      </footer>
 
       <BottomSpacer />
 
