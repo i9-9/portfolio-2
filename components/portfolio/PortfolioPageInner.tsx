@@ -357,7 +357,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         <section id="work" ref={workRef} className="relative overflow-hidden">
           <motion.div
             style={heroReduced ? undefined : { y: workParallaxY, willChange: "transform" }}
-            className="px-4 lg:px-6 py-20"
+            className="px-4 lg:px-6 py-28"
           >
             <motion.p
               initial={{ opacity: 0 }}
