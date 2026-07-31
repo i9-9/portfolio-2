@@ -643,11 +643,11 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 <span className="block">
                   <span className="block lg:inline">
                     {t("contact.kickerLine1a")}
-                    <span className="contact-kicker__sep lg:hidden" aria-hidden>
-                      ·
-                    </span>
                   </span>
-                  <span className="contact-kicker__sep hidden lg:inline" aria-hidden>
+                  <span
+                    className="contact-kicker__sep hidden lg:inline"
+                    aria-hidden
+                  >
                     ·
                   </span>
                   <span className="block lg:inline">

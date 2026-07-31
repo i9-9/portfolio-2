@@ -432,7 +432,7 @@
 }
 
 .contact-kicker__sep {
-  display: inline-block;
+  /* No display here — Tailwind hidden/inline must win per breakpoint */
   /* Interpunct sidebearings — after = before × √φ (reading direction bias) */
   margin-inline: calc(0.2em / var(--phi)) calc(0.2em / var(--phi) * sqrt(var(--phi)));
   letter-spacing: 0;
