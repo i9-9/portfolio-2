@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Transition } from "framer-motion";
 import { EASE_CINEMATIC, EASE_OUT_EXPO } from "@/lib/motion/easing";
 
 interface HamburgerMenuProps {
@@ -18,19 +18,16 @@ const LINE_TRAVEL = 5.75;
 const MORPH_DURATION = 0.72;
 
 /** Open: meet → rotate. Close: unwind → separate. */
-const openTimes = [0, 0.4, 1] as const;
-const closeTimes = [0, 0.38, 1] as const;
-
-const openTransition = {
+const openTransition: Transition = {
   duration: MORPH_DURATION,
-  times: openTimes,
-  ease: [EASE_OUT_EXPO, EASE_CINEMATIC] as const,
+  times: [0, 0.4, 1],
+  ease: [EASE_OUT_EXPO, EASE_CINEMATIC],
 };
 
-const closeTransition = {
+const closeTransition: Transition = {
   duration: MORPH_DURATION * 0.92,
-  times: closeTimes,
-  ease: [EASE_OUT_EXPO, EASE_CINEMATIC] as const,
+  times: [0, 0.38, 1],
+  ease: [EASE_OUT_EXPO, EASE_CINEMATIC],
 };
 
 /** Bottom bar trails slightly so the two lines read as separate actors. */

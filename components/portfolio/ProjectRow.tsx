@@ -178,7 +178,7 @@ export function ProjectRow({
           }
         }}
         onMouseMove={handleMouseMove}
-        className="group relative flex flex-col -mx-4 px-4 transition-colors duration-500 [@media(hover:hover)]:hover:bg-foreground [@media(hover:hover)]:hover:text-background overflow-hidden lg:-mx-6 lg:px-6"
+        className="group relative flex flex-col -mx-layout px-layout transition-colors duration-500 [@media(hover:hover)]:hover:bg-foreground [@media(hover:hover)]:hover:text-background overflow-hidden"
       >
         <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-5 py-5 lg:py-6 lg:grid-cols-12 lg:gap-x-6">
           <span className="relative z-10 col-start-1 row-start-1 flex h-[1em] w-6 shrink-0 items-center self-start text-type-project leading-none lg:col-start-1">

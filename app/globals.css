@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Animatable layout tokens — when a media query flips these on :root,
+ * the browser interpolates instead of snapping (DX when dragging across lg).
+ * Keep in sync with Tailwind lg (1024px) / gap-4·px-4 → gap-6·px-6.
+ */
+@property --type-base {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1rem;
+}
+
+@property --type-case-title {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 2.5rem;
+}
+
+@property --layout-gutter {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1rem;
+}
+
+@property --layout-gap {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1rem;
+}
+
 @layer base {
   :root {
     /* Add smooth scrolling behavior */
@@ -43,6 +72,8 @@
     --grid-row: var(--space-16);
     --grid-spec-margin: calc(var(--space-unit) * 20); /* 80px — specbook annotation */
     --nav-height: var(--grid-row);
+    /* Contact marquee band — py-2 + micro line; used for sticky pin + footer pad */
+    --contact-marquee-h: calc(var(--space-4) + var(--type-micro) * 1.15);
     --space-24: calc(var(--space-unit) * 24);  /* 96px */
     --space-32: calc(var(--space-unit) * 32);  /* 128px */
     --space-40: calc(var(--space-unit) * 40);  /* 160px */
@@ -52,6 +83,12 @@
     --section-gap: calc(var(--space-unit) * 40);    /* 160px */
     --content-gap: calc(var(--space-unit) * 24);    /* 96px */
     --element-gap: calc(var(--space-unit) * 6);     /* 24px */
+
+    /* Page chrome — px-4/gap-4 mobile → px-6/gap-6 at lg */
+    --layout-gutter: 1rem;
+    --layout-gap: 1rem;
+    --bp-smooth-duration: 0.45s;
+    --bp-smooth-ease: cubic-bezier(0.32, 0.72, 0, 1); /* EASE_OUT_EXPO */
 
     /* Golden-ratio typographic scale (base = step 0, each step × φ) */
     --phi: 1.6180339887;
@@ -121,14 +158,26 @@
     --mobile-menu-ease: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Desktop denser: same ladder, smaller base */
+  /* Desktop denser: same ladder, smaller base + wider grid chrome */
   @media (min-width: 1024px) {
     :root {
       --type-base: 0.875rem; /* step 0 — 14px desktop */
       --type-case-title: var(--type-3);
+      --layout-gutter: 1.5rem;
+      --layout-gap: 1.5rem;
     }
   }
- 
+
+  @media (prefers-reduced-motion: no-preference) {
+    :root {
+      transition:
+        --type-base var(--bp-smooth-duration) var(--bp-smooth-ease),
+        --type-case-title var(--bp-smooth-duration) var(--bp-smooth-ease),
+        --layout-gutter var(--bp-smooth-duration) var(--bp-smooth-ease),
+        --layout-gap var(--bp-smooth-duration) var(--bp-smooth-ease);
+    }
+  }
+
   .dark {
     --background: 0 0% 8%;
     --foreground: 0 0% 94%;
@@ -274,9 +323,27 @@
   }
 }
 
-/* Grid System */
+/* Grid System — gutter/gap via animatable CSS vars */
 .grid-container {
-  @apply w-full grid grid-cols-12 gap-4 lg:gap-6 px-4 lg:px-6;
+  @apply w-full grid grid-cols-12;
+  gap: var(--layout-gap);
+  padding-left: var(--layout-gutter);
+  padding-right: var(--layout-gutter);
+}
+
+/* Horizontal page chrome — prefer over px-4 lg:px-6 so breakpoint crosses ease */
+.px-layout {
+  padding-left: var(--layout-gutter);
+  padding-right: var(--layout-gutter);
+}
+
+.-mx-layout {
+  margin-left: calc(var(--layout-gutter) * -1);
+  margin-right: calc(var(--layout-gutter) * -1);
+}
+
+.gap-layout {
+  gap: var(--layout-gap);
 }
 
 /* Nav — exactly one grid module; divider on bottom edge without shrinking the band */
@@ -324,6 +391,52 @@
 #about,
 #contact {
   scroll-margin-top: var(--nav-height);
+}
+
+/*
+ * Contact footer — desktop type one full φ step up.
+ * Bumps every role used in the footer (kicker, stamp, elsewhere, CTAs)
+ * without changing the global desktop ladder.
+ */
+@media (min-width: 1024px) {
+  #contact {
+    --type-nav-link: var(--type-1);
+    --type-project-name: var(--type-3);
+    --type-micro: var(--type-0);
+  }
+}
+
+/*
+ * Contact kicker — optical tracking keyed to φ.
+ *
+ * Base = --tracking-tight (−0.025em) at the project-name step.
+ * As the kicker grows (footer desktop → type-3), tracking tightens by
+ * (size / type-2) so letterspacing stays optically even:
+ *   mobile  type-2: −0.025em · 1     = −0.025em
+ *   desktop type-3: −0.025em · φ     = −0.040em
+ *
+ * Word space and middot sidebearings use 1/φ² fractions of the em.
+ */
+.contact-kicker {
+  font-kerning: normal;
+  font-feature-settings: "kern" 1, "liga" 1;
+  font-variant-ligatures: common-ligatures;
+  /* Tracking ∝ size/type-2 — optically even as the kicker steps up φ */
+  letter-spacing: calc(
+    var(--tracking-tight) * (var(--type-project-name) / var(--type-2))
+  );
+  /* Word gaps: tracking-tight × √φ ≈ −0.032em */
+  word-spacing: calc(var(--tracking-tight) * sqrt(var(--phi)));
+  /* Tight stack — descenders clear via type-box pb, not leading */
+  line-height: 1.05;
+}
+
+.contact-kicker__sep {
+  display: inline-block;
+  /* Interpunct sidebearings — after = before × √φ (reading direction bias) */
+  margin-inline: calc(0.2em / var(--phi)) calc(0.2em / var(--phi) * sqrt(var(--phi)));
+  letter-spacing: 0;
+  word-spacing: 0;
 }
 
 .pt-nav {
@@ -523,6 +636,15 @@ html {
     width: 100%;
   }
 
+  /** Pin marquee to the viewport bottom (screen), independent of section layout. */
+  .contact-cta-marquee-fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+  }
+
   .contact-cta-marquee-rail {
     display: flex;
     flex-direction: row;
@@ -688,28 +810,15 @@ html {
 .grid-overlay__cols {
   height: 100%;
   width: 100%;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-@media (min-width: 1024px) {
-  .grid-overlay__cols {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
+  padding-left: var(--layout-gutter);
+  padding-right: var(--layout-gutter);
 }
 
 .grid-overlay__cols-inner {
   display: grid;
   height: 100%;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-@media (min-width: 1024px) {
-  .grid-overlay__cols-inner {
-    gap: 1.5rem;
-  }
+  gap: var(--layout-gap);
 }
 
 .grid-overlay__col {

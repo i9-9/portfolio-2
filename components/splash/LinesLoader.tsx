@@ -8,7 +8,7 @@ const LINE_COUNT = 40;
 export function LinesLoader() {
   return (
     <div
-      className="absolute inset-0 flex h-full min-h-dvh flex-col justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:px-6"
+      className="absolute inset-0 flex h-full min-h-dvh flex-col justify-between px-layout pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       aria-hidden
     >
       {Array.from({ length: LINE_COUNT }, (_, i) => (

@@ -490,7 +490,7 @@ export function GraphicDesktopHero({
             {/* Editorial-style fullscreen slideshow */}
             <div
               className={cn(
-                "relative flex min-h-0 flex-1 items-center gap-6 px-4 py-8 lg:gap-10 lg:px-6 lg:py-12",
+                "relative flex min-h-0 flex-1 items-center gap-6 px-layout py-8 lg:gap-10 lg:py-12",
                 canNavigate && "cursor-pointer touch-none",
               )}
               onPointerDown={handleViewerPointerDown}

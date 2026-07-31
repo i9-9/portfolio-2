@@ -1,51 +1,41 @@
 import { cn } from "@/lib/utils";
 
-/** One radius for all editorial CTAs — square corners. */
+/** Square corners — Swiss / International Style. */
 const radius = "";
 
-/** Hero + case study footer — original `px-6 py-4`. */
+/**
+ * Type-box pad — same recipe as the name, nav labels, and section titles.
+ * Em-based so the inked box sits almost flush on the glyphs.
+ * glyph-center trims to cap→baseline — single-line only (no descenders).
+ */
+export const editorialTypeBox = "glyph-center px-[0.15em] py-[0.12em]";
+
+/**
+ * Multi-line type-box — no baseline trim; slight extra bottom for descenders
+ * (e.g. “g” in Argentina) without floating away from the inked edge.
+ */
+export const editorialTypeBoxBlock = "px-[0.15em] pt-[0.12em] pb-[0.2em]";
+
+/**
+ * Contact kicker — Display Bold phrase with optical tracking (see globals).
+ */
+export const contactKickerType = cn(
+  editorialTypeBoxBlock,
+  "contact-kicker inline-block bg-foreground text-background font-helveticaNowDisplayBold normal-case text-type-project",
+);
+
+/** Larger hit pad — case study footer CTAs only. */
 const padComfortable = "px-6 py-4";
 
-/** Contact row + case study header link — original `px-5 py-3`. */
-const padCompact = "px-5 py-3";
-
-/** Nav + contact footer — Display Bold, normal case; size from --type-nav-link (φ). */
+/** Display Bold + φ step --type-nav-link. */
 export const editorialNavType = cn(
   "font-helveticaNowDisplayBold normal-case tracking-[-0.02em] text-nav-link",
 );
 
-type EditorialPad = "comfortable" | "compact";
+type EditorialPad = "comfortable" | "type";
 
 function pad(size: EditorialPad) {
-  return size === "compact" ? padCompact : padComfortable;
-}
-
-/** Contact footer pair — editorial nav type; taller hit area on mobile. */
-export const contactFooterButtonStructure = cn(
-  "flex h-12 w-full min-w-0 max-w-full items-center justify-start gap-2 overflow-hidden text-left lg:h-11",
-  editorialNavType,
-);
-
-/** Muted outline — nav editorial style (contact footer mail). */
-export function editorialFooterMuted(className?: string) {
-  return cn(
-    radius,
-    padCompact,
-    contactFooterButtonStructure,
-    "border border-border bg-background text-foreground transition-colors duration-300 hover:bg-accent",
-    className,
-  );
-}
-
-/** Solid fill — nav editorial style (contact footer message). */
-export function editorialFooterPrimary(className?: string) {
-  return cn(
-    radius,
-    padCompact,
-    contactFooterButtonStructure,
-    "border border-transparent bg-foreground text-background transition-colors duration-300 hover:bg-foreground/90",
-    className,
-  );
+  return size === "type" ? editorialTypeBox : padComfortable;
 }
 
 const editorialButtonBase = cn(
@@ -55,8 +45,18 @@ const editorialButtonBase = cn(
   "transition-colors duration-300",
 );
 
-/** Solid CTA — nav editorial style (case study, inline actions). */
-export function editorialNavPrimary(className?: string, size: EditorialPad = "comfortable") {
+/**
+ * Full-width contact rail — box spans the cell; pad stays type-tight.
+ */
+export const editorialRail = cn(
+  "flex w-full min-w-0 justify-start overflow-hidden text-left",
+);
+
+/** Solid type-box — name / title language (contact message, socials, case study). */
+export function editorialNavPrimary(
+  className?: string,
+  size: EditorialPad = "comfortable",
+) {
   return cn(
     editorialButtonBase,
     pad(size),
@@ -65,8 +65,11 @@ export function editorialNavPrimary(className?: string, size: EditorialPad = "co
   );
 }
 
-/** Outline CTA — nav editorial style. */
-export function editorialNavOutline(className?: string, size: EditorialPad = "comfortable") {
+/** Outline type-box. */
+export function editorialNavOutline(
+  className?: string,
+  size: EditorialPad = "comfortable",
+) {
   return cn(
     editorialButtonBase,
     pad(size),
@@ -75,8 +78,11 @@ export function editorialNavOutline(className?: string, size: EditorialPad = "co
   );
 }
 
-/** Muted outline CTA — nav editorial style. */
-export function editorialNavMuted(className?: string, size: EditorialPad = "compact") {
+/** Muted type-box — contact mail, secondary actions. Default = name-tight. */
+export function editorialNavMuted(
+  className?: string,
+  size: EditorialPad = "type",
+) {
   return cn(
     editorialButtonBase,
     pad(size),

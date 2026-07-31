@@ -12,9 +12,12 @@ import {
 import { getProjectBySlug } from "@/app/data/projects";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import {
-  editorialFooterMuted,
-  editorialFooterPrimary,
+  contactKickerType,
+  editorialNavMuted,
+  editorialNavPrimary,
   editorialNavType,
+  editorialRail,
+  editorialTypeBox,
 } from "@/lib/editorial-cta";
 import { Toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
@@ -250,9 +253,12 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const workRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef<HTMLElement | null>(null);
+  const marqueeBandRef = useRef<HTMLDivElement | null>(null);
+  const marqueeAnchorRef = useRef<HTMLDivElement | null>(null);
   const sep1Ref = useRef(null);
   const sep2Ref = useRef(null);
   const sep3Ref = useRef(null);
+  const [marqueePinned, setMarqueePinned] = useState(false);
 
   const workInView = useInView(workRef, { once: true, amount: 0.2 });
   const aboutInView = useInView(aboutRef, { once: true, margin: "-10%" });
@@ -260,6 +266,80 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const sep1InView = useInView(sep1Ref, { once: true, margin: "-5%" });
   const sep2InView = useInView(sep2Ref, { once: true, margin: "-5%" });
   const sep3InView = useInView(sep3Ref, { once: true, margin: "-5%" });
+
+  useLayoutEffect(() => {
+    const el = marqueeBandRef.current;
+    if (!el) return;
+    const sync = () => {
+      const h = el.getBoundingClientRect().height;
+      if (h > 0) {
+        document.documentElement.style.setProperty("--contact-marquee-h", `${h}px`);
+      }
+    };
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    window.addEventListener("resize", sync);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", sync);
+      document.documentElement.style.removeProperty("--contact-marquee-h");
+    };
+  }, [heroReduced, language]);
+
+  /**
+   * After projects: marquee sits in normal flow. Once it reaches the bottom of
+   * the viewport, pin it fixed there for the rest of the page downward.
+   */
+  useEffect(() => {
+    const anchor = marqueeAnchorRef.current;
+    if (!anchor) return;
+
+    const update = () => {
+      const bandH =
+        marqueeBandRef.current?.offsetHeight ||
+        parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--contact-marquee-h",
+          ),
+        ) ||
+        0;
+      // Pin when the in-flow slot has scrolled up to (or past) the viewport bottom.
+      setMarqueePinned(
+        anchor.getBoundingClientRect().top <= window.innerHeight - bandH,
+      );
+    };
+
+    update();
+    document.addEventListener("scroll", update, { passive: true, capture: true });
+    window.addEventListener("resize", update);
+
+    const io = new IntersectionObserver(update, { threshold: [0, 1] });
+    io.observe(anchor);
+
+    let offLenis: (() => void) | undefined;
+    const attachLenis = () => {
+      const lenis = getLandingLenis();
+      if (!lenis || offLenis) return true;
+      lenis.on("scroll", update);
+      offLenis = () => lenis.off("scroll", update);
+      return true;
+    };
+    attachLenis();
+    const lenisPoll = window.setInterval(() => {
+      if (attachLenis()) window.clearInterval(lenisPoll);
+    }, 150);
+    const lenisPollStop = window.setTimeout(() => window.clearInterval(lenisPoll), 4000);
+
+    return () => {
+      document.removeEventListener("scroll", update, { capture: true });
+      window.removeEventListener("resize", update);
+      io.disconnect();
+      offLenis?.();
+      window.clearInterval(lenisPoll);
+      window.clearTimeout(lenisPollStop);
+    };
+  }, []);
 
   /**
    * Work section parallax — optimized for all devices. Uses reduced travel
@@ -341,7 +421,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       <ScrollProgress />
       <CustomCursor />
 
-      <section className="hero-band relative isolate flex flex-col overflow-hidden px-4 lg:px-6">
+      <section className="hero-band relative isolate flex flex-col overflow-hidden px-layout">
         {showGraphicDesktopHero ? (
           heavyVisualsReady ? (
             <GraphicDesktopHero onReady={notifyHeroVisualReady} />
@@ -390,7 +470,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         <section id="work" ref={workRef} className="relative overflow-hidden">
           <motion.div
             style={heroReduced ? undefined : { transform: workTransform }}
-            className="px-4 lg:px-6 py-36 lg:py-28"
+            className="px-layout py-36 lg:py-28"
           >
             <motion.p
               initial={{ opacity: 0 }}
@@ -441,14 +521,43 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         <AnimatedLine inView={sep2InView} />
       </div>
 
+      {/*
+        In-flow after projects. When this slot hits the viewport bottom, the band
+        switches to position:fixed and stays pinned for the rest of the page.
+      */}
+      <div ref={marqueeAnchorRef}>
+        <div
+          ref={marqueeBandRef}
+          className={cn(
+            "bg-[#DFFF4D] text-neutral-950",
+            marqueePinned && "contact-cta-marquee-fixed",
+          )}
+        >
+          {heroReduced ? (
+            <p className="px-4 py-2 text-center font-helveticaNowTextRegular text-type-micro normal-case leading-none tracking-[-0.02em]">
+              {t("contact.marquee")}
+            </p>
+          ) : (
+            <ContactFooterMarquee text={t("contact.marquee")} />
+          )}
+        </div>
+        {marqueePinned ? (
+          <div
+            className="pointer-events-none"
+            style={{ height: "var(--contact-marquee-h)" }}
+            aria-hidden
+          />
+        ) : null}
+      </div>
+
       <section
         id="about"
         ref={aboutRef}
-        className="relative overflow-hidden"
+        className="relative overflow-hidden bg-background"
       >
         <motion.div
           style={heroReduced ? undefined : { transform: aboutTransform }}
-          className="px-4 lg:px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12"
+          className="px-layout py-20 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12"
         >
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -478,7 +587,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
               {t("contact.blurbWohl")}
             </a>
             {t("about.p2")}
-            <br />
+            <br className="lg:hidden" />{" "}
             {t("about.freelance")}
           </motion.p>
 
@@ -510,7 +619,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
       <footer
         id="contact"
         ref={contactRef}
-        className="relative flex min-h-[calc(100dvh-var(--nav-height))] flex-col overflow-hidden"
+        className="relative flex min-h-[calc(100dvh-var(--nav-height))] flex-col overflow-hidden bg-background pb-[var(--contact-marquee-h)]"
       >
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.17] [background-image:radial-gradient(circle_at_center,rgb(128_128_128/0.35)_1px,transparent_1px)] [background-size:13px_13px] dark:opacity-[0.12] dark:[background-image:radial-gradient(circle_at_center,rgb(255_255_255/0.12)_1px,transparent_1px)]"
@@ -521,7 +630,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           style={heroReduced ? undefined : { transform: footerTransform }}
           className="relative z-[1] flex flex-1 flex-col"
         >
-          <div className="relative flex flex-1 flex-col justify-between gap-12 px-4 pt-[var(--space-16)] pb-[var(--space-12)] lg:gap-16 lg:px-6 lg:pt-[var(--space-24)] lg:pb-[var(--space-16)]">
+          <div className="relative flex flex-1 flex-col justify-between gap-12 px-layout pt-[var(--space-16)] pb-[var(--space-12)] lg:gap-16 lg:pt-[var(--space-24)] lg:pb-[var(--space-16)]">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={
@@ -530,13 +639,17 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
               transition={{ duration: 1, delay: 0.08, ease: EASE_OUT_EXPO }}
               className="flex w-full flex-wrap items-center gap-x-5 gap-y-3"
             >
-              <div className="inline-block bg-foreground px-[0.15em] py-[0.12em] text-background leading-[1.05] tracking-[-0.02em] font-helveticaNowDisplayBold normal-case text-type-project">
+              <div className={contactKickerType}>
                 <span className="block">
                   <span className="block lg:inline">
                     {t("contact.kickerLine1a")}
-                    <span className="lg:hidden"> ·</span>
+                    <span className="contact-kicker__sep lg:hidden" aria-hidden>
+                      ·
+                    </span>
                   </span>
-                  <span className="hidden lg:inline"> · </span>
+                  <span className="contact-kicker__sep hidden lg:inline" aria-hidden>
+                    ·
+                  </span>
                   <span className="block lg:inline">
                     {t("contact.kickerLine1b")}
                   </span>
@@ -561,7 +674,8 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 transition={{ duration: 1, delay: 0.32, ease: EASE_OUT_EXPO }}
                 className={cn(
                   editorialNavType,
-                  "glyph-center inline-block w-fit bg-foreground px-[0.15em] py-[0.12em] text-background",
+                  editorialTypeBox,
+                  "inline-block w-fit bg-foreground text-background",
                 )}
               >
                 {t("contact.elsewhere")}
@@ -586,9 +700,9 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                         delay: 0.32 + i * 0.04,
                         ease: EASE_OUT_EXPO,
                       }}
-                      className={cn(
-                        editorialNavType,
-                        "glyph-center group inline-flex h-12 w-full items-center justify-between gap-1 bg-foreground px-3 text-background transition-colors duration-300 hover:bg-foreground/90",
+                      className={editorialNavPrimary(
+                        cn(editorialRail, "glyph-center group justify-between"),
+                        "type",
                       )}
                     >
                       {label}
@@ -612,7 +726,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                     <button
                       type="button"
                       onClick={copyEmail}
-                      className={editorialFooterMuted()}
+                      className={editorialNavMuted(editorialRail, "type")}
                       title="ivannevares9@gmail.com"
                     >
                       <span className="truncate">ivannevares9@gmail.com</span>
@@ -630,7 +744,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                     <button
                       type="button"
                       onClick={() => setIsContactOpen(true)}
-                      className={editorialFooterPrimary()}
+                      className={editorialNavPrimary(editorialRail, "type")}
                     >
                       {isEn ? "Send a message" : "Enviar mensaje"}
                     </button>
@@ -657,9 +771,9 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                         delay: 0.32 + i * 0.04,
                         ease: EASE_OUT_EXPO,
                       }}
-                      className={cn(
-                        editorialNavType,
-                        "glyph-center group inline-flex w-full items-center justify-between gap-1 bg-foreground px-[0.15em] py-[0.12em] text-background transition-colors duration-300 hover:bg-foreground/90",
+                      className={editorialNavPrimary(
+                        cn(editorialRail, "glyph-center group justify-between"),
+                        "type",
                       )}
                     >
                       {label}
@@ -683,7 +797,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                     <button
                       type="button"
                       onClick={copyEmail}
-                      className={editorialFooterMuted()}
+                      className={editorialNavMuted(editorialRail, "type")}
                       title="ivannevares9@gmail.com"
                     >
                       <span className="truncate">ivannevares9@gmail.com</span>
@@ -701,7 +815,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                     <button
                       type="button"
                       onClick={() => setIsContactOpen(true)}
-                      className={editorialFooterPrimary()}
+                      className={editorialNavPrimary(editorialRail, "type")}
                     >
                       {isEn ? "Send a message" : "Enviar mensaje"}
                     </button>
@@ -711,26 +825,6 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={contactInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 1, delay: 0.44, ease: EASE_OUT_EXPO }}
-            className="relative mt-auto bg-[#DFFF4D] text-neutral-950"
-          >
-            {heroReduced ? (
-              <p className="px-4 py-2.5 text-center font-helveticaNowTextRegular text-type-micro normal-case leading-relaxed tracking-[-0.02em]">
-                {t("contact.marquee")}
-              </p>
-            ) : (
-              <ContactFooterMarquee text={t("contact.marquee")} />
-            )}
-          </motion.div>
-
-          {/* Extends the marquee band downward so the spring settle never flashes a gap. */}
-          <div
-            className="absolute inset-x-0 top-full h-[45vh] bg-[#DFFF4D]"
-            aria-hidden
-          />
         </motion.div>
       </footer>
 
