@@ -722,7 +722,7 @@ function NavBarInner() {
                       </div>
 
                       <motion.div
-                        className="grid-container relative py-6 text-[10px] font-helveticaNowTextRegular normal-case tracking-normal text-muted-foreground"
+                        className="grid-container relative py-6 text-[8px] font-helveticaNowTextRegular normal-case tracking-normal text-muted-foreground"
                         variants={footerContainerVariants}
                         initial="hidden"
                         animate={isMobileMenuOpen ? "visible" : "hidden"}
@@ -733,14 +733,14 @@ function NavBarInner() {
                           aria-hidden
                         />
                         <ClipRevealItem
-                          className="col-span-6 optical-edge-start"
+                          className="col-span-6"
                           shellVariants={itemShellVariants}
                           revealVariants={mobileItemRevealVariants}
                         >
                           <span>Buenos Aires · AR</span>
                         </ClipRevealItem>
                         <ClipRevealItem
-                          className="col-span-6 optical-edge-end"
+                          className="col-span-6"
                           shellVariants={itemShellVariants}
                           revealVariants={mobileItemRevealVariants}
                         >
