@@ -726,7 +726,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                     <button
                       type="button"
                       onClick={copyEmail}
-                      className={editorialNavMuted(editorialRail, "type")}
+                      className={editorialNavMuted(editorialRail, "comfortable")}
                       title="ivannevares9@gmail.com"
                     >
                       <span className="truncate">ivannevares9@gmail.com</span>
@@ -744,7 +744,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                     <button
                       type="button"
                       onClick={() => setIsContactOpen(true)}
-                      className={editorialNavPrimary(editorialRail, "type")}
+                      className={editorialNavPrimary(editorialRail, "comfortable")}
                     >
                       {isEn ? "Send a message" : "Enviar mensaje"}
                     </button>
@@ -797,7 +797,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                     <button
                       type="button"
                       onClick={copyEmail}
-                      className={editorialNavMuted(editorialRail, "type")}
+                      className={editorialNavMuted(editorialRail, "comfortable")}
                       title="ivannevares9@gmail.com"
                     >
                       <span className="truncate">ivannevares9@gmail.com</span>
@@ -815,7 +815,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                     <button
                       type="button"
                       onClick={() => setIsContactOpen(true)}
-                      className={editorialNavPrimary(editorialRail, "type")}
+                      className={editorialNavPrimary(editorialRail, "comfortable")}
                     >
                       {isEn ? "Send a message" : "Enviar mensaje"}
                     </button>
