@@ -61,7 +61,8 @@
     --phi-5: 11.0901699437;
     --phi-6: 17.94427191;
 
-    --type-base: 0.875rem; /* step 0 — 14px */
+    /* Mobile base slightly larger; desktop (lg+) tightens — see media query */
+    --type-base: 1rem; /* step 0 — 16px mobile */
     --type-micro: calc(var(--type-base) / var(--phi));
     --type-0: var(--type-base);
     --type-1: calc(var(--type-base) * var(--phi));
@@ -72,8 +73,8 @@
     --type-6: calc(var(--type-base) * var(--phi-6));
 
     /* Semantic aliases — hierarchy preserved via φ steps */
-    --type-nav-link: var(--type-0);          /* labels, UI, body (editorial CTAs) */
-    --type-name-nav: var(--type-1);          /* nav / splash name */
+    --type-nav-link: var(--type-0);
+    --type-name-nav: var(--type-1);
     /* Hero — fluid subtitle, name = subtitle × φ³ at every viewport */
     --type-hero-subtitle: clamp(
       var(--type-0),
@@ -86,13 +87,13 @@
     --hero-gap-nav-title: var(--grid-row);
     --hero-gap-title-subtitle: var(--space-3);
     --hero-gap-subtitle-floor: calc(var(--grid-row) * 2);
-    --type-project-name: var(--type-2);      /* work row titles */
-    --type-project-subtitle: calc(var(--type-base) / sqrt(var(--phi))); /* half-step between micro and type-0 */
-    --type-case-title: 2.5rem;               /* case study headline — mobile matches landing h1 */
-    --type-case-section: var(--type-2);      /* Desafío, Decisión clave, Resultado */
+    --type-project-name: var(--type-2);
+    --type-case-title: 2.5rem; /* case study headline — mobile matches landing h1 */
+    --type-case-section: var(--type-2);
     --type-body: var(--type-0);
-    --type-body-lg: var(--type-1);           /* emphasized body / result */
-    --type-display: var(--type-6);           /* splash counter */
+    --type-body-lg: var(--type-1);
+    --type-project-subtitle: calc(var(--type-body) / sqrt(var(--phi))); /* half-step below body */
+    --type-display: var(--type-6);
 
     /* Grid overlay specbook — φ steps below micro */
     --type-grid-label: calc(var(--type-micro) / var(--phi));
@@ -120,10 +121,11 @@
     --mobile-menu-ease: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  @media (min-width: 768px) {
+  /* Desktop denser: same ladder, smaller base */
+  @media (min-width: 1024px) {
     :root {
-      --type-base: 1rem; /* step 0 — 16px */
-      --type-case-title: var(--type-3); /* one φ above sections */
+      --type-base: 0.875rem; /* step 0 — 14px desktop */
+      --type-case-title: var(--type-3);
     }
   }
  

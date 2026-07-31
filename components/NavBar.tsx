@@ -94,7 +94,7 @@ function navLinkClass(active: boolean, isMobile = false) {
   return cn(
     navLabel,
     navInteractiveFocus,
-    isMobile && "flex w-full min-h-[44px] items-center py-3",
+    isMobile && "flex w-full min-h-[52px] items-center py-3 text-xl",
     active
       ? "text-foreground"
       : "text-muted-foreground hover:text-foreground",
@@ -256,15 +256,15 @@ function LanguageToggle({
 
   const shellClass = cn(
     "inline-flex items-center",
-    isMobile && "flex w-full min-h-[44px] items-center py-3",
+    isMobile && "flex w-full min-h-[52px] items-center py-3 text-xl",
   );
 
-  const activeClass = cn(navLabel, "text-nav-link text-foreground");
+  const activeClass = cn(navLabel, "text-foreground", isMobile && "text-xl");
   const inactiveClass = cn(
     navLabel,
     navInteractiveFocus,
-    "text-nav-link text-muted-foreground hover:text-foreground transition-colors duration-300",
-    isMobile && "min-h-[44px] inline-flex items-center",
+    "text-muted-foreground hover:text-foreground transition-colors duration-300",
+    isMobile && "min-h-[52px] inline-flex items-center text-xl",
   );
 
   return (
@@ -278,7 +278,7 @@ function LanguageToggle({
           En
         </button>
       )}
-      <span className="mx-1.5 text-nav-link text-muted-foreground/35 select-none" aria-hidden>
+      <span className={cn(navLabel, "mx-1.5 text-muted-foreground/35 select-none")} aria-hidden>
         ·
       </span>
       {language === "es" ? (
@@ -445,12 +445,11 @@ function NavBarInner() {
           <Link
             href={v2WebHref}
             onClick={() => onMobileClose?.()}
-            className={cn(
+            className={
               abacus
                 ? navAbacusLinkClass()
-                : navLinkClass(v2WebActive, isMobile),
-              isMobile && "text-xl min-h-[52px]",
-            )}
+                : navLinkClass(v2WebActive, isMobile)
+            }
           >
             {t('work.filterWeb')}
           </Link>
@@ -463,12 +462,11 @@ function NavBarInner() {
           <Link
             href={v2GraphicHref}
             onClick={() => onMobileClose?.()}
-            className={cn(
+            className={
               abacus
                 ? navAbacusLinkClass()
-                : navLinkClass(v2Graphic, isMobile),
-              isMobile && "text-xl min-h-[52px]",
-            )}
+                : navLinkClass(v2Graphic, isMobile)
+            }
           >
             {t('work.filterGraphic')}
           </Link>

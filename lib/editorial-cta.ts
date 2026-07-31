@@ -9,7 +9,7 @@ const padComfortable = "px-6 py-4";
 /** Contact row + case study header link — original `px-5 py-3`. */
 const padCompact = "px-5 py-3";
 
-/** Nav + contact footer — Display Bold, normal case, shared scale. */
+/** Nav + contact footer — Display Bold, normal case; size from --type-nav-link (φ). */
 export const editorialNavType = cn(
   "font-helveticaNowDisplayBold normal-case tracking-[-0.02em] text-nav-link",
 );
@@ -20,9 +20,9 @@ function pad(size: EditorialPad) {
   return size === "compact" ? padCompact : padComfortable;
 }
 
-/** Contact footer pair — shared layout/size for mail + message buttons, one per grid column. */
+/** Contact footer pair — editorial nav type; taller hit area on mobile. */
 export const contactFooterButtonStructure = cn(
-  "flex h-11 w-full min-w-0 max-w-full items-center justify-start gap-2 overflow-hidden text-left",
+  "flex h-12 w-full min-w-0 max-w-full items-center justify-start gap-2 overflow-hidden text-left lg:h-11",
   editorialNavType,
 );
 

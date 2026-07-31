@@ -7,40 +7,65 @@ interface HamburgerMenuProps {
   isOpen: boolean;
 }
 
-/** Half the vertical gap between the two bars (14 − 8.5) / 2. */
-const LINE_TRAVEL = 2.75;
+/**
+ * Vertical travel to the shared center.
+ * Bars sit farther apart so the converge reads as real motion, not a flicker.
+ * (top 5.5 → center 12, bottom 17 → center 12)
+ */
+const LINE_TRAVEL = 5.75;
 
-/** Converge + rotate — long, cinematic, with a marked settle. */
-const MORPH_DURATION = 0.58;
+/** Long enough to watch each beat: converge, then morph into X. */
+const MORPH_DURATION = 0.72;
 
-const morphTransition = {
+/** Open: meet → rotate. Close: unwind → separate. */
+const openTimes = [0, 0.4, 1] as const;
+const closeTimes = [0, 0.38, 1] as const;
+
+const openTransition = {
   duration: MORPH_DURATION,
-  ease: EASE_CINEMATIC,
+  times: openTimes,
+  ease: [EASE_OUT_EXPO, EASE_CINEMATIC] as const,
 };
 
-/** Open: soft spring with clear overshoot. Close: cinematic unwind. */
-const openRotate = {
-  type: "spring" as const,
-  stiffness: 320,
-  damping: 18,
-  mass: 0.95,
-  delay: 0.06,
+const closeTransition = {
+  duration: MORPH_DURATION * 0.92,
+  times: closeTimes,
+  ease: [EASE_OUT_EXPO, EASE_CINEMATIC] as const,
 };
 
-const closeRotate = {
-  duration: MORPH_DURATION * 0.9,
-  ease: EASE_OUT_EXPO,
-};
+/** Bottom bar trails slightly so the two lines read as separate actors. */
+const LINE_STAGGER = 0.055;
 
 export function HamburgerMenu({ isOpen }: HamburgerMenuProps) {
   const reducedMotion = useReducedMotion();
 
-  const yTransition = reducedMotion ? { duration: 0 } : morphTransition;
-  const rotateTransition = reducedMotion
-    ? { duration: 0 }
-    : isOpen
-      ? openRotate
-      : closeRotate;
+  if (reducedMotion) {
+    return (
+      <div
+        className="relative flex size-7 items-center justify-center"
+        aria-hidden
+      >
+        <div className="relative size-6 text-foreground">
+          <span
+            className="absolute left-0 top-[5.5px] h-[1.5px] w-full origin-center bg-current"
+            style={{
+              transform: isOpen
+                ? `translateY(${LINE_TRAVEL}px) rotate(45deg) scaleX(1.12)`
+                : undefined,
+            }}
+          />
+          <span
+            className="absolute left-0 top-[17px] h-[1.5px] w-full origin-center bg-current"
+            style={{
+              transform: isOpen
+                ? `translateY(${-LINE_TRAVEL}px) rotate(-45deg) scaleX(1.12)`
+                : undefined,
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -49,31 +74,42 @@ export function HamburgerMenu({ isOpen }: HamburgerMenuProps) {
     >
       <div className="relative size-6 text-foreground">
         <motion.span
-          className="absolute left-0 top-[8.5px] h-[1.5px] w-full origin-center bg-current will-change-transform"
+          className="absolute left-0 top-[5.5px] h-[1.5px] w-full origin-center bg-current will-change-transform"
           initial={false}
-          animate={{
-            y: isOpen ? LINE_TRAVEL : 0,
-            rotate: isOpen ? 45 : 0,
-            scaleX: isOpen ? 1.12 : 1,
-          }}
-          transition={{
-            y: yTransition,
-            scaleX: yTransition,
-            rotate: rotateTransition,
-          }}
+          animate={
+            isOpen
+              ? {
+                  y: [0, LINE_TRAVEL, LINE_TRAVEL],
+                  rotate: [0, 0, 45],
+                  scaleX: [1, 0.82, 1.12],
+                }
+              : {
+                  y: [LINE_TRAVEL, LINE_TRAVEL, 0],
+                  rotate: [45, 0, 0],
+                  scaleX: [1.12, 0.82, 1],
+                }
+          }
+          transition={isOpen ? openTransition : closeTransition}
         />
         <motion.span
-          className="absolute left-0 top-[14px] h-[1.5px] w-full origin-center bg-current will-change-transform"
+          className="absolute left-0 top-[17px] h-[1.5px] w-full origin-center bg-current will-change-transform"
           initial={false}
-          animate={{
-            y: isOpen ? -LINE_TRAVEL : 0,
-            rotate: isOpen ? -45 : 0,
-            scaleX: isOpen ? 1.12 : 1,
-          }}
+          animate={
+            isOpen
+              ? {
+                  y: [0, -LINE_TRAVEL, -LINE_TRAVEL],
+                  rotate: [0, 0, -45],
+                  scaleX: [1, 0.82, 1.12],
+                }
+              : {
+                  y: [-LINE_TRAVEL, -LINE_TRAVEL, 0],
+                  rotate: [-45, 0, 0],
+                  scaleX: [1.12, 0.82, 1],
+                }
+          }
           transition={{
-            y: yTransition,
-            scaleX: yTransition,
-            rotate: rotateTransition,
+            ...(isOpen ? openTransition : closeTransition),
+            delay: LINE_STAGGER,
           }}
         />
       </div>

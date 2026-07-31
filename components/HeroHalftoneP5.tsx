@@ -95,7 +95,7 @@ export function HeroHalftoneP5({
       const PHI = 1.6180339887;
       const PHI2 = PHI * PHI;
       const PHI3 = PHI2 * PHI;
-      const TYPE_BASE_PX = 14; // --type-base
+      const TYPE_BASE_PX = 16; // --type-base (canonical step 0)
       const SPACING = TYPE_BASE_PX * Math.sqrt(PHI); // ≈ 17.81
       /** Influence field — spacing × φ³ (~4 cells); local, graphic */
       const REPEL_RADIUS = SPACING * PHI3;

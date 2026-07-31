@@ -237,6 +237,16 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
     return () => mq.removeEventListener("change", update);
   }, []);
 
+  const contactSocials = [
+    { href: "https://github.com/i9-9", label: "GitHub" },
+    {
+      href: "https://www.linkedin.com/in/ivan-nevares/",
+      label: "LinkedIn",
+    },
+    { href: "https://www.behance.net/ivan_nevares", label: "Behance" },
+    { href: "https://dribbble.com/i9i9", label: "Dribbble" },
+  ] as const;
+
   const workRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef<HTMLElement | null>(null);
@@ -520,22 +530,31 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
               transition={{ duration: 1, delay: 0.08, ease: EASE_OUT_EXPO }}
               className="flex w-full flex-wrap items-center gap-x-5 gap-y-3"
             >
-              <div className="inline-block bg-foreground px-[0.15em] py-[0.12em] text-background text-name-nav leading-[1.05] tracking-[-0.02em] font-helveticaNowDisplayBold normal-case">
-                <span className="block">{t("contact.kickerLine1")}</span>
+              <div className="inline-block bg-foreground px-[0.15em] py-[0.12em] text-background leading-[1.05] tracking-[-0.02em] font-helveticaNowDisplayBold normal-case text-type-project">
+                <span className="block">
+                  <span className="block lg:inline">
+                    {t("contact.kickerLine1a")}
+                    <span className="lg:hidden"> ·</span>
+                  </span>
+                  <span className="hidden lg:inline"> · </span>
+                  <span className="block lg:inline">
+                    {t("contact.kickerLine1b")}
+                  </span>
+                </span>
                 <span className="block">{t("contact.kickerLine2")}</span>
               </div>
               <span
-                className="hidden h-px min-w-[3rem] flex-1 bg-foreground/25 sm:block"
+                className="hidden h-px min-w-[3rem] flex-1 bg-foreground/25 lg:block"
                 aria-hidden
               />
               <p
-                className="optical-edge-end ml-auto shrink-0 font-helveticaNowDisplayBold normal-case tracking-[-0.02em] text-type-micro tabular-nums text-muted-foreground"
+                className="basis-full shrink-0 font-helveticaNowDisplayBold normal-case tracking-[-0.02em] text-type-micro tabular-nums text-muted-foreground lg:optical-edge-end lg:ml-auto lg:basis-auto"
               >
                 {t("contact.stamp")}
               </p>
             </motion.div>
 
-            <div className="mt-auto flex flex-col gap-4 lg:gap-6">
+            <div className="mt-auto flex flex-col gap-10 lg:gap-6">
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 animate={contactInView ? { opacity: 1, y: 0 } : {}}
@@ -548,22 +567,13 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 {t("contact.elsewhere")}
               </motion.p>
 
-              <div className="grid grid-cols-12 gap-4 lg:gap-6 lg:items-end">
+              {/* Mobile: socials 2×2, then CTAs below with clear separation. */}
+              <div className="flex flex-col gap-10 lg:hidden">
                 <nav
                   aria-label={t("contact.socialNav")}
-                  className="contents"
+                  className="grid grid-cols-2 gap-2"
                 >
-                  {(
-                    [
-                      { href: "https://github.com/i9-9", label: "GitHub" },
-                      {
-                        href: "https://www.linkedin.com/in/ivan-nevares/",
-                        label: "LinkedIn",
-                      },
-                      { href: "https://www.behance.net/ivan_nevares", label: "Behance" },
-                      { href: "https://dribbble.com/i9i9", label: "Dribbble" },
-                    ] as const
-                  ).map(({ href, label }, i) => (
+                  {contactSocials.map(({ href, label }, i) => (
                     <motion.a
                       key={href}
                       href={href}
@@ -578,7 +588,78 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                       }}
                       className={cn(
                         editorialNavType,
-                        "glyph-center group col-span-6 inline-flex w-fit items-center gap-1 bg-foreground px-[0.15em] py-[0.12em] text-background transition-colors duration-300 hover:bg-foreground/90 lg:col-span-1",
+                        "glyph-center group inline-flex h-12 w-full items-center justify-between gap-1 bg-foreground px-3 text-background transition-colors duration-300 hover:bg-foreground/90",
+                      )}
+                    >
+                      {label}
+                      <ArrowRight
+                        className="size-4 shrink-0 opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                        aria-hidden
+                      />
+                    </motion.a>
+                  ))}
+                </nav>
+
+                <div className="grid grid-cols-1 gap-3">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={
+                      contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                    }
+                    transition={{ duration: 1.05, delay: 0.4, ease: EASE_OUT_EXPO }}
+                    className="min-w-0"
+                  >
+                    <button
+                      type="button"
+                      onClick={copyEmail}
+                      className={editorialFooterMuted()}
+                      title="ivannevares9@gmail.com"
+                    >
+                      <span className="truncate">ivannevares9@gmail.com</span>
+                    </button>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={
+                      contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                    }
+                    transition={{ duration: 1.05, delay: 0.44, ease: EASE_OUT_EXPO }}
+                    className="min-w-0"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setIsContactOpen(true)}
+                      className={editorialFooterPrimary()}
+                    >
+                      {isEn ? "Send a message" : "Enviar mensaje"}
+                    </button>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Desktop: original 12-col row — socials left (1 col each), mail + message stacked right. */}
+              <div className="hidden grid-cols-12 items-end gap-6 lg:grid">
+                <nav
+                  aria-label={t("contact.socialNav")}
+                  className="col-span-4 grid grid-cols-4 gap-6"
+                >
+                  {contactSocials.map(({ href, label }, i) => (
+                    <motion.a
+                      key={href}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={contactInView ? { opacity: 1, y: 0 } : {}}
+                      transition={{
+                        duration: 1,
+                        delay: 0.32 + i * 0.04,
+                        ease: EASE_OUT_EXPO,
+                      }}
+                      className={cn(
+                        editorialNavType,
+                        "glyph-center group inline-flex w-full items-center justify-between gap-1 bg-foreground px-[0.15em] py-[0.12em] text-background transition-colors duration-300 hover:bg-foreground/90",
                       )}
                     >
                       {label}
@@ -590,40 +671,42 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                   ))}
                 </nav>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={
-                    contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-                  }
-                  transition={{ duration: 1.05, delay: 0.2, ease: EASE_OUT_EXPO }}
-                  className="col-span-6 order-first min-w-0 lg:order-none lg:col-span-3 lg:col-start-7"
-                >
-                  <button
-                    type="button"
-                    onClick={copyEmail}
-                    className={editorialFooterMuted()}
-                    title="ivannevares9@gmail.com"
+                <div className="col-span-5 col-start-8 flex min-w-0 flex-col gap-3">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={
+                      contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                    }
+                    transition={{ duration: 1.05, delay: 0.2, ease: EASE_OUT_EXPO }}
+                    className="min-w-0"
                   >
-                    <span className="truncate">ivannevares9@gmail.com</span>
-                  </button>
-                </motion.div>
+                    <button
+                      type="button"
+                      onClick={copyEmail}
+                      className={editorialFooterMuted()}
+                      title="ivannevares9@gmail.com"
+                    >
+                      <span className="truncate">ivannevares9@gmail.com</span>
+                    </button>
+                  </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={
-                    contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-                  }
-                  transition={{ duration: 1.05, delay: 0.24, ease: EASE_OUT_EXPO }}
-                  className="col-span-6 order-first min-w-0 lg:order-none lg:col-span-3"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setIsContactOpen(true)}
-                    className={editorialFooterPrimary()}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={
+                      contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                    }
+                    transition={{ duration: 1.05, delay: 0.24, ease: EASE_OUT_EXPO }}
+                    className="min-w-0"
                   >
-                    {isEn ? "Send a message" : "Enviar mensaje"}
-                  </button>
-                </motion.div>
+                    <button
+                      type="button"
+                      onClick={() => setIsContactOpen(true)}
+                      className={editorialFooterPrimary()}
+                    >
+                      {isEn ? "Send a message" : "Enviar mensaje"}
+                    </button>
+                  </motion.div>
+                </div>
               </div>
             </div>
           </div>

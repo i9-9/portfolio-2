@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  useEffect, useState, useRef, useCallback, useMemo,
+  useEffect, useState, useRef, useCallback, useMemo, useLayoutEffect,
 } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -37,6 +37,8 @@ type Interaction = {
   startY: number;
   isDrag: boolean;
 };
+
+type OriginRect = { left: number; top: number; width: number; height: number };
 
 function displayName(filename: string): string {
   return filename.replace(/\.[^.]+$/, "");
@@ -76,6 +78,19 @@ export function GraphicDesktopHero({
   /** +/-1 for image crossfade slide direction after keyboard or button navigation */
   const navDirRef = useRef(1);
 
+  /**
+   * Manual FLIP (First-Last-Invert-Play) for the "open" transition: the
+   * clicked card never moves — instead the fullscreen image is momentarily
+   * transformed to exactly match the card's on-screen rect, then released
+   * back to its natural layout with a CSS transition, so it visually grows
+   * out of the card it was opened from. Navigation (arrows/swipe) keeps the
+   * plain cross-fade below and doesn't use this.
+   */
+  const thumbImgRefs = useRef<Record<string, HTMLImageElement | null>>({});
+  const mainImgRef = useRef<HTMLImageElement | null>(null);
+  const openOriginRect = useRef<OriginRect | null>(null);
+  const openTrigger = useRef<"click" | "nav">("click");
+
   /** Viewer swipe state */
   const [viewerSwipeX, setViewerSwipeX] = useState(0);
   const [viewerSwipeY, setViewerSwipeY] = useState(0);
@@ -103,6 +118,7 @@ export function GraphicDesktopHero({
   }, []);
 
   const goAdjacent = useCallback((delta: number) => {
+    openTrigger.current = "nav";
     setOpenFile((cur) => {
       if (!cur || images.length < 2) return cur;
       const i = images.indexOf(cur);
@@ -160,6 +176,38 @@ export function GraphicDesktopHero({
     };
   }, [openFile, goAdjacent]);
 
+  useLayoutEffect(() => {
+    if (!openFile) return;
+    if (openTrigger.current !== "click") return;
+    const origin = openOriginRect.current;
+    const el = mainImgRef.current;
+    if (!origin || !el) return;
+
+    const final = el.getBoundingClientRect();
+    if (final.width === 0 || final.height === 0) return;
+
+    const scaleX = origin.width / final.width;
+    const scaleY = origin.height / final.height;
+    const dx =
+      origin.left + origin.width / 2 - (final.left + final.width / 2);
+    const dy =
+      origin.top + origin.height / 2 - (final.top + final.height / 2);
+
+    el.style.transition = "none";
+    el.style.transform = `translate(${dx}px, ${dy}px) scale(${scaleX}, ${scaleY})`;
+
+    const raf = requestAnimationFrame(() => {
+      el.style.transition = "transform 0.55s cubic-bezier(0.32, 0.72, 0, 1)";
+      el.style.transform = "translate(0, 0) scale(1, 1)";
+    });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      el.style.transition = "";
+      el.style.transform = "";
+    };
+  }, [openFile]);
+
   const openIndex = openFile ? images.indexOf(openFile) : -1;
   const canNavigate = Boolean(openFile) && images.length > 1;
 
@@ -207,6 +255,9 @@ export function GraphicDesktopHero({
     const inter = interaction.current;
     if (inter && !inter.isDrag && dragging.current === null) {
       navDirRef.current = 1;
+      const cardImg = thumbImgRefs.current[inter.name];
+      openOriginRect.current = cardImg ? cardImg.getBoundingClientRect() : null;
+      openTrigger.current = "click";
       setOpenFile(inter.name);
     }
     dragging.current = null;
@@ -494,6 +545,10 @@ export function GraphicDesktopHero({
                     : "transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)",
                 }}
               >
+                {/* `initial={false}` skips the fade/scale for the very first
+                    image (opening from a card click): that one instead grows
+                    out of the clicked card's exact on-screen rect, via the
+                    manual FLIP effect above driving the img's own transform. */}
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={openFile}
@@ -507,6 +562,7 @@ export function GraphicDesktopHero({
                     className="relative flex h-full max-h-full max-w-full items-center"
                   >
                     <img
+                      ref={mainImgRef}
                       src={dgFullSrc(openFile)}
                       alt={displayName(openFile)}
                       className="block h-full max-h-full w-auto max-w-full object-contain"
@@ -577,8 +633,13 @@ export function GraphicDesktopHero({
                   </span>
                 </div>
                 <div className="w-full cursor-zoom-in bg-muted leading-none">
-                  {/* Thumb for cards (~440px); full asset only in the lightbox */}
+                  {/* Thumb for cards (~440px); full asset only in the lightbox.
+                      Ref lets the "open" transition read this exact card's
+                      on-screen rect so the fullscreen image can grow from it. */}
                   <img
+                    ref={(el) => {
+                      thumbImgRefs.current[item.name] = el;
+                    }}
                     src={dgThumbSrc(item.name)}
                     alt=""
                     className="block h-auto w-full max-w-full select-none"
