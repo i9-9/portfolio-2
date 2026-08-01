@@ -72,8 +72,31 @@
     --grid-row: var(--space-16);
     --grid-spec-margin: calc(var(--space-unit) * 20); /* 80px — specbook annotation */
     --nav-height: var(--grid-row);
-    /* Contact marquee band — py-2 + micro line; used for sticky pin + footer pad */
-    --contact-marquee-h: calc(var(--space-4) + var(--type-micro) * 1.15);
+    /*
+     * Contact footer — φ spacing ladder (unit u = 1rem).
+     * Steps: u/φ² · u/φ · u · uφ · uφ² · uφ³
+     * Outer pad splits golden: pt : pb = φ (major above, minor above marquee).
+     */
+    --contact-u: var(--space-4);
+    --contact-gap-xs: calc(var(--contact-u) / var(--phi));     /* ~10px */
+    --contact-gap-sm: var(--contact-u);                        /* 16px */
+    --contact-gap-md: calc(var(--contact-u) * var(--phi));     /* ~26px */
+    --contact-gap-lg: calc(var(--contact-u) * var(--phi-2));   /* ~42px */
+    --contact-gap-xl: calc(var(--contact-u) * var(--phi-3));   /* ~68px */
+    --contact-pad-top: var(--contact-gap-xl);
+    --contact-pad-bottom: var(--contact-gap-lg);
+    --contact-block-gap: var(--contact-gap-xl);
+    --contact-stack-gap: var(--contact-gap-lg);
+    --contact-rail-gap: var(--contact-gap-sm);
+    --contact-label-gap: var(--contact-gap-md);
+    --contact-kicker-gap-x: var(--contact-gap-md);
+    --contact-kicker-gap-y: var(--contact-gap-xs);
+    --contact-marquee-py: var(--contact-gap-xs);
+    --contact-marquee-item-gap: var(--contact-gap-xl);
+    /* Contact marquee band — py + micro line; used for sticky pin + footer pad */
+    --contact-marquee-h: calc(
+      var(--contact-marquee-py) * 2 + var(--type-micro) * 1.15
+    );
     --space-24: calc(var(--space-unit) * 24);  /* 96px */
     --space-32: calc(var(--space-unit) * 32);  /* 128px */
     --space-40: calc(var(--space-unit) * 40);  /* 160px */
@@ -156,6 +179,13 @@
     --mobile-menu-panel-open-duration: 2.1s;
     --mobile-menu-panel-close-duration: 1.45s;
     --mobile-menu-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Theme toggle — keep duration in sync with ThemeContext THEME_TRANSITION_MS */
+    --theme-transition-duration: 0.52s;
+    --theme-transition-ease: cubic-bezier(0.32, 0.72, 0, 1); /* EASE_OUT_EXPO */
+    --theme-tx: 50%;
+    --theme-ty: 50%;
+    --theme-tr: 100vmax;
   }
 
   /* Desktop denser: same ladder, smaller base + wider grid chrome */
@@ -199,6 +229,46 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
     --nav: 0 0% 8%;
+  }
+
+  /*
+   * Theme toggle — View Transition reveal from click (Chromium/Safari 18+).
+   * Fallback: temporary .theme-transition color tween below.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    html[data-theme-transition='reveal']::view-transition-old(root) {
+      animation: none;
+      z-index: 1;
+    }
+
+    html[data-theme-transition='reveal']::view-transition-new(root) {
+      animation: theme-circle-reveal var(--theme-transition-duration)
+        var(--theme-transition-ease) both;
+      z-index: 2;
+    }
+  }
+
+  @keyframes theme-circle-reveal {
+    from {
+      clip-path: circle(0px at var(--theme-tx) var(--theme-ty));
+    }
+    to {
+      clip-path: circle(var(--theme-tr) at var(--theme-tx) var(--theme-ty));
+    }
+  }
+
+  /* Fallback when View Transitions API is unavailable */
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition:
+      background-color var(--theme-transition-duration) var(--theme-transition-ease),
+      color var(--theme-transition-duration) var(--theme-transition-ease),
+      border-color var(--theme-transition-duration) var(--theme-transition-ease),
+      fill var(--theme-transition-duration) var(--theme-transition-ease),
+      stroke var(--theme-transition-duration) var(--theme-transition-ease),
+      box-shadow var(--theme-transition-duration) var(--theme-transition-ease) !important;
   }
 
   /* Thin scrollbar */
@@ -399,10 +469,17 @@
  * without changing the global desktop ladder.
  */
 @media (min-width: 1024px) {
+  :root {
+    /* Marquee lives outside #contact — scale item gap at root */
+    --contact-marquee-item-gap: calc(var(--space-4) * var(--phi-4));
+  }
+
   #contact {
     --type-nav-link: var(--type-1);
     --type-project-name: var(--type-3);
     --type-micro: var(--type-0);
+    /* Whole contact spacing ladder scales × φ on desktop */
+    --contact-u: calc(var(--space-4) * var(--phi));
   }
 }
 

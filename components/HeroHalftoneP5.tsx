@@ -11,6 +11,12 @@ type Dot = {
   x: number;
   y: number;
   baseR: number;
+  /** Stable seed for which way a breath scales this dot */
+  breathSign: number;
+  /** 0 idle · (0,1] active envelope progress */
+  breathT: number;
+  /** Peak |Δradius| for the current breath */
+  breathAmp: number;
 };
 
 /** Square grid halftone + φ-scaled pointer whisper; DPR capped for sharp dots. */
@@ -106,10 +112,17 @@ export function HeroHalftoneP5({
       /** Cursor + dots: exponential ease, 1/√φ — snappy, no bounce */
       const POINTER_LERP = 1 / Math.sqrt(PHI);
       const DOT_LERP = 1 / Math.sqrt(PHI);
+      /** Occasional local breath — idle most of the time */
+      const BREATH_GAP_MIN = 5200 * PHI2; // ~13.6s
+      const BREATH_GAP_MAX = 5200 * PHI3; // ~22s
+      const BREATH_DUR_MS = 900 * PHI; // ~1.5s grow→shrink
+      const BREATH_FIELD = SPACING * PHI3; // same scale as pointer field
+      const BREATH_AMP = 1 / PHI2; // ~0.38 peak |Δr|
 
       let dots: Dot[] = [];
       let cw = 0;
       let ch = 0;
+      let nextBreathAt = 0;
 
       const rebuild = (p: P5) => {
         if (!hasRenderer(p) || disposed) return;
@@ -127,8 +140,44 @@ export function HeroHalftoneP5({
             const t = Math.pow(by / ch, 0.72);
             const wobble = 0.88 + 0.12 * Math.sin(ix * 0.55 + iy * 0.31);
             const baseR = (p.lerp(0.75, 2.95, t) * wobble * SPACING) / 7.25;
-            dots.push({ bx, by, x: bx, y: by, baseR });
+            const seed = Math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453;
+            const breathSign = seed - Math.floor(seed) > 0.5 ? 1 : -1;
+            dots.push({
+              bx,
+              by,
+              x: bx,
+              y: by,
+              baseR,
+              breathSign,
+              breathT: 0,
+              breathAmp: 0,
+            });
           }
+        }
+      };
+
+      const scheduleBreath = (now: number, first = false) => {
+        const gap =
+          BREATH_GAP_MIN + Math.random() * (BREATH_GAP_MAX - BREATH_GAP_MIN);
+        nextBreathAt = now + (first ? gap * 0.45 : gap);
+      };
+
+      const triggerBreath = () => {
+        const ox = Math.random() * cw;
+        const oy = Math.random() * ch;
+        const field2 = BREATH_FIELD * BREATH_FIELD;
+        for (let i = 0; i < dots.length; i++) {
+          const d = dots[i];
+          if (d.breathT > 0) continue;
+          const dx = d.bx - ox;
+          const dy = d.by - oy;
+          const d2 = dx * dx + dy * dy;
+          if (d2 >= field2) continue;
+          /** Sparse — only a fraction of the local cluster joins */
+          if (Math.random() > 1 / PHI2) continue;
+          const fall = 1 - Math.sqrt(d2) / BREATH_FIELD;
+          d.breathAmp = BREATH_AMP * Math.pow(fall, PHI) * (0.55 + Math.random() * 0.45);
+          d.breathT = 1e-4;
         }
       };
 
@@ -136,6 +185,7 @@ export function HeroHalftoneP5({
         let smx = pointer.x;
         let smy = pointer.y;
         let signaledReady = false;
+        let lastMs = 0;
 
         p.setup = () => {
           p.createCanvas(1, 1);
@@ -145,12 +195,25 @@ export function HeroHalftoneP5({
           smx = pointer.x;
           smy = pointer.y;
           p.frameRate(TARGET_FPS);
+          lastMs = p.millis();
+          scheduleBreath(lastMs, true);
         };
 
         p.draw = () => {
           p.clear();
           dotFill(p);
           p.noStroke();
+
+          const now = p.millis();
+          const dt = Math.min(80, Math.max(0, now - lastMs));
+          lastMs = now;
+
+          if (now >= nextBreathAt) {
+            triggerBreath();
+            scheduleBreath(now);
+          }
+
+          const breathStep = dt / BREATH_DUR_MS;
 
           smx += (pointer.x - smx) * POINTER_LERP;
           smy += (pointer.y - smy) * POINTER_LERP;
@@ -181,7 +244,20 @@ export function HeroHalftoneP5({
             d.x += (tx - d.x) * DOT_LERP;
             d.y += (ty - d.y) * DOT_LERP;
 
-            p.circle(d.x, d.y, d.baseR * 2);
+            let rScale = 1;
+            if (d.breathT > 0) {
+              d.breathT += breathStep;
+              if (d.breathT >= 1) {
+                d.breathT = 0;
+                d.breathAmp = 0;
+              } else {
+                /** Half-sine: ease out and back — grow or shrink by seed */
+                const envelope = Math.sin(Math.PI * d.breathT);
+                rScale = 1 + d.breathSign * d.breathAmp * envelope;
+              }
+            }
+
+            p.circle(d.x, d.y, d.baseR * 2 * rScale);
           }
 
           if (!signaledReady && !disposed) {

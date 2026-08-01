@@ -19,7 +19,7 @@ export function ContactFooterMarquee({ text }: { text: string }) {
   }, [text]);
 
   const itemClass =
-    "inline-flex shrink-0 items-center whitespace-nowrap pr-14 sm:pr-20";
+    "inline-flex shrink-0 items-center whitespace-nowrap pr-[var(--contact-marquee-item-gap)]";
 
   const rail = (keyPrefix: number, measureFirst = false) => (
     <div className="contact-cta-marquee-rail flex shrink-0" aria-hidden={keyPrefix > 0}>
@@ -36,7 +36,10 @@ export function ContactFooterMarquee({ text }: { text: string }) {
   );
 
   return (
-    <div className="contact-cta-marquee-viewport py-2" aria-hidden>
+    <div
+      className="contact-cta-marquee-viewport py-[var(--contact-marquee-py)]"
+      aria-hidden
+    >
       <div className="contact-cta-marquee-track font-helveticaNowTextRegular text-type-micro normal-case leading-none tracking-[-0.02em]">
         {rail(0, true)}
         {rail(1)}

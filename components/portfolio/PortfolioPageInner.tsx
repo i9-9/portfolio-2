@@ -534,7 +534,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           )}
         >
           {heroReduced ? (
-            <p className="px-4 py-2 text-center font-helveticaNowTextRegular text-type-micro normal-case leading-none tracking-[-0.02em]">
+            <p className="px-4 py-[var(--contact-marquee-py)] text-center font-helveticaNowTextRegular text-type-micro normal-case leading-none tracking-[-0.02em]">
               {t("contact.marquee")}
             </p>
           ) : (
@@ -630,14 +630,14 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           style={heroReduced ? undefined : { transform: footerTransform }}
           className="relative z-[1] flex flex-1 flex-col"
         >
-          <div className="relative flex flex-1 flex-col justify-between gap-12 px-layout pt-[var(--space-16)] pb-[var(--space-12)] lg:gap-16 lg:pt-[var(--space-24)] lg:pb-[var(--space-16)]">
+          <div className="relative flex flex-1 flex-col justify-between gap-[var(--contact-block-gap)] px-layout pt-[var(--contact-pad-top)] pb-[var(--contact-pad-bottom)]">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={
                 contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
               }
               transition={{ duration: 1, delay: 0.08, ease: EASE_OUT_EXPO }}
-              className="flex w-full flex-wrap items-center gap-x-5 gap-y-3"
+              className="flex w-full flex-wrap items-center gap-x-[var(--contact-kicker-gap-x)] gap-y-[var(--contact-kicker-gap-y)]"
             >
               <div className={contactKickerType}>
                 <span className="block">
@@ -657,7 +657,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 <span className="block">{t("contact.kickerLine2")}</span>
               </div>
               <span
-                className="hidden h-px min-w-[3rem] flex-1 bg-foreground/25 lg:block"
+                className="hidden h-px min-w-[var(--contact-gap-lg)] flex-1 bg-foreground/25 lg:block"
                 aria-hidden
               />
               <p
@@ -667,54 +667,56 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
               </p>
             </motion.div>
 
-            <div className="mt-auto flex flex-col gap-10 lg:gap-6">
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                animate={contactInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 1, delay: 0.32, ease: EASE_OUT_EXPO }}
-                className={cn(
-                  editorialNavType,
-                  editorialTypeBox,
-                  "inline-block w-fit bg-foreground text-background",
-                )}
-              >
-                {t("contact.elsewhere")}
-              </motion.p>
+            <div className="mt-auto flex flex-col">
+              {/* Mobile: socials 2×2 with Elsewhere, then CTAs below. */}
+              <div className="flex flex-col gap-[var(--contact-stack-gap)] lg:hidden">
+                <div className="flex flex-col gap-[var(--contact-label-gap)]">
+                  <motion.p
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={contactInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 1, delay: 0.32, ease: EASE_OUT_EXPO }}
+                    className={cn(
+                      editorialNavType,
+                      editorialTypeBox,
+                      "inline-block w-fit bg-foreground text-background",
+                    )}
+                  >
+                    {t("contact.elsewhere")}
+                  </motion.p>
 
-              {/* Mobile: socials 2×2, then CTAs below with clear separation. */}
-              <div className="flex flex-col gap-10 lg:hidden">
-                <nav
-                  aria-label={t("contact.socialNav")}
-                  className="grid grid-cols-2 gap-2"
-                >
-                  {contactSocials.map(({ href, label }, i) => (
-                    <motion.a
-                      key={href}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={contactInView ? { opacity: 1, y: 0 } : {}}
-                      transition={{
-                        duration: 1,
-                        delay: 0.32 + i * 0.04,
-                        ease: EASE_OUT_EXPO,
-                      }}
-                      className={editorialNavPrimary(
-                        cn(editorialRail, "glyph-center group justify-between"),
-                        "type",
-                      )}
-                    >
-                      {label}
-                      <ArrowRight
-                        className="size-4 shrink-0 opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-                        aria-hidden
-                      />
-                    </motion.a>
-                  ))}
-                </nav>
+                  <nav
+                    aria-label={t("contact.socialNav")}
+                    className="grid grid-cols-2 gap-[var(--contact-gap-xs)]"
+                  >
+                    {contactSocials.map(({ href, label }, i) => (
+                      <motion.a
+                        key={href}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={contactInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{
+                          duration: 1,
+                          delay: 0.32 + i * 0.04,
+                          ease: EASE_OUT_EXPO,
+                        }}
+                        className={editorialNavPrimary(
+                          cn(editorialRail, "glyph-center group justify-between"),
+                          "type",
+                        )}
+                      >
+                        {label}
+                        <ArrowRight
+                          className="size-4 shrink-0 opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                          aria-hidden
+                        />
+                      </motion.a>
+                    ))}
+                  </nav>
+                </div>
 
-                <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 gap-[var(--contact-rail-gap)]">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={
@@ -752,40 +754,9 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 </div>
               </div>
 
-              {/* Desktop: large CTAs both sides — socials 2×2 left, mail + message stacked right. */}
-              <div className="hidden grid-cols-12 items-end gap-6 lg:grid">
-                <nav
-                  aria-label={t("contact.socialNav")}
-                  className="col-span-4 grid grid-cols-2 gap-3"
-                >
-                  {contactSocials.map(({ href, label }, i) => (
-                    <motion.a
-                      key={href}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={contactInView ? { opacity: 1, y: 0 } : {}}
-                      transition={{
-                        duration: 1,
-                        delay: 0.32 + i * 0.04,
-                        ease: EASE_OUT_EXPO,
-                      }}
-                      className={editorialNavPrimary(
-                        cn(editorialRail, "glyph-center group justify-between"),
-                        "comfortable",
-                      )}
-                    >
-                      {label}
-                      <ArrowRight
-                        className="size-3.5 shrink-0 opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-                        aria-hidden
-                      />
-                    </motion.a>
-                  ))}
-                </nav>
-
-                <div className="col-span-4 col-start-9 flex min-w-0 flex-col gap-3">
+              {/* Desktop: large CTAs left, Elsewhere + small social links right. */}
+              <div className="hidden grid-cols-12 items-end gap-[var(--contact-label-gap)] lg:grid">
+                <div className="col-span-4 flex min-w-0 flex-col gap-[var(--contact-rail-gap)]">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={
@@ -820,6 +791,52 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                       {isEn ? "Send a message" : "Enviar mensaje"}
                     </button>
                   </motion.div>
+                </div>
+
+                <div className="col-span-4 col-start-9 flex flex-col gap-[var(--contact-rail-gap)]">
+                  <motion.p
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={contactInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 1, delay: 0.28, ease: EASE_OUT_EXPO }}
+                    className={cn(
+                      editorialNavType,
+                      editorialTypeBox,
+                      "inline-block w-fit bg-foreground text-background",
+                    )}
+                  >
+                    {t("contact.elsewhere")}
+                  </motion.p>
+
+                  <nav
+                    aria-label={t("contact.socialNav")}
+                    className="grid grid-cols-4 gap-[var(--contact-label-gap)]"
+                  >
+                    {contactSocials.map(({ href, label }, i) => (
+                      <motion.a
+                        key={href}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={contactInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{
+                          duration: 1,
+                          delay: 0.32 + i * 0.04,
+                          ease: EASE_OUT_EXPO,
+                        }}
+                        className={editorialNavPrimary(
+                          cn(editorialRail, "glyph-center group justify-between"),
+                          "type",
+                        )}
+                      >
+                        {label}
+                        <ArrowRight
+                          className="size-3.5 shrink-0 opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                          aria-hidden
+                        />
+                      </motion.a>
+                    ))}
+                  </nav>
                 </div>
               </div>
             </div>

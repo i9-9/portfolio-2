@@ -216,9 +216,10 @@ function LanguageToggle({
   const { language, setLanguage } = useLanguage();
 
   if (abacus) {
+    /** Idle chip — currentColor so hover stays visible under the abacus invert. */
     const itemClass = cn(
       navInteractiveFocus,
-      "glyph-center inline-block px-[0.15em] py-[0.12em] bg-foreground/10 text-foreground hover:bg-foreground/20 transition-colors",
+      "glyph-center inline-block px-[0.15em] py-[0.12em] bg-current/10 hover:bg-current/20 transition-colors",
     );
     /** Selected lang — filled “pressed” block (white ink on foreground). */
     const pressedClass =
@@ -319,7 +320,7 @@ function NavBarFallback({ hidden = false }: { hidden?: boolean }) {
 
 function NavBarInner() {
   const { language, t } = useLanguage();
-  const { theme, setTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const { isGridVisible, toggleGrid } = useGrid();
   const { handoff: splashHandoff } = useSplashHandoff();
   const reducedMotion = useReducedMotion();
@@ -402,10 +403,6 @@ function NavBarInner() {
   const v2GraphicHref = `${portfolioHome}?mode=graphic`;
   const v2WebActive =
     mounted && (pathname === '/' || pathname === '/v2') && !v2Graphic;
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
 
   const lineVariants = {
     hidden: { scaleX: reducedMotion ? 1 : 0 },
@@ -525,7 +522,8 @@ function NavBarInner() {
         active: false,
         element: (
           <button
-            onClick={toggleTheme}
+            type="button"
+            onClick={(e) => toggleTheme({ x: e.clientX, y: e.clientY })}
             className={abacus ? navAbacusLinkClass() : navLinkClass(false, isMobile)}
           >
             {t(`nav.theme.${theme}`)}
@@ -539,7 +537,7 @@ function NavBarInner() {
       },
       {
         id: 'grid',
-        // Toggle — own pressed fill (like language), not the abacus pill.
+        // Toggle — light gray fill when on; not the abacus pill.
         active: false,
         element: (
           <button
@@ -548,14 +546,11 @@ function NavBarInner() {
             aria-pressed={isGridVisible}
             className={
               abacus
-                ? isGridVisible
-                  ? cn(
-                      editorialNavType,
-                      navInteractiveFocus,
-                      "glyph-center relative z-[1] block w-fit px-[0.15em] py-[0.12em] whitespace-nowrap",
-                      "bg-foreground text-background",
-                    )
-                  : navAbacusLinkClass()
+                ? navAbacusLinkClass(
+                    isGridVisible
+                      ? "bg-foreground/10 text-foreground hover:bg-foreground/20"
+                      : undefined,
+                  )
                 : navLinkClass(isGridVisible, isMobile)
             }
           >
