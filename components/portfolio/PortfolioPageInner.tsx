@@ -752,11 +752,11 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                 </div>
               </div>
 
-              {/* Desktop: original 12-col row — socials left (1 col each), mail + message stacked right. */}
+              {/* Desktop: large CTAs both sides — socials 2×2 left, mail + message stacked right. */}
               <div className="hidden grid-cols-12 items-end gap-6 lg:grid">
                 <nav
                   aria-label={t("contact.socialNav")}
-                  className="col-span-4 grid grid-cols-4 gap-6"
+                  className="col-span-4 grid grid-cols-2 gap-3"
                 >
                   {contactSocials.map(({ href, label }, i) => (
                     <motion.a
@@ -773,7 +773,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                       }}
                       className={editorialNavPrimary(
                         cn(editorialRail, "glyph-center group justify-between"),
-                        "type",
+                        "comfortable",
                       )}
                     >
                       {label}
@@ -785,7 +785,7 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
                   ))}
                 </nav>
 
-                <div className="col-span-5 col-start-8 flex min-w-0 flex-col gap-3">
+                <div className="col-span-4 col-start-9 flex min-w-0 flex-col gap-3">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={

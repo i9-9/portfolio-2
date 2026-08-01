@@ -539,13 +539,23 @@ function NavBarInner() {
       },
       {
         id: 'grid',
-        active: isGridVisible,
+        // Toggle — own pressed fill (like language), not the abacus pill.
+        active: false,
         element: (
           <button
+            type="button"
             onClick={toggleGrid}
+            aria-pressed={isGridVisible}
             className={
               abacus
-                ? navAbacusLinkClass()
+                ? isGridVisible
+                  ? cn(
+                      editorialNavType,
+                      navInteractiveFocus,
+                      "glyph-center relative z-[1] block w-fit px-[0.15em] py-[0.12em] whitespace-nowrap",
+                      "bg-foreground text-background",
+                    )
+                  : navAbacusLinkClass()
                 : navLinkClass(isGridVisible, isMobile)
             }
           >

@@ -40,7 +40,7 @@ export const translations = {
       kickerLine1a: "Graphic design",
       kickerLine1b: "Front End Development",
       kickerLine2: "Buenos Aires, Argentina",
-      stamp: "MMXXVI · BS AS.",
+      stamp: "MMXXVI",
       blurbWohl: "Wohl Studio",
       marquee:
         "Graphic design · Front End Development · ivannevares9@gmail.com · ",
@@ -112,7 +112,7 @@ export const translations = {
       kickerLine1a: "Diseño gráfico",
       kickerLine1b: "Desarrollo Front End",
       kickerLine2: "Buenos Aires, Argentina",
-      stamp: "MMXXVI · BS AS.",
+      stamp: "MMXXVI",
       blurbWohl: "Wohl Studio",
       marquee:
         "Diseño gráfico · Desarrollo Front End · ivannevares9@gmail.com · ",
