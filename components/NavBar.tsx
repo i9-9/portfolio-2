@@ -40,8 +40,10 @@ import {
 const NAV_SHOW_CV = false;
 
 const NAV_LINE_DURATION = MOBILE_MENU_PANEL_CLOSE_DURATION;
-/** Case study: nav slides down over this scroll distance (matches --nav-height). */
-const CASE_STUDY_NAV_REVEAL_PX = 64;
+
+/** Shared invert box — name on landing, Volver on case-study hero. */
+const NAV_NAME_BOX =
+  "optical-edge-start glyph-center inline-block bg-foreground px-[0.15em] py-[0.12em] text-background text-name-nav tracking-[-0.02em] font-helveticaNowDisplayBold truncate";
 
 /** Instrument-style abacus pill — spring follow between nav items. */
 const ABACUS_PILL_SPRING = { type: "spring" as const, stiffness: 420, damping: 32, mass: 0.75 };
@@ -68,12 +70,23 @@ function scrollPageToTop() {
 
 function NavNameLink({ href }: { href: string }) {
   return (
-    <a
-      href={href}
-      className="optical-edge-start glyph-center inline-block bg-foreground px-[0.15em] py-[0.12em] text-background text-name-nav tracking-[-0.02em] font-helveticaNowDisplayBold truncate"
-    >
+    <a href={href} className={NAV_NAME_BOX}>
       Ivan Nevares
     </a>
+  );
+}
+
+function NavBackLink() {
+  const { t } = useLanguage();
+  return (
+    <Link
+      href="/#work"
+      scroll={false}
+      aria-label={t("caseStudy.back")}
+      className={NAV_NAME_BOX}
+    >
+      {t("caseStudy.backShort")}
+    </Link>
   );
 }
 
@@ -296,26 +309,15 @@ function LanguageToggle({
 }
 
 export function NavBar() {
-  const pathname = usePathname();
-  const isCaseStudyRoute = pathname.startsWith("/work/");
-
   return (
-    <Suspense fallback={<NavBarFallback hidden={isCaseStudyRoute} />}>
+    <Suspense fallback={<NavBarFallback />}>
       <NavBarInner />
     </Suspense>
   );
 }
 
-function NavBarFallback({ hidden = false }: { hidden?: boolean }) {
-  return (
-    <header
-      className={cn(
-        NAV_SHELL_CLASS,
-        hidden && "-translate-y-full pointer-events-none",
-      )}
-      aria-hidden
-    />
-  );
+function NavBarFallback() {
+  return <header className={NAV_SHELL_CLASS} aria-hidden />;
 }
 
 function NavBarInner() {
@@ -329,60 +331,60 @@ function NavBarInner() {
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const [caseStudyScrollY, setCaseStudyScrollY] = useState(0);
+  const [caseStudyHeroH, setCaseStudyHeroH] = useState(0);
   useEffect(() => setMounted(true), []);
 
   const isCaseStudy = pathname.startsWith("/work/");
-  const caseStudyNavHidden =
-    isCaseStudy && caseStudyScrollY <= 0 && !isMobileMenuOpen;
+  /** Over full-bleed video/hero — Volver box; past it — normal nav. */
+  const caseStudyOverHero =
+    isCaseStudy && caseStudyScrollY < Math.max(caseStudyHeroH, 1);
 
   useLayoutEffect(() => {
     if (!isCaseStudy) {
       setCaseStudyScrollY(0);
+      setCaseStudyHeroH(0);
       return;
     }
     scrollPageToTop();
     setCaseStudyScrollY(0);
+    setCaseStudyHeroH(window.innerHeight);
   }, [isCaseStudy, pathname]);
 
   useEffect(() => {
     if (!isCaseStudy) {
       setCaseStudyScrollY(0);
+      setCaseStudyHeroH(0);
       return;
     }
 
     let rafId = 0;
 
-    const update = () => {
+    const updateScroll = () => {
       setCaseStudyScrollY(readPageScrollY());
+    };
+
+    const updateHeroH = () => {
+      setCaseStudyHeroH(window.innerHeight);
     };
 
     const handleScroll = () => {
       cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(update);
+      rafId = requestAnimationFrame(updateScroll);
     };
 
-    update();
-    document.addEventListener("scroll", handleScroll, { passive: true, capture: true });
+    updateScroll();
+    updateHeroH();
+    document.addEventListener("scroll", handleScroll, {
+      passive: true,
+      capture: true,
+    });
+    window.addEventListener("resize", updateHeroH);
     return () => {
       cancelAnimationFrame(rafId);
       document.removeEventListener("scroll", handleScroll, { capture: true });
+      window.removeEventListener("resize", updateHeroH);
     };
   }, [isCaseStudy, pathname]);
-
-  const caseStudyRevealProgress =
-    caseStudyScrollY <= 0
-      ? 0
-      : Math.min(caseStudyScrollY / CASE_STUDY_NAV_REVEAL_PX, 1);
-
-  const caseStudyNavY = isMobileMenuOpen
-    ? "0%"
-    : caseStudyNavHidden
-      ? "-100%"
-      : reducedMotion
-        ? "0%"
-        : `${(1 - caseStudyRevealProgress) * -100}%`;
-
-  const caseStudyNavInteractive = caseStudyScrollY > 0;
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -632,14 +634,8 @@ function NavBarInner() {
   return (
     <>
       <motion.header
-        style={isCaseStudy ? { y: caseStudyNavY } : undefined}
         className={cn(
           NAV_SHELL_BASE,
-          caseStudyNavHidden && "-translate-y-full",
-          isCaseStudy &&
-            !caseStudyNavInteractive &&
-            !isMobileMenuOpen &&
-            "pointer-events-none",
           isCaseStudy
             ? "transition-[background-color,box-shadow,backdrop-filter] duration-300 ease-in-out-smooth"
             : cn(
@@ -653,9 +649,7 @@ function NavBarInner() {
               )
             : cn(
                 "bg-background max-lg:duration-mobile-menu-close",
-                isCaseStudy &&
-                  !caseStudyNavInteractive &&
-                  !isMobileMenuOpen &&
+                caseStudyOverHero &&
                   "bg-transparent backdrop-blur-none [box-shadow:none]",
               ),
         )}
@@ -668,12 +662,20 @@ function NavBarInner() {
             active={splashRevealActive}
             className="col-span-6 lg:col-span-3 flex items-center lg:items-start"
           >
-            <NavNameLink href={homeHref} />
+            {caseStudyOverHero ? (
+              <NavBackLink />
+            ) : (
+              <NavNameLink href={homeHref} />
+            )}
           </SplashClipReveal>
 
           <nav
-            className="col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end lg:justify-start items-center min-w-0"
+            className={cn(
+              "col-span-6 col-start-7 lg:col-span-3 lg:col-start-10 flex justify-end lg:justify-start items-center min-w-0",
+              caseStudyOverHero && !isMobileMenuOpen && "invisible pointer-events-none",
+            )}
             aria-label={t('nav.mobileMenuTitle')}
+            aria-hidden={caseStudyOverHero && !isMobileMenuOpen}
           >
             <div className="hidden lg:block">
               <NavItems />

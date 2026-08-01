@@ -686,18 +686,6 @@ html {
     }
   }
 
-  /* Hero back — legible on light and dark screenshots without a pill/button */
-  .case-study-hero-back-label {
-    text-shadow:
-      0 0 1px rgba(0, 0, 0, 0.85),
-      0 1px 3px rgba(0, 0, 0, 0.55),
-      0 0 14px rgba(0, 0, 0, 0.35);
-  }
-
-  .case-study-hero-back-icon {
-    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.85))
-      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
-  }
   .text-type-body { font-size: var(--type-body); }
 }
 

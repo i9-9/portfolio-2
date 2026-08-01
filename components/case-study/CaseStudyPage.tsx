@@ -21,7 +21,6 @@ import {
   type CaseStudySlug,
 } from "@/lib/case-studies";
 import { CaseStudyHeroImage } from "@/components/case-study/CaseStudyHeroImage";
-import { CaseStudyHeroBack } from "@/components/case-study/CaseStudyHeroBack";
 
 /** Body copy in section rows — one step below headings, no desktop size bump. */
 const caseStudyBody =
@@ -51,13 +50,12 @@ export function CaseStudyPage({ slug }: { slug: string }) {
       animate={{ opacity: pageLive ? 1 : 0 }}
       transition={{ duration: entering ? 0.45 : 0, ease: TRANSITION_EASE, delay: entering ? 0.12 : 0 }}
     >
-      {/* Hero — full viewport; navbar slides in over content on scroll */}
+      {/* Hero — full viewport; nav shows Volver until scroll past this band */}
       <div className="relative h-[100dvh] w-full overflow-hidden">
         <CaseStudyHeroImage
           project={project}
           alt={`${project.name} — preview`}
         />
-        <CaseStudyHeroBack />
       </div>
 
       <div className="grid-container py-16 lg:py-24">
