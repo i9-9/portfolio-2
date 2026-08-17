@@ -180,12 +180,10 @@
     --mobile-menu-panel-close-duration: 1.45s;
     --mobile-menu-ease: cubic-bezier(0.16, 1, 0.3, 1);
 
-    /* Theme toggle — keep duration in sync with ThemeContext THEME_TRANSITION_MS */
-    --theme-transition-duration: 0.52s;
-    --theme-transition-ease: cubic-bezier(0.32, 0.72, 0, 1); /* EASE_OUT_EXPO */
-    --theme-tx: 50%;
-    --theme-ty: 50%;
-    --theme-tr: 100vmax;
+    /* Theme toggle — soft dissolve + label clip */
+    --theme-transition-duration: 0.34s;
+    --theme-transition-ease: cubic-bezier(0.45, 0.05, 0.15, 1);
+    --theme-label-duration: 0.2s;
   }
 
   /* Desktop denser: same ladder, smaller base + wider grid chrome */
@@ -232,43 +230,88 @@
   }
 
   /*
-   * Theme toggle — View Transition reveal from click (Chromium/Safari 18+).
-   * Fallback: temporary .theme-transition color tween below.
+   * Theme toggle — soft editorial dissolve (View Transitions).
+   * Page exposure crossfade + named label clip (typographic, not system).
    */
+  .theme-toggle-label {
+    view-transition-name: theme-label;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
-    html[data-theme-transition='reveal']::view-transition-old(root) {
+    html[data-theme-transition='dissolve']::view-transition-group(root) {
       animation: none;
+    }
+
+    html[data-theme-transition='dissolve']::view-transition-old(root) {
+      animation: theme-dissolve-out var(--theme-transition-duration)
+        var(--theme-transition-ease) both;
+      mix-blend-mode: normal;
       z-index: 1;
     }
 
-    html[data-theme-transition='reveal']::view-transition-new(root) {
-      animation: theme-circle-reveal var(--theme-transition-duration)
+    html[data-theme-transition='dissolve']::view-transition-new(root) {
+      animation: theme-dissolve-in var(--theme-transition-duration)
+        var(--theme-transition-ease) both;
+      mix-blend-mode: normal;
+      z-index: 2;
+    }
+
+    html[data-theme-transition='dissolve']::view-transition-group(theme-label) {
+      animation: none;
+      overflow: clip;
+    }
+
+    html[data-theme-transition='dissolve']::view-transition-old(theme-label) {
+      animation: theme-label-out var(--theme-label-duration)
+        var(--theme-transition-ease) both;
+      z-index: 1;
+    }
+
+    html[data-theme-transition='dissolve']::view-transition-new(theme-label) {
+      animation: theme-label-in var(--theme-label-duration)
         var(--theme-transition-ease) both;
       z-index: 2;
     }
   }
 
-  @keyframes theme-circle-reveal {
-    from {
-      clip-path: circle(0px at var(--theme-tx) var(--theme-ty));
+  @keyframes theme-dissolve-out {
+    0% {
+      opacity: 1;
     }
-    to {
-      clip-path: circle(var(--theme-tr) at var(--theme-tx) var(--theme-ty));
+    72% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
     }
   }
 
-  /* Fallback when View Transitions API is unavailable */
-  html.theme-transition,
-  html.theme-transition *,
-  html.theme-transition *::before,
-  html.theme-transition *::after {
-    transition:
-      background-color var(--theme-transition-duration) var(--theme-transition-ease),
-      color var(--theme-transition-duration) var(--theme-transition-ease),
-      border-color var(--theme-transition-duration) var(--theme-transition-ease),
-      fill var(--theme-transition-duration) var(--theme-transition-ease),
-      stroke var(--theme-transition-duration) var(--theme-transition-ease),
-      box-shadow var(--theme-transition-duration) var(--theme-transition-ease) !important;
+  @keyframes theme-dissolve-in {
+    0%,
+    18% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes theme-label-out {
+    from {
+      clip-path: inset(0 0 0 0);
+    }
+    to {
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+
+  @keyframes theme-label-in {
+    from {
+      clip-path: inset(100% 0 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
   }
 
   /* Thin scrollbar */
@@ -464,9 +507,8 @@
 }
 
 /*
- * Contact footer — desktop type one full φ step up.
- * Bumps every role used in the footer (kicker, stamp, elsewhere, CTAs)
- * without changing the global desktop ladder.
+ * Contact footer — desktop type scale (scoped to #contact).
+ * Bumps nav/stamp/CTAs; kicker sits a quarter-step below type-3 to fill 5 cols.
  */
 @media (min-width: 1024px) {
   :root {
@@ -476,10 +518,23 @@
 
   #contact {
     --type-nav-link: var(--type-1);
-    --type-project-name: var(--type-3);
+    /* Quarter-step below type-3 — fills ~5 cols without wrapping */
+    --type-project-name: calc(var(--type-3) / sqrt(sqrt(var(--phi))));
     --type-micro: var(--type-0);
     /* Whole contact spacing ladder scales × φ on desktop */
     --contact-u: calc(var(--space-4) * var(--phi));
+  }
+
+  /*
+   * Contact module field — 12 cols × --grid-row tracks.
+   * Rows 1–5: empty modules · 6–7: CTAs · 8+: void (1fr) · last: Elsewhere
+   */
+  #contact .contact-module-grid {
+    grid-template-rows:
+      repeat(5, var(--grid-row))
+      repeat(2, var(--grid-row))
+      minmax(var(--grid-row), 1fr)
+      auto;
   }
 }
 
@@ -487,10 +542,9 @@
  * Contact kicker — optical tracking keyed to φ.
  *
  * Base = --tracking-tight (−0.025em) at the project-name step.
- * As the kicker grows (footer desktop → type-3), tracking tightens by
- * (size / type-2) so letterspacing stays optically even:
- *   mobile  type-2: −0.025em · 1     = −0.025em
- *   desktop type-3: −0.025em · φ     = −0.040em
+ * As the kicker grows, tracking tightens by (size / type-2):
+ *   mobile  type-2:           −0.025em · 1          = −0.025em
+ *   desktop type-3 / φ^0.25:  −0.025em · φ/φ^0.25   = −0.036em
  *
  * Word space and middot sidebearings use 1/φ² fractions of the em.
  */
@@ -962,4 +1016,18 @@ html {
   transform-origin: left center;
 }
 
+/* Temporary: settle entrance motion for Figma html-to-design captures */
+html[data-figma-capture="1"] main,
+html[data-figma-capture="1"] main *,
+html[data-figma-capture="1"] header,
+html[data-figma-capture="1"] header *,
+html[data-figma-capture="1"] nav,
+html[data-figma-capture="1"] nav *,
+html[data-figma-capture="1"] .case-study-page,
+html[data-figma-capture="1"] .case-study-page * {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  clip-path: none !important;
+}
 

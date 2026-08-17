@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata, Viewport } from 'next'
+import Script from 'next/script'
 import { ClientLayout } from '@/components/ClientLayout'
 import { ThemeProvider } from "@/lib/theme/ThemeContext";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
@@ -84,6 +85,14 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
       </head>
       <body className="font-sans bg-background text-foreground antialiased">
+        {/* Temporary: Figma html-to-design capture — remove after capture */}
+        <Script id="figma-capture-boot" strategy="beforeInteractive">
+          {`(function(){try{if(location.hash.indexOf('figmacapture=')!==-1){sessionStorage.setItem('v2-splash-seen','1');document.documentElement.dataset.figmaCapture='1';}}catch(e){}})();`}
+        </Script>
+        <Script
+          src="https://mcp.figma.com/mcp/html-to-design/capture.js"
+          strategy="beforeInteractive"
+        />
         <ThemeProvider>
           <LanguageProvider>
             <ClientLayout>

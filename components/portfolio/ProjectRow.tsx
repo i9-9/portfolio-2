@@ -14,6 +14,7 @@ import {
   getProjectPreview,
   getProjectPreviewVideo,
 } from "@/lib/projects/screenshot";
+import { isFigmaCapture } from "@/lib/figma-capture";
 import { EASE_OUT_EXPO } from "@/lib/motion/easing";
 import { useProjectTransition } from "@/lib/transitions/ProjectTransitionContext";
 import { ChaosStarIcon } from "@/components/icons/ChaosStarIcon";
@@ -163,9 +164,19 @@ export function ProjectRow({
       <motion.a
         href={`/work/${slug}`}
         onClick={handleNavigate}
-        initial={{ opacity: 0, y: 20 }}
-        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 1.05, delay, ease: EASE_OUT_EXPO }}
+        initial={
+          isFigmaCapture() ? false : { opacity: 0, y: 20 }
+        }
+        animate={
+          isFigmaCapture() || inView
+            ? { opacity: 1, y: 0 }
+            : { opacity: 0, y: 20 }
+        }
+        transition={{
+          duration: isFigmaCapture() ? 0 : 1.05,
+          delay: isFigmaCapture() ? 0 : delay,
+          ease: EASE_OUT_EXPO,
+        }}
         onHoverStart={() => setHovered(true)}
         onHoverEnd={() => {
           setHovered(false);

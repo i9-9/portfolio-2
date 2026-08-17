@@ -3,7 +3,8 @@ import type { CaseStudyBundle, CaseStudySlug } from "./types";
 export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
   heybristol: {
     en: {
-      headline: "Film production studio site. Built for heavy video and frequent content updates.",
+      headline:
+        "Site for a film production studio. Built for heavy video and frequent content updates.",
       roles: ["Development", "CMS integration", "Performance"],
       stack: ["Next.js", "ISR", "Contentful", "Vimeo API", "Tailwind CSS"],
       challenge: {
@@ -17,7 +18,8 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
         "Team updates directors and videos themselves. Site performance stayed fast.",
     },
     es: {
-      headline: "Sitio para productora audiovisual. Para video pesado y actualizaciones constantes.",
+      headline:
+        "Sitio para una productora audiovisual. Pensado para video pesado y actualizaciones constantes.",
       roles: ["Desarrollo", "Integración CMS", "Performance"],
       stack: ["Next.js", "ISR", "Contentful", "Vimeo API", "Tailwind CSS"],
       challenge: {
@@ -33,7 +35,8 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
   },
   kostume: {
     en: {
-      headline: "Fashion brand on Tienda Nube. Rebuilt the front-end, kept the checkout.",
+      headline:
+        "Fashion brand on Tienda\u00A0Nube. Rebuilt the front\u2011end without replacing the checkout.",
       roles: ["UX/UI design", "Development", "E-commerce"],
       stack: ["Next.js", "Tailwind CSS", "Tienda Nube", "FTP", "CSS/JS"],
       challenge: {
@@ -46,7 +49,8 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       result: "Still working with them. Seasonal updates and ongoing maintenance.",
     },
     es: {
-      headline: "Marca de moda en Tienda Nube. Reconstruí el front-end, mantuve el checkout.",
+      headline:
+        "Marca de moda en Tienda\u00A0Nube. Reconstruí el front\u2011end y mantuve el checkout.",
       roles: ["UX/UI", "Desarrollo", "E-commerce"],
       stack: ["Next.js", "Tailwind CSS", "Tienda Nube", "FTP", "CSS/JS"],
       challenge: {
@@ -61,7 +65,8 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
   },
   ursulabenavidez: {
     en: {
-      headline: "Portfolio for an art director. Custom animations and autonomous CMS.",
+      headline:
+        "Portfolio for an art director. Custom animations with an autonomous CMS.",
       roles: ["Development", "Motion design", "Component design", "CMS integration"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Custom animations"],
       challenge: {
@@ -74,7 +79,8 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
       result: "Site live. She's been managing content independently since launch.",
     },
     es: {
-      headline: "Portfolio para directora de arte. Animaciones custom y CMS autónomo.",
+      headline:
+        "Portfolio para una directora de arte. Animaciones custom con un CMS autónomo.",
       roles: ["Desarrollo", "Motion", "Diseño de componentes", "Integración CMS"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Animaciones custom"],
       challenge: {
@@ -90,7 +96,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
   desenfreno: {
     en: {
       headline:
-        "Poetry publisher site. Blog, store, and embedded audio previews.",
+        "Site for a poetry publisher. Blog, store, and embedded audio previews.",
       roles: ["UX/UI design", "Development", "E-commerce", "CMS integration"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Bandcamp integration"],
       challenge: {
@@ -104,7 +110,7 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
     },
     es: {
       headline:
-        "Sitio para editorial de poesía. Blog, tienda, y previews de audio embebidos.",
+        "Sitio para una editorial de poesía. Blog, tienda y previews de audio embebidos.",
       roles: ["UX/UI", "Desarrollo", "E-commerce", "Integración CMS"],
       stack: ["Next.js", "ISR", "Contentful", "Tailwind CSS", "Integración Bandcamp"],
       challenge: {
@@ -119,7 +125,8 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
   },
   grupofrali: {
     en: {
-      headline: "High-end investment group site. Pixel-perfect Figma implementation.",
+      headline:
+        "Site for a high\u2011end investment group. Pixel\u2011perfect implementation from Figma.",
       roles: ["Development", "Motion design", "CMS integration"],
       stack: ["Next.js", "Contentful", "Tailwind CSS", "Custom animations"],
       challenge: {
@@ -134,7 +141,8 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
         "Design by Wohl Studio. This case study covers implementation.",
     },
     es: {
-      headline: "Sitio para grupo inversor. Implementación pixel-perfect de Figma.",
+      headline:
+        "Sitio para un grupo inversor. Implementación pixel\u2011perfect del diseño en Figma.",
       roles: ["Desarrollo", "Motion", "Integración CMS"],
       stack: ["Next.js", "Contentful", "Tailwind CSS", "Animaciones custom"],
       challenge: {

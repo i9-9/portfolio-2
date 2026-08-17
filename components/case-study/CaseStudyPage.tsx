@@ -4,6 +4,7 @@ import { type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import { isFigmaCapture } from "@/lib/figma-capture";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { getProjectBySlug } from "@/app/data/projects";
 import { useProjectTransition } from "@/lib/transitions/ProjectTransitionContext";
@@ -21,6 +22,8 @@ import {
   type CaseStudySlug,
 } from "@/lib/case-studies";
 import { CaseStudyHeroImage } from "@/components/case-study/CaseStudyHeroImage";
+import { CaseStudyHeadline } from "@/components/case-study/CaseStudyHeadline";
+import { glueLastWords } from "@/lib/typography/widows";
 
 /** Body copy in section rows — one step below headings, no desktop size bump. */
 const caseStudyBody =
@@ -35,7 +38,9 @@ export function CaseStudyPage({ slug }: { slug: string }) {
   if (!project || !study) return null;
 
   const entering = phase === "enter";
-  const pageLive = reducedMotion || phase === "idle" || entering;
+  const figmaCapture = isFigmaCapture();
+  const pageLive =
+    figmaCapture || reducedMotion || phase === "idle" || entering;
 
   const loc = language === "en" ? study.en : study.es;
   const cat = t(`work.${slug}.title` as Parameters<typeof t>[0]);
@@ -46,9 +51,13 @@ export function CaseStudyPage({ slug }: { slug: string }) {
   return (
     <motion.article
       className="case-study-page min-h-screen bg-background text-foreground"
-      initial={{ opacity: 0 }}
+      initial={figmaCapture ? false : { opacity: 0 }}
       animate={{ opacity: pageLive ? 1 : 0 }}
-      transition={{ duration: entering ? 0.45 : 0, ease: TRANSITION_EASE, delay: entering ? 0.12 : 0 }}
+      transition={{
+        duration: figmaCapture ? 0 : entering ? 0.45 : 0,
+        ease: TRANSITION_EASE,
+        delay: figmaCapture ? 0 : entering ? 0.12 : 0,
+      }}
     >
       {/* Hero — full viewport; nav shows Volver until scroll past this band */}
       <div className="relative h-[100dvh] w-full overflow-hidden">
@@ -76,12 +85,10 @@ export function CaseStudyPage({ slug }: { slug: string }) {
             <span className="shrink-0 text-right">{project.name}</span>
           </div>
 
-          <h1 className="mt-6 w-full font-helveticaNowDisplayBold text-type-case-title leading-[1] tracking-[-0.02em] text-foreground">
-            {loc.headline}
-          </h1>
+          <CaseStudyHeadline text={loc.headline} />
 
-          <p className={cn(editorialNavType, "mt-3 text-muted-foreground")}>
-            {cat}
+          <p className={cn(editorialNavType, "mt-3 text-muted-foreground text-pretty")}>
+            {glueLastWords(cat, 2)}
           </p>
 
           {loc.creditNote ? (

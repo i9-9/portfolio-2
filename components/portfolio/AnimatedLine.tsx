@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { isFigmaCapture } from "@/lib/figma-capture";
 import {
   EASE_OUT_EXPO,
   MOBILE_MENU_PANEL_CLOSE_DURATION,
@@ -18,7 +19,7 @@ export function AnimatedLine({
   duration?: number;
 }) {
   const reducedMotion = useReducedMotion();
-  const skip = reducedMotion === true;
+  const skip = reducedMotion === true || isFigmaCapture();
 
   return (
     <motion.div

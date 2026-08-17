@@ -14,13 +14,10 @@ type Theme = 'light' | 'dark';
 interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-  toggleTheme: (origin?: { x: number; y: number }) => void;
+  toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-/** Keep in sync with `--theme-transition-duration` in globals.css */
-const THEME_TRANSITION_MS = 520;
 
 type ViewTransitionLike = {
   finished: Promise<void>;
@@ -55,51 +52,29 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setThemeState(next);
   }, []);
 
-  const toggleTheme = useCallback(
-    (origin?: { x: number; y: number }) => {
-      const next: Theme = theme === 'dark' ? 'light' : 'dark';
-      const root = document.documentElement;
-      const x = origin?.x ?? window.innerWidth / 2;
-      const y = origin?.y ?? window.innerHeight / 2;
-      const radius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y),
-      );
+  const toggleTheme = useCallback(() => {
+    const next: Theme = theme === 'dark' ? 'light' : 'dark';
+    const root = document.documentElement;
 
-      root.style.setProperty('--theme-tx', `${x}px`);
-      root.style.setProperty('--theme-ty', `${y}px`);
-      root.style.setProperty('--theme-tr', `${Math.ceil(radius)}px`);
+    const apply = () => {
+      flushSync(() => {
+        setThemeState(next);
+      });
+      applyThemeClass(next);
+    };
 
-      const apply = () => {
-        flushSync(() => {
-          setThemeState(next);
-        });
-        applyThemeClass(next);
-      };
+    const transition = startThemeViewTransition(apply);
+    if (transition) {
+      root.dataset.themeTransition = 'dissolve';
+      void transition.finished.finally(() => {
+        delete root.dataset.themeTransition;
+      });
+      return;
+    }
 
-      const transition = startThemeViewTransition(apply);
-      if (transition) {
-        root.dataset.themeTransition = 'reveal';
-        void transition.finished.finally(() => {
-          delete root.dataset.themeTransition;
-          root.style.removeProperty('--theme-tx');
-          root.style.removeProperty('--theme-ty');
-          root.style.removeProperty('--theme-tr');
-        });
-        return;
-      }
-
-      root.classList.add('theme-transition');
-      apply();
-      window.setTimeout(() => {
-        root.classList.remove('theme-transition');
-        root.style.removeProperty('--theme-tx');
-        root.style.removeProperty('--theme-ty');
-        root.style.removeProperty('--theme-tr');
-      }, THEME_TRANSITION_MS);
-    },
-    [theme],
-  );
+    // No View Transitions: swap immediately — cleaner than tweening every color.
+    apply();
+  }, [theme]);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>

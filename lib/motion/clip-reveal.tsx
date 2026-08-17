@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { isFigmaCapture } from "@/lib/figma-capture";
 import { EASE_OUT_EXPO } from "@/lib/motion/easing";
 
 export const CLIP_REVEAL_DURATION = 0.72;
@@ -120,7 +121,7 @@ export function SplashClipReveal({
     return <div className={cn("min-w-0", className)}>{children}</div>;
   }
 
-  const skip = reduced === true;
+  const skip = reduced === true || isFigmaCapture();
   const hiddenClip = skip ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)";
 
   return (

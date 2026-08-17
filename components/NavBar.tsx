@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
+  AnimatePresence,
   motion,
   useReducedMotion,
 } from 'framer-motion';
@@ -137,11 +138,14 @@ function NavAbacusList({
   entries,
   measureKey,
   reducedMotion,
+  edgeEnd = true,
 }: {
   entries: NavEntry[];
   /** Remeasure when labels or active item change. */
   measureKey: string;
   reducedMotion: boolean | null;
+  /** Optical trim on the last item — only for the trailing abacus group. */
+  edgeEnd?: boolean;
 }) {
   const itemRefs = useRef(new Map<string, HTMLElement>());
   const [hoverKey, setHoverKey] = useState<string | null>(null);
@@ -207,7 +211,7 @@ function NavAbacusList({
             className={cn(
               "relative z-[1] leading-[0]",
               focused ? "text-background" : "text-foreground",
-              i === entries.length - 1 && "optical-edge-end",
+              edgeEnd && i === entries.length - 1 && "optical-edge-end",
             )}
             onMouseEnter={() => setHoverKey(entry.key)}
           >
@@ -219,54 +223,68 @@ function NavAbacusList({
   );
 }
 
-function LanguageToggle({
-  isMobile = false,
-  abacus = false,
-}: {
-  isMobile?: boolean;
-  abacus?: boolean;
-}) {
-  const { language, setLanguage } = useLanguage();
+const THEME_LABEL_DURATION = 0.2;
 
-  if (abacus) {
-    /** Idle chip — currentColor so hover stays visible under the abacus invert. */
-    const itemClass = cn(
-      navInteractiveFocus,
-      "glyph-center inline-block px-[0.15em] py-[0.12em] bg-current/10 hover:bg-current/20 transition-colors",
-    );
-    /** Selected lang — filled “pressed” block (white ink on foreground). */
-    const pressedClass =
-      "glyph-center inline-block px-[0.15em] py-[0.12em] bg-foreground text-background";
-    return (
-      <span
-        className={navAbacusLinkClass("!flex items-center gap-x-1.5 !py-0")}
-        role="group"
-        aria-label="Language"
-      >
-        {language === "en" ? (
-          <span aria-current="true" className={pressedClass}>
-            En
-          </span>
-        ) : (
-          <button type="button" onClick={() => setLanguage("en")} className={itemClass}>
-            En
-          </button>
-        )}
-        <span className="select-none opacity-45" aria-hidden>
-          ·
+function canUseThemeViewTransition() {
+  return (
+    typeof document !== "undefined" &&
+    typeof (
+      document as Document & { startViewTransition?: unknown }
+    ).startViewTransition === "function" &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+/** Theme control — page dissolve + vertical clip on the label (editorial type swap). */
+function ThemeToggle({
+  className,
+  prefersReducedMotion,
+}: {
+  className?: string;
+  prefersReducedMotion: boolean;
+}) {
+  const { theme, toggleTheme } = useTheme();
+  const { t } = useLanguage();
+  const label = t(`nav.theme.${theme}`);
+  // Default to VT/CSS path for SSR hydration; Framer only if VT is unavailable.
+  const [useFramerClip, setUseFramerClip] = useState(false);
+
+  useEffect(() => {
+    setUseFramerClip(!prefersReducedMotion && !canUseThemeViewTransition());
+  }, [prefersReducedMotion]);
+
+  return (
+    <button
+      type="button"
+      onClick={() => toggleTheme()}
+      className={className}
+      aria-label={label}
+    >
+      {useFramerClip ? (
+        <span className="relative inline-grid overflow-hidden">
+          <AnimatePresence mode="sync" initial={false}>
+            <motion.span
+              key={label}
+              className="col-start-1 row-start-1 inline-block"
+              initial={{ clipPath: "inset(100% 0 0 0)" }}
+              animate={{ clipPath: "inset(0% 0 0 0)" }}
+              exit={{ clipPath: "inset(0 0 100% 0)" }}
+              transition={{ duration: THEME_LABEL_DURATION, ease: EASE_OUT_EXPO }}
+            >
+              {label}
+            </motion.span>
+          </AnimatePresence>
         </span>
-        {language === "es" ? (
-          <span aria-current="true" className={pressedClass}>
-            Es
-          </span>
-        ) : (
-          <button type="button" onClick={() => setLanguage("es")} className={itemClass}>
-            Es
-          </button>
-        )}
-      </span>
-    );
-  }
+      ) : (
+        <span className="theme-toggle-label inline-block">{label}</span>
+      )}
+    </button>
+  );
+}
+
+/** Mobile language row — En · Es as one control (desktop uses separate abacus items). */
+function LanguageToggle({ isMobile = false }: { isMobile?: boolean }) {
+  const { language, setLanguage } = useLanguage();
 
   const shellClass = cn(
     "inline-flex items-center",
@@ -308,6 +326,30 @@ function LanguageToggle({
   );
 }
 
+function LanguageAbacusButton({
+  code,
+  label,
+  active,
+  onSelect,
+}: {
+  code: "en" | "es";
+  label: string;
+  active: boolean;
+  onSelect: (code: "en" | "es") => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(code)}
+      aria-pressed={active}
+      aria-label={code === "en" ? "English" : "Español"}
+      className={navAbacusLinkClass()}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function NavBar() {
   return (
     <Suspense fallback={<NavBarFallback />}>
@@ -321,8 +363,8 @@ function NavBarFallback() {
 }
 
 function NavBarInner() {
-  const { language, t } = useLanguage();
-  const { theme, toggleTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
+  const { theme } = useTheme();
   const { isGridVisible, toggleGrid } = useGrid();
   const { handoff: splashHandoff } = useSplashHandoff();
   const reducedMotion = useReducedMotion();
@@ -434,10 +476,11 @@ function NavBarInner() {
     onMobileClose?: () => void;
   }) => {
     const abacus = !isMobile;
-    const entries: NavEntry[] = [];
 
+    /** Mode filters — own abacus so Web/Graphic active never steals the language pill. */
+    const filterEntries: NavEntry[] = [];
     if (isV2) {
-      entries.push({
+      filterEntries.push({
         key: 'web',
         active: v2WebActive,
         node: (
@@ -454,7 +497,7 @@ function NavBarInner() {
           </Link>
         ),
       });
-      entries.push({
+      filterEntries.push({
         key: 'graphic',
         active: v2Graphic,
         node: (
@@ -523,20 +566,46 @@ function NavBarInner() {
         id: 'theme',
         active: false,
         element: (
-          <button
-            type="button"
-            onClick={(e) => toggleTheme({ x: e.clientX, y: e.clientY })}
+          <ThemeToggle
+            prefersReducedMotion={!!reducedMotion}
             className={abacus ? navAbacusLinkClass() : navLinkClass(false, isMobile)}
-          >
-            {t(`nav.theme.${theme}`)}
-          </button>
+          />
         ),
       },
-      {
-        id: 'language',
-        active: false,
-        element: <LanguageToggle isMobile={isMobile} abacus={abacus} />,
-      },
+      ...(abacus
+        ? [
+            {
+              id: 'language-en' as const,
+              active: language === 'en',
+              element: (
+                <LanguageAbacusButton
+                  code="en"
+                  label="En"
+                  active={language === 'en'}
+                  onSelect={setLanguage}
+                />
+              ),
+            },
+            {
+              id: 'language-es' as const,
+              active: language === 'es',
+              element: (
+                <LanguageAbacusButton
+                  code="es"
+                  label="Es"
+                  active={language === 'es'}
+                  onSelect={setLanguage}
+                />
+              ),
+            },
+          ]
+        : [
+            {
+              id: 'language' as const,
+              active: false,
+              element: <LanguageToggle isMobile={isMobile} />,
+            },
+          ]),
       {
         id: 'grid',
         // Toggle — light gray fill when on; not the abacus pill.
@@ -562,11 +631,14 @@ function NavBarInner() {
       },
     ];
 
-    utilityItems.forEach((item) => {
-      entries.push({ key: item.id, node: item.element, active: item.active });
-    });
+    const utilityEntries: NavEntry[] = utilityItems.map((item) => ({
+      key: item.id,
+      node: item.element,
+      active: item.active,
+    }));
 
-    const utilityStart = isV2 ? 2 : 0;
+    const entries = [...filterEntries, ...utilityEntries];
+    const utilityStart = filterEntries.length;
 
     if (isMobile) {
       const mobileChildren: ReactNode[] = [
@@ -614,12 +686,25 @@ function NavBarInner() {
       );
     }
 
+    const filterMeasureKey = `${v2WebActive}-${v2Graphic}-${t('work.filterWeb')}-${t('work.filterGraphic')}`;
+    const utilityMeasureKey = `${theme}-${language}-${isGridVisible}-${t(`nav.theme.${theme}`)}`;
+
     return (
-      <NavAbacusList
-        entries={entries}
-        measureKey={`${theme}-${language}-${isGridVisible}-${v2WebActive}-${v2Graphic}-${t('work.filterWeb')}-${t('work.filterGraphic')}-${t(`nav.theme.${theme}`)}`}
-        reducedMotion={reducedMotion}
-      />
+      <div className="flex flex-row items-center gap-1">
+        {filterEntries.length > 0 && (
+          <NavAbacusList
+            entries={filterEntries}
+            measureKey={filterMeasureKey}
+            reducedMotion={reducedMotion}
+            edgeEnd={false}
+          />
+        )}
+        <NavAbacusList
+          entries={utilityEntries}
+          measureKey={utilityMeasureKey}
+          reducedMotion={reducedMotion}
+        />
+      </div>
     );
   };
 

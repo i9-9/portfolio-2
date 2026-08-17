@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { useReducedMotion } from "framer-motion";
+import { isFigmaCapture } from "@/lib/figma-capture";
 
 export const SPLASH_SESSION_KEY = "v2-splash-seen";
 
@@ -43,7 +44,7 @@ export function SplashHandoffProvider({ children }: { children: ReactNode }) {
 
   useLayoutEffect(() => {
     if (reduced === null) return;
-    if (reduced) {
+    if (reduced || isFigmaCapture()) {
       setHandoff(true);
       return;
     }
