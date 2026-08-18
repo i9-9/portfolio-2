@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Dialog, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { EASE_OUT_EXPO } from "@/lib/motion/easing";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +32,7 @@ interface FormErrors {
 
 export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
   const { t } = useLanguage();
+  const reduceMotion = useReducedMotion();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -110,9 +112,21 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
       }}
     >
       <DialogPortal>
-        <DialogOverlay className="z-[110] duration-400 ease-out-expo bg-background/95 backdrop-blur-md" />
+        <DialogOverlay className="z-[110] bg-background/95 backdrop-blur-md duration-400 ease-out-expo data-[state=closed]:duration-350" />
         <DialogPrimitive.Content
-          className="fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background transition-opacity duration-400 ease-out-expo data-[state=closed]:opacity-0 data-[state=open]:opacity-100 md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[90vh] md:w-[min(85vw,38rem)] md:translate-x-[-50%] md:translate-y-[-50%] md:border md:border-border/40"
+          className={cn(
+            "fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col bg-background",
+            "duration-400 ease-out-expo data-[state=closed]:duration-350",
+            "data-[state=open]:animate-in data-[state=closed]:animate-out",
+            "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+            "data-[state=open]:slide-in-from-bottom-4 data-[state=closed]:slide-out-to-bottom-2",
+            "md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[90vh] md:w-[min(85vw,38rem)]",
+            "md:translate-x-[-50%] md:translate-y-[-50%] md:border md:border-border/40",
+            "md:data-[state=open]:slide-in-from-left-1/2 md:data-[state=open]:slide-in-from-top-[48%]",
+            "md:data-[state=closed]:slide-out-to-left-1/2 md:data-[state=closed]:slide-out-to-top-[48%]",
+            "md:data-[state=open]:zoom-in-[0.985] md:data-[state=closed]:zoom-out-[0.985]",
+            "motion-reduce:animate-none motion-reduce:transition-none",
+          )}
         >
           {/* Close button - top right */}
           <button
@@ -124,7 +138,16 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
             <X className="h-5 w-5" />
           </button>
 
-          <div className="flex min-h-0 flex-1 flex-col px-6 py-8 md:px-12 md:py-10">
+          <motion.div
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: reduceMotion ? 0.01 : 0.45,
+              delay: reduceMotion ? 0 : 0.06,
+              ease: EASE_OUT_EXPO,
+            }}
+            className="flex min-h-0 flex-1 flex-col px-6 py-8 md:px-12 md:py-10"
+          >
             {/* Editorial Header */}
             <div className="mb-8 max-w-2xl md:mb-10">
               <h2 className="mb-3 text-3xl font-helveticaNowDisplayBold leading-tight tracking-tight md:text-4xl">
@@ -293,7 +316,7 @@ export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
                 </Button>
               </div>
             </form>
-          </div>
+          </motion.div>
         </DialogPrimitive.Content>
       </DialogPortal>
     </Dialog>

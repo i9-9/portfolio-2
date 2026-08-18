@@ -12,6 +12,8 @@ import {
 import { getProjectBySlug } from "@/app/data/projects";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import {
+  contactKickerType,
+  editorialNavMuted,
   editorialNavPrimary,
   editorialNavType,
   editorialRail,
@@ -272,6 +274,10 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
   const sep1InView = figmaCapture || sep1InViewRaw;
   const sep2InView = figmaCapture || sep2InViewRaw;
   const sep3InView = figmaCapture || sep3InViewRaw;
+
+  useEffect(() => {
+    if (contactInView) setContactModalLoaded(true);
+  }, [contactInView]);
 
   useLayoutEffect(() => {
     const el = marqueeBandRef.current;
@@ -651,115 +657,152 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
           className="relative z-[1] flex flex-1 flex-col"
         >
           {/*
-            Contact module field — same 12-col + --grid-row system as the overlay.
-            Desktop rows: 5 empty modules → CTAs (2 modules) → void → Elsewhere floor.
+            Vertical contact: kicker + stamp on top, actions on the floor.
+            Desktop: socials 4-col left · mail + message stacked right.
           */}
           <div
             className={cn(
-              "contact-module-grid px-layout pt-[var(--contact-pad-top)] pb-[var(--contact-pad-bottom)]",
-              "grid flex-1 grid-cols-1 content-end items-end gap-x-6 gap-y-[var(--contact-stack-gap)]",
-              "lg:grid-cols-12 lg:content-stretch lg:items-start lg:gap-y-0",
+              "relative flex flex-1 flex-col justify-between px-layout",
+              "gap-[var(--contact-block-gap)]",
+              "pt-[var(--contact-pad-top)] pb-[var(--contact-pad-bottom)]",
             )}
           >
-            <div className="order-2 flex min-w-0 flex-col gap-[var(--contact-rail-gap)] lg:order-none lg:col-span-5 lg:col-start-8 lg:row-span-2 lg:row-start-6 lg:self-start">
-              <motion.div
-                initial={figmaCapture ? false : { opacity: 0, y: 20 }}
-                animate={
-                  contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-                }
-                transition={{
-                  duration: figmaCapture ? 0 : 1.05,
-                  delay: figmaCapture ? 0 : 0.2,
-                  ease: EASE_OUT_EXPO,
-                }}
-                className="min-w-0"
-              >
-                <button
-                  type="button"
-                  onClick={copyEmail}
-                  className={editorialNavPrimary(
-                    cn(editorialRail, "glyph-center"),
-                    "type",
-                  )}
-                  title="ivannevares9@gmail.com"
-                >
-                  <span className="truncate">ivannevares9@gmail.com</span>
-                </button>
-              </motion.div>
-
-              <motion.div
-                initial={figmaCapture ? false : { opacity: 0, y: 20 }}
-                animate={
-                  contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-                }
-                transition={{
-                  duration: figmaCapture ? 0 : 1.05,
-                  delay: figmaCapture ? 0 : 0.24,
-                  ease: EASE_OUT_EXPO,
-                }}
-                className="min-w-0"
-              >
-                <button
-                  type="button"
-                  onClick={() => setIsContactOpen(true)}
-                  className={editorialNavPrimary(
-                    cn(editorialRail, "glyph-center"),
-                    "type",
-                  )}
-                >
-                  {isEn ? "Send a message" : "Enviar mensaje"}
-                </button>
-              </motion.div>
-            </div>
-
-            <div className="order-1 flex flex-col gap-[var(--contact-label-gap)] lg:order-none lg:col-span-4 lg:col-start-9 lg:row-span-1 lg:row-start-[-2] lg:self-end lg:gap-[var(--contact-rail-gap)]">
-              <motion.p
-                initial={figmaCapture ? false : { opacity: 0, y: 16 }}
-                animate={contactInView ? { opacity: 1, y: 0 } : {}}
-                transition={{
-                  duration: figmaCapture ? 0 : 1,
-                  delay: figmaCapture ? 0 : 0.28,
-                  ease: EASE_OUT_EXPO,
-                }}
-                className={cn(
-                  editorialNavType,
-                  editorialTypeBox,
-                  "inline-block w-fit bg-foreground text-background",
-                )}
-              >
-                {t("contact.elsewhere")}
-              </motion.p>
-
-              <nav
-                aria-label={t("contact.socialNav")}
-                className="grid grid-cols-2 gap-[var(--contact-gap-xs)] lg:grid-cols-4 lg:gap-x-6"
-              >
-                {contactSocials.map(({ href, label }, i) => (
-                  <motion.a
-                    key={href}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={figmaCapture ? false : { opacity: 0, y: 16 }}
-                    animate={contactInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{
-                      duration: figmaCapture ? 0 : 1,
-                      delay: figmaCapture ? 0 : 0.32 + i * 0.04,
-                      ease: EASE_OUT_EXPO,
-                    }}
-                    className={editorialNavPrimary(
-                      cn(editorialRail, "glyph-center group justify-between"),
-                      "type",
-                    )}
+            <motion.div
+              initial={figmaCapture ? false : { opacity: 0, y: 16 }}
+              animate={
+                contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
+              }
+              transition={{
+                duration: figmaCapture ? 0 : 1,
+                delay: figmaCapture ? 0 : 0.08,
+                ease: EASE_OUT_EXPO,
+              }}
+              className="flex w-full flex-wrap items-center gap-x-[var(--contact-kicker-gap-x)] gap-y-[var(--contact-kicker-gap-y)]"
+            >
+              <div className={contactKickerType}>
+                <span className="block">
+                  <span className="block lg:inline">
+                    {t("contact.kickerLine1a")}
+                  </span>
+                  <span
+                    className="contact-kicker__sep hidden lg:inline"
+                    aria-hidden
                   >
-                    {label}
-                    <ArrowRight
-                      className="size-4 shrink-0 opacity-70 transition-opacity duration-300 group-hover:opacity-100 lg:size-3.5"
-                      aria-hidden
-                    />
-                  </motion.a>
-                ))}
-              </nav>
+                    ·
+                  </span>
+                  <span className="block lg:inline">
+                    {t("contact.kickerLine1b")}
+                  </span>
+                </span>
+                <span className="block">{t("contact.kickerLine2")}</span>
+              </div>
+              <span
+                className="hidden h-px min-w-[3rem] flex-1 bg-foreground/25 lg:block"
+                aria-hidden
+              />
+              <p className="basis-full shrink-0 font-helveticaNowDisplayBold normal-case tracking-[-0.02em] text-type-micro tabular-nums text-muted-foreground lg:optical-edge-end lg:ml-auto lg:basis-auto">
+                {t("contact.stamp")}
+              </p>
+            </motion.div>
+
+            <div className="mt-auto flex flex-col gap-[var(--contact-stack-gap)] lg:grid lg:grid-cols-12 lg:items-end lg:gap-x-6 lg:gap-y-0">
+              <div className="flex flex-col gap-[var(--contact-label-gap)] lg:col-span-4">
+                <motion.p
+                  initial={figmaCapture ? false : { opacity: 0, y: 16 }}
+                  animate={contactInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{
+                    duration: figmaCapture ? 0 : 1,
+                    delay: figmaCapture ? 0 : 0.28,
+                    ease: EASE_OUT_EXPO,
+                  }}
+                  className={cn(
+                    editorialNavType,
+                    editorialTypeBox,
+                    "inline-block w-fit bg-foreground text-background",
+                  )}
+                >
+                  {t("contact.elsewhere")}
+                </motion.p>
+
+                <nav
+                  aria-label={t("contact.socialNav")}
+                  className="grid grid-cols-2 gap-[var(--contact-gap-xs)] lg:grid-cols-4 lg:gap-x-6"
+                >
+                  {contactSocials.map(({ href, label }, i) => (
+                    <motion.a
+                      key={href}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={figmaCapture ? false : { opacity: 0, y: 16 }}
+                      animate={contactInView ? { opacity: 1, y: 0 } : {}}
+                      transition={{
+                        duration: figmaCapture ? 0 : 1,
+                        delay: figmaCapture ? 0 : 0.32 + i * 0.04,
+                        ease: EASE_OUT_EXPO,
+                      }}
+                      className={editorialNavPrimary(
+                        cn(
+                          editorialRail,
+                          "glyph-center group justify-between py-3 lg:py-[0.12em]",
+                        ),
+                        "type",
+                      )}
+                    >
+                      {label}
+                      <ArrowRight
+                        className="size-4 shrink-0 opacity-70 transition-opacity duration-300 group-hover:opacity-100 lg:size-3.5"
+                        aria-hidden
+                      />
+                    </motion.a>
+                  ))}
+                </nav>
+              </div>
+
+              <div className="flex min-w-0 flex-col gap-[var(--contact-rail-gap)] lg:col-span-5 lg:col-start-8">
+                <motion.div
+                  initial={figmaCapture ? false : { opacity: 0, y: 20 }}
+                  animate={
+                    contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                  }
+                  transition={{
+                    duration: figmaCapture ? 0 : 1.05,
+                    delay: figmaCapture ? 0 : 0.2,
+                    ease: EASE_OUT_EXPO,
+                  }}
+                  className="min-w-0"
+                >
+                  <button
+                    type="button"
+                    onClick={copyEmail}
+                    className={editorialNavMuted(editorialRail, "comfortable")}
+                    title="ivannevares9@gmail.com"
+                  >
+                    <span className="truncate">ivannevares9@gmail.com</span>
+                  </button>
+                </motion.div>
+
+                <motion.div
+                  initial={figmaCapture ? false : { opacity: 0, y: 20 }}
+                  animate={
+                    contactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                  }
+                  transition={{
+                    duration: figmaCapture ? 0 : 1.05,
+                    delay: figmaCapture ? 0 : 0.24,
+                    ease: EASE_OUT_EXPO,
+                  }}
+                  className="min-w-0"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setIsContactOpen(true)}
+                    className={editorialNavPrimary(editorialRail, "comfortable")}
+                  >
+                    {isEn ? "Send a message" : "Enviar mensaje"}
+                  </button>
+                </motion.div>
+              </div>
             </div>
           </div>
 

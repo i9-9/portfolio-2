@@ -88,7 +88,7 @@
     --contact-block-gap: var(--contact-gap-xl);
     --contact-stack-gap: var(--contact-gap-lg);
     --contact-rail-gap: var(--contact-gap-sm);
-    --contact-label-gap: var(--contact-gap-md);
+    --contact-label-gap: var(--contact-gap-xs);
     --contact-kicker-gap-x: var(--contact-gap-md);
     --contact-kicker-gap-y: var(--contact-gap-xs);
     --contact-marquee-py: var(--contact-gap-xs);
@@ -507,9 +507,16 @@
 }
 
 /*
- * Contact footer — desktop type scale (scoped to #contact).
- * Bumps nav/stamp/CTAs; kicker sits a quarter-step below type-3 to fill 5 cols.
+ * Contact footer — type scale (scoped to #contact).
+ * Mobile: kicker a half-step below type-2 so 3 stacked lines don’t swallow
+ * the viewport; stamp a half-step above micro so it still reads as caption.
+ * Desktop: bump nav/stamp/CTAs; kicker a quarter-step below type-3 to fill 5 cols.
  */
+#contact {
+  --type-project-name: calc(var(--type-2) / sqrt(var(--phi)));
+  --type-micro: calc(var(--type-0) / sqrt(var(--phi)));
+}
+
 @media (min-width: 1024px) {
   :root {
     /* Marquee lives outside #contact — scale item gap at root */
@@ -524,18 +531,6 @@
     /* Whole contact spacing ladder scales × φ on desktop */
     --contact-u: calc(var(--space-4) * var(--phi));
   }
-
-  /*
-   * Contact module field — 12 cols × --grid-row tracks.
-   * Rows 1–5: empty modules · 6–7: CTAs · 8+: void (1fr) · last: Elsewhere
-   */
-  #contact .contact-module-grid {
-    grid-template-rows:
-      repeat(5, var(--grid-row))
-      repeat(2, var(--grid-row))
-      minmax(var(--grid-row), 1fr)
-      auto;
-  }
 }
 
 /*
@@ -543,7 +538,7 @@
  *
  * Base = --tracking-tight (−0.025em) at the project-name step.
  * As the kicker grows, tracking tightens by (size / type-2):
- *   mobile  type-2:           −0.025em · 1          = −0.025em
+ *   mobile  type-2 / √φ:      −0.025em · 1/√φ       = −0.020em
  *   desktop type-3 / φ^0.25:  −0.025em · φ/φ^0.25   = −0.036em
  *
  * Word space and middot sidebearings use 1/φ² fractions of the em.

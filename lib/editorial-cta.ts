@@ -24,8 +24,8 @@ export const contactKickerType = cn(
   "contact-kicker inline-block bg-foreground text-background font-helveticaNowDisplayBold normal-case text-type-project",
 );
 
-/** Larger hit pad — case study footer CTAs only. */
-const padComfortable = "px-6 py-4";
+/** Hit pad — tighter on mobile so full-width rails sit on the type ladder. */
+const padComfortable = "px-4 py-3 lg:px-6 lg:py-4";
 
 /** Display Bold + φ step --type-nav-link. */
 export const editorialNavType = cn(
