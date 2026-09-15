@@ -26,10 +26,10 @@ export function buildCaseStudyMetadata(
 
   const title = `${project.name} — ${categoryEs} · ${SITE_NAME}`;
   const description = truncateMeta(
-    `${categoryEs}. ${study.es.headline} ${study.es.result}`,
+    `${categoryEs}. ${study.es.headline}`,
   );
   const descriptionEn = truncateMeta(
-    `${categoryEn}. ${study.en.headline} ${study.en.result}`,
+    `${categoryEn}. ${study.en.headline}`,
   );
 
   const keywords = [
@@ -95,10 +95,7 @@ export function buildCaseStudyJsonLd(project: Project, slug: CaseStudySlug) {
     "@id": url,
     name: `${project.name} — ${categoryEs}`,
     headline: study.es.headline,
-    description: truncateMeta(
-      `${study.es.headline} ${study.es.keyDecision} ${study.es.result}`,
-      240,
-    ),
+    description: truncateMeta(study.es.body, 240),
     url,
     image,
     inLanguage: ["es-AR", "en"],

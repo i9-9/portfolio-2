@@ -5,12 +5,8 @@ export interface CaseStudyLocale {
   roles: string[];
   /** Tech / tools — shown as chips. */
   stack: string[];
-  /** Problem framing — short lines. */
-  challenge: { paragraphs: string[] };
-  /** The main technical or product decision — why, not only what. */
-  keyDecision: string;
-  /** One-line outcome. */
-  result: string;
+  /** Single narrative paragraph (why called → decision → result). */
+  body: string;
   /** e.g. design credit when implementation-only. */
   creditNote?: string;
 }

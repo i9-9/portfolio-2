@@ -1,6 +1,5 @@
 "use client";
 
-import { type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
@@ -130,19 +129,14 @@ export function CaseStudyPage({ slug }: { slug: string }) {
           ) : null}
         </header>
 
-        <div className="col-span-12 mt-14 grid grid-cols-subgrid border-t border-border">
-          <CaseStudySection title={t("caseStudy.challenge")}>
-            <TextBlock paragraphs={loc.challenge.paragraphs} />
-          </CaseStudySection>
-
-          <CaseStudySection title={t("caseStudy.keyDecision")}>
-            <p className={caseStudyBody}>{loc.keyDecision}</p>
-          </CaseStudySection>
-
-          <CaseStudySection title={t("caseStudy.result")}>
-            <p className={caseStudyBody}>{loc.result}</p>
-          </CaseStudySection>
-        </div>
+        <section className="col-span-12 mt-14 grid grid-cols-subgrid items-start gap-x-4 gap-y-2 border-b border-t border-border py-10 lg:gap-x-6 lg:gap-y-0 lg:py-12">
+          <h2 className="case-study-section-heading col-span-12 lg:col-span-3 lg:row-start-1">
+            {t("caseStudy.overview")}
+          </h2>
+          <div className="case-study-section-copy col-span-12 lg:col-span-6 lg:col-start-4 lg:row-start-1">
+            <p className={caseStudyBody}>{loc.body}</p>
+          </div>
+        </section>
 
         <footer className="col-span-12 mt-14 flex flex-col gap-4 border-t border-border pt-12 lg:flex-row lg:flex-wrap lg:items-center lg:gap-6">
             <a
@@ -191,27 +185,4 @@ export function CaseStudyPage({ slug }: { slug: string }) {
       </div>
     </motion.article>
   );
-}
-
-function CaseStudySection({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="col-span-12 grid grid-cols-subgrid items-start gap-x-4 gap-y-2 border-b border-border py-10 lg:gap-x-6 lg:gap-y-0 lg:py-12">
-      <h2 className="case-study-section-heading col-span-12 lg:col-span-3 lg:row-start-1">
-        {title}
-      </h2>
-      <div className="case-study-section-copy col-span-12 lg:col-span-6 lg:col-start-4 lg:row-start-1">
-        {children}
-      </div>
-    </section>
-  );
-}
-
-function TextBlock({ paragraphs }: { paragraphs: string[] }) {
-  return <p className={caseStudyBody}>{paragraphs.join(" ")}</p>;
 }
