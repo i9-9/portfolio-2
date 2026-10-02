@@ -3,7 +3,8 @@ export type ProjectSlug =
   | "kostume"
   | "ursulabenavidez"
   | "desenfreno"
-  | "grupofrali";
+  | "grupofrali"
+  | "playlikekids";
 
 export type ProjectDiscipline = "web" | "graphic" | "both";
 
@@ -127,6 +128,25 @@ export const projects: Project[] = [
     logo: "/project-logos/grupofrali.svg",
     caseStudyHero: "/projects-v2/grupofrali.png",
     caseStudyHeroMobile: "/projects-v2/grupofrali-mobile.png",
+    heroWidth: 2880,
+    heroHeight: 1800,
+    heroMobileWidth: 780,
+    heroMobileHeight: 1688,
+  },
+  {
+    id: 6,
+    slug: "playlikekids",
+    year: 2026,
+    name: "Play Like Kids",
+    anchor: "https://playlikekids.tv",
+    discipline: "web",
+    previewImage: "/projects-v2/playlikekids.png",
+    previewImageMobile: "/projects-v2/playlikekids-mobile.png",
+    previewVideoMobile: "/projects-v2/playlikekids-preview-mobile.mp4",
+    previewVideoDesktop: "/projects-v2/playlikekids-preview-desktop.mp4",
+    logo: "/project-logos/playlikekids.svg",
+    caseStudyHero: "/projects-v2/playlikekids.png",
+    caseStudyHeroMobile: "/projects-v2/playlikekids-mobile.png",
     heroWidth: 2880,
     heroHeight: 1800,
     heroMobileWidth: 780,

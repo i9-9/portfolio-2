@@ -22,6 +22,7 @@ const SITES = [
   ["ursulabenavidez", "https://www.ursulabenavidez.com/", 5000],
   ["eldesenfreno", "https://eldesenfreno.com", 5000],
   ["grupofrali", "https://www.grupofrali.com/", 8000],
+  ["playlikekids", "https://playlikekids.tv/", 4000],
 ];
 
 const VIEWPORTS = [
@@ -142,7 +143,11 @@ async function captureSite(browser, name, url, waitMs, viewportConfig) {
 
   const file = path.join(OUT_DIR, `${name}${viewportConfig.suffix}.png`);
   await page.screenshot({ path: file, fullPage: false, animations: "disabled" });
-  trimScreenshotTop(file);
+  try {
+    trimScreenshotTop(file);
+  } catch {
+    console.warn("  skipped top-artifact trim (python3 + Pillow required)");
+  }
   const { size } = fs.statSync(file);
   console.log(`  saved ${file} (${(size / 1024).toFixed(0)}kb)`);
 

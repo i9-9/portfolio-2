@@ -30,6 +30,7 @@ export const translations = {
       ursulabenavidez: { title: "Art\u00A0director\u00A0portfolio" },
       desenfreno: { title: "Independent\u00A0publishing" },
       grupofrali: { title: "Real\u00A0estate\u00A0&\u00A0development" },
+      playlikekids: { title: "Creative\u00A0production\u00A0company" },
     },
     contact: {
       mailCopied: "Mail copied to clipboard",
@@ -103,6 +104,7 @@ export const translations = {
       ursulabenavidez: { title: "Portfolio\u00A0directora\u00A0de\u00A0arte" },
       desenfreno: { title: "Editorial\u00A0independiente" },
       grupofrali: { title: "Inmobiliaria\u00A0y\u00A0desarrollo" },
+      playlikekids: { title: "Productora\u00A0creativa" },
     },
     contact: {
       mailCopied: "Mail copiado al portapapeles",

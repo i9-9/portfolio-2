@@ -20,6 +20,7 @@ export const PROJECT_TRANSITION_VARIANT: Record<
   ursulabenavidez: "typographic",
   desenfreno: "marquee",
   grupofrali: "typographic",
+  playlikekids: "letterbox",
 };
 
 /** Solid backdrop behind the transition content. */
@@ -34,6 +35,7 @@ export const PROJECT_TRANSITION_BACKDROP: Record<
   ursulabenavidez: "white",
   desenfreno: "black",
   grupofrali: "black",
+  playlikekids: "black",
 };
 
 /** Optional logo sizing overrides — wide wordmarks need more horizontal room. */
@@ -41,6 +43,7 @@ export const PROJECT_TRANSITION_LOGO_CLASS: Partial<
   Record<ProjectSlug, string>
 > = {
   grupofrali: "max-h-[min(14vh,56px)] max-w-[min(92vw,900px)]",
+  playlikekids: "max-h-[min(20vh,148px)] max-w-[min(78vw,480px)]",
   heybristol: "max-h-[min(20vh,148px)] max-w-[min(78vw,480px)]",
   ursulabenavidez: "max-h-[min(9vh,44px)] max-w-[min(90vw,560px)]",
 };

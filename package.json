@@ -10,6 +10,7 @@
     "screenshot:v2": "node scripts/screenshot-v2-full.mjs",
     "capture:kostume-preview": "node scripts/capture-kostume-preview-video.mjs",
     "capture:grupofrali-preview": "node scripts/capture-grupofrali-preview-video.mjs",
+    "capture:playlikekids-preview": "node scripts/capture-playlikekids-preview-video.mjs",
     "capture:heybristol-preview": "node scripts/capture-heybristol-preview-video.mjs",
     "capture:ursulabenavidez-preview": "node scripts/capture-ursulabenavidez-preview-video.mjs",
     "capture:desenfreno-preview": "node scripts/capture-desenfreno-preview-video.mjs",

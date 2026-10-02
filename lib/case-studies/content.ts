@@ -90,6 +90,22 @@ export const CASE_STUDIES: Record<CaseStudySlug, CaseStudyBundle> = {
         "Diseño de Wohl Studio. Este caso presenta la implementación.",
     },
   },
+  playlikekids: {
+    en: {
+      headline:
+        "Site for a creative production company. A full\u2011bleed, image\u2011led home.",
+      roles: ["Development", "Motion design", "Performance"],
+      stack: ["Next.js", "Tailwind CSS", "Custom animations"],
+      body: "Play Like Kids is a production company in Mexico City working in film, advertising, and branded content. The site had to get out of the way of the work: full-bleed stills, minimal chrome, and a director roster that reads like a title sequence. I built it in Next.js with an image-led hero that rotates through their frames, typography that anchors to the corners of the viewport, and transitions tuned to the pacing of the imagery. Fast to load, easy to extend as new directors join.",
+    },
+    es: {
+      headline:
+        "Sitio para una productora creativa. Una home a pantalla completa, guiada por la imagen.",
+      roles: ["Desarrollo", "Motion", "Performance"],
+      stack: ["Next.js", "Tailwind CSS", "Animaciones custom"],
+      body: "Play Like Kids es una productora de Ciudad de México que trabaja en cine, publicidad y contenido de marca. El sitio tenía que correrse del medio y dejar que hablara el trabajo: imágenes a pantalla completa, interfaz mínima y un roster de directores que se lee como una secuencia de títulos. Lo construí en Next.js con un hero que rota entre sus frames, tipografía anclada a las esquinas del viewport y transiciones pensadas al ritmo de las imágenes. Carga rápido y es fácil de ampliar a medida que se suman directores.",
+    },
+  },
 };
 
 export function isCaseStudySlug(slug: string): slug is CaseStudySlug {

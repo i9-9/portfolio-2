@@ -16,6 +16,7 @@ export type CaseStudySlug =
   | "kostume"
   | "ursulabenavidez"
   | "desenfreno"
-  | "grupofrali";
+  | "grupofrali"
+  | "playlikekids";
 
 export type CaseStudyBundle = Record<"en" | "es", CaseStudyLocale>;
