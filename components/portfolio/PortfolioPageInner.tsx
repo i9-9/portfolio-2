@@ -450,13 +450,13 @@ export function PortfolioPageInner({ v2Mode = "web" }: { v2Mode?: V2ContentMode 
         )}
         {!showGraphicDesktopHero && (
           <div className="relative z-30">
-            <h1 className="hero-title-stack font-helveticaNowDisplayBold text-name-hero tracking-[-0.02em]">
+            <h1 className="hero-title-stack font-helveticaNowDisplayBold text-name-hero tracking-[-0.02em] !text-[min(var(--type-name-hero),calc((100vw-2rem)/5.75))]">
               <SplashClipReveal
                 live={heroLive}
                 index={heroRevealIndex(splashNavItemCount, 0)}
                 reduced={heroReduced}
               >
-                <span className="hero-name glyph-center optical-edge-start bg-foreground pl-[0.08em] pr-[0.02em] py-[0.12em] text-background">
+                <span className="hero-name glyph-center optical-edge-start whitespace-nowrap bg-foreground pl-[0.08em] pr-[0.02em] py-[0.12em] text-background">
                   Ivan Nevares
                 </span>
               </SplashClipReveal>
