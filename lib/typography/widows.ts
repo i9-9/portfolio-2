@@ -20,3 +20,21 @@ export function glueLastWords(text: string, count = 3): string {
   if (n === words.length) return words.join("\u00A0");
   return `${words.slice(0, -n).join(" ")} ${words.slice(-n).join("\u00A0")}`;
 }
+
+/**
+ * Like glueLastWords, but only binds as many trailing words as fit in `maxChars`.
+ * Long bound chunks cannot wrap, so on narrow screens a big headline would overflow the viewport.
+ * Falls back to plain text (no binding) when even the last two words are too long.
+ */
+export function glueLastWordsFit(text: string, count = 3, maxChars = 14): string {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= 1) return text.trim();
+  for (let n = Math.min(count, words.length); n >= 2; n--) {
+    const tail = words.slice(-n);
+    if (tail.join(" ").length <= maxChars) {
+      const head = words.slice(0, -n);
+      return head.length ? `${head.join(" ")} ${tail.join("\u00A0")}` : tail.join("\u00A0");
+    }
+  }
+  return words.join(" ");
+}

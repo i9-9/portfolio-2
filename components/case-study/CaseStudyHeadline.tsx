@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
-import { glueLastWords, splitSentences } from "@/lib/typography/widows";
+import { glueLastWordsFit, splitSentences } from "@/lib/typography/widows";
 
 /**
- * Case-study h1: break by sentence, glue last words, balance lines.
- * Avoids widows of one or two words at any viewport.
+ * Case-study h1: break by sentence, glue short trailing words, balance lines.
+ * Binding is capped by length so long bound chunks never overflow narrow viewports.
  */
 export function CaseStudyHeadline({
   text,
@@ -26,7 +26,7 @@ export function CaseStudyHeadline({
           key={i}
           className={cn(i > 0 && "mt-[0.15em]", "block text-balance")}
         >
-          {glueLastWords(sentence, 3)}
+          {glueLastWordsFit(sentence, 3)}
         </span>
       ))}
     </h1>
