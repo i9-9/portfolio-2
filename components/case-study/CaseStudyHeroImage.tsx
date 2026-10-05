@@ -10,9 +10,11 @@ const MEDIA_CLASS = "absolute inset-0 h-full w-full object-cover object-top";
 function CaseStudyHeroVideo({
   src,
   poster,
+  objectPosition,
 }: {
   src: string;
   poster: string;
+  objectPosition?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
 
@@ -40,18 +42,28 @@ function CaseStudyHeroVideo({
       playsInline
       preload="auto"
       className={MEDIA_CLASS}
+      style={objectPosition ? { objectPosition } : undefined}
       aria-hidden
     />
   );
 }
 
-function CaseStudyHeroStill({ src, alt }: { src: string; alt: string }) {
+function CaseStudyHeroStill({
+  src,
+  alt,
+  objectPosition,
+}: {
+  src: string;
+  alt: string;
+  objectPosition?: string;
+}) {
   return (
     <Image
       src={src}
       alt={alt}
       fill
       className="object-cover object-top"
+      style={objectPosition ? { objectPosition } : undefined}
       sizes="100vw"
       priority
     />
@@ -83,7 +95,13 @@ export function CaseStudyHeroImage({
 
   // SSR / pre-hydration: single poster — never double-fetch media.
   if (isDesktop === null) {
-    return <CaseStudyHeroStill src={project.caseStudyHeroMobile} alt={alt} />;
+    return (
+      <CaseStudyHeroStill
+        src={project.caseStudyHeroMobile}
+        alt={alt}
+        objectPosition={project.heroObjectPosition}
+      />
+    );
   }
 
   const video = isDesktop
@@ -97,8 +115,20 @@ export function CaseStudyHeroImage({
     : project.caseStudyHeroMobile;
 
   if (video) {
-    return <CaseStudyHeroVideo src={video} poster={poster} />;
+    return (
+      <CaseStudyHeroVideo
+        src={video}
+        poster={poster}
+        objectPosition={project.heroObjectPosition}
+      />
+    );
   }
 
-  return <CaseStudyHeroStill src={still} alt={alt} />;
+  return (
+    <CaseStudyHeroStill
+      src={still}
+      alt={alt}
+      objectPosition={project.heroObjectPosition}
+    />
+  );
 }

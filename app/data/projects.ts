@@ -29,6 +29,8 @@ export interface Project {
   caseStudyHero: string;
   /** Hero image for /work/[slug] case study — mobile viewport */
   caseStudyHeroMobile: string;
+  /** Optional CSS object-position for the case-study hero media (default: top). Use "center" when the focal point (e.g. a logo) sits mid-frame. */
+  heroObjectPosition?: string;
   /** Intrinsic pixel dimensions of caseStudyHero */
   heroWidth: number;
   heroHeight: number;
@@ -52,6 +54,7 @@ export const projects: Project[] = [
     logo: "/project-logos/heybristol.svg",
     caseStudyHero: "/projects-v2/heybristol.png",
     caseStudyHeroMobile: "/projects-v2/heybristol-mobile.png",
+    heroObjectPosition: "center",
     heroWidth: 2880,
     heroHeight: 1800,
     heroMobileWidth: 780,
